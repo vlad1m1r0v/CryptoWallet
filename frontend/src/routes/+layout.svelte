@@ -10,30 +10,30 @@
     <meta name="keywords"
           content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <link rel="apple-touch-icon" href="vuexy/images/ico/apple-icon-120.png">
-    <link rel="shortcut icon" type="image/x-icon" href="vuexy/images/ico/favicon.ico">
+    <link rel="apple-touch-icon" href="/vuexy/images/ico/apple-icon-120.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/vuexy/images/ico/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600"
           rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
-    <link rel="stylesheet" type="text/css" href="vuexy/vendors/css/vendors.min.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/vendors/css/vendors.min.css">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
-    <link rel="stylesheet" type="text/css" href="vuexy/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/bootstrap-extended.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/colors.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/components.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/themes/dark-layout.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/themes/bordered-layout.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/themes/semi-dark-layout.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/bootstrap-extended.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/colors.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/components.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/dark-layout.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/bordered-layout.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/semi-dark-layout.css">
 
     <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" type="text/css" href="vuexy/css/core/menu/menu-types/vertical-menu.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/plugins/forms/form-validation.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/pages/page-auth.css">
+    <!--For auth pages-->
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/plugins/forms/form-validation.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/pages/page-auth.css">
+    <!--For main pages-->
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/core/menu/menu-types/vertical-menu.css">
     <!-- END: Page CSS-->
 </svelte:head>
 {@render children?.()}
-
-

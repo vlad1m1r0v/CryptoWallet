@@ -1,11 +1,35 @@
+<script lang="ts">
+    import {onMount} from "svelte";
+    import {MediaQuery} from 'svelte/reactivity';
+    import {
+        hideOverlayMenu,
+        showStaticMenu,
+        hideStaticMenu,
+    } from '$lib/utilities/menu.ts';
+    import {outsideClick} from "$lib/actions/outsideClick.ts";
+
+    const large = new MediaQuery('min-width: 1199px');
+
+    $effect(() => {
+        if (large.current) {
+            showStaticMenu();
+        } else {
+            hideStaticMenu();
+        }
+    });
+
+    onMount(() => {
+        window.addEventListener('resize', hideOverlayMenu);
+
+        return () => {
+            window.removeEventListener('resize', hideOverlayMenu);
+        };
+    });
+</script>
+
 {#snippet vuexyLogo()}
-    <svg
-            viewBox="0 0 139 95"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            height="28"
-    >
+    <svg viewBox="0 0 139 95" version="1.1" xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink" height="24">
         <defs>
             <linearGradient id="linearGradient-1" x1="100%" y1="10.5120544%" x2="50%" y2="89.4879456%">
                 <stop stop-color="#000000" offset="0%"></stop>
@@ -21,7 +45,7 @@
                 <g id="Group" transform="translate(400.000000, 178.000000)">
                     <path class="text-primary" id="Path"
                           d="M-5.68434189e-14,2.84217094e-14 L39.1816085,2.84217094e-14 L69.3453773,32.2519224 L101.428699,2.84217094e-14 L138.784583,2.84217094e-14 L138.784199,29.8015838 C137.958931,37.3510206 135.784352,42.5567762 132.260463,45.4188507 C128.736573,48.2809251 112.33867,64.5239941 83.0667527,94.1480575 L56.2750821,94.1480575 L6.71554594,44.4188507 C2.46876683,39.9813776 0.345377275,35.1089553 0.345377275,29.8015838 C0.345377275,24.4942122 0.230251516,14.560351 -5.68434189e-14,2.84217094e-14 Z"
-                          style="fill: currentColor"></path>
+                          style="fill:currentColor"></path>
                     <path id="Path1"
                           d="M69.3453773,32.2519224 L101.428699,1.42108547e-14 L138.784583,1.42108547e-14 L138.784199,29.8015838 C137.958931,37.3510206 135.784352,42.5567762 132.260463,45.4188507 C128.736573,48.2809251 112.33867,64.5239941 83.0667527,94.1480575 L56.2750821,94.1480575 L32.8435758,70.5039241 L69.3453773,32.2519224 Z"
                           fill="url(#linearGradient-1)" opacity="0.2"></path>
@@ -37,46 +61,10 @@
     </svg>
 {/snippet}
 
-<script lang="ts">
-    import PasswordInput from "$lib/components/PasswordInput.svelte";
-    import {onMount} from "svelte";
+<div
+        class="main-menu menu-fixed menu-light menu-accordion menu-shadow"
+        use:outsideClick
+        on:outsideclick={hideOverlayMenu}
+>
 
-    let emailInput: HTMLInputElement;
-
-    onMount(() => {
-        emailInput.focus();
-    })
-</script>
-
-<a href=" " class="brand-logo">
-    {@render vuexyLogo()}
-    <h2 class="brand-text text-primary ml-1">CryptoWallet</h2>
-</a>
-<form class="mt-2">
-    <div class="form-group">
-        <label for="email" class="form-label">Email</label>
-        <input
-                bind:this={emailInput}
-                type="text"
-                class="form-control"
-                name="email"
-                placeholder="john@example.com"
-                aria-describedby="email"
-        >
-    </div>
-    <PasswordInput label="Password"/>
-    <div class="form-group">
-        <div class="custom-control custom-checkbox">
-            <input class="custom-control-input" type="checkbox" id="remember_me">
-            <label class="custom-control-label" for="remember_me"> Remember Me </label>
-        </div>
-    </div>
-    <button class="btn btn-primary btn-block waves-effect waves-float waves-light">Sign in</button>
-</form>
-
-<p class="text-center mt-2">
-    <span>New on our platform?</span>
-    <a href="register">
-        <span>Create an account</span>
-    </a>
-</p>
+</div>

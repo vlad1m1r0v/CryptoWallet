@@ -4,8 +4,6 @@
 
 <svelte:head>
     <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" type="text/css" href="vuexy/css/plugins/forms/form-validation.css">
-    <link rel="stylesheet" type="text/css" href="vuexy/css/pages/page-auth.css">
     <!-- END: Page CSS-->
     <title>Authentication</title>
 </svelte:head>

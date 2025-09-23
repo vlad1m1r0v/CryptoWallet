@@ -1,10 +1,11 @@
-<script>
-    import PasswordInput from "$lib/components/PasswordInput.svelte";
-</script>
-
-<a href="javascript:void(0);" class="brand-logo">
-    <svg viewBox="0 0 139 95" version="1.1" xmlns="http://www.w3.org/2000/svg"
-         xmlns:xlink="http://www.w3.org/1999/xlink" height="28">
+{#snippet vuexyLogo()}
+    <svg
+            viewBox="0 0 139 95"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            height="28"
+    >
         <defs>
             <linearGradient id="linearGradient-1" x1="100%" y1="10.5120544%" x2="50%" y2="89.4879456%">
                 <stop stop-color="#000000" offset="0%"></stop>
@@ -34,18 +35,46 @@
             </g>
         </g>
     </svg>
+{/snippet}
+
+<script lang="ts">
+    import PasswordInput from "$lib/components/PasswordInput.svelte";
+
+    import {onMount} from "svelte";
+
+    let usernameInput: HTMLInputElement;
+
+    onMount(() => {
+        usernameInput.focus();
+    })
+</script>
+
+<a href=" " class="brand-logo">
+    {@render vuexyLogo()}
     <h2 class="brand-text text-primary ml-1">CryptoWallet</h2>
 </a>
-<form class="auth-register-form mt-2" action="index.html" method="POST">
+<form class="mt-2">
     <div class="form-group">
-        <label for="register-username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="register-username" name="register-username"
-               placeholder="johndoe" aria-describedby="register-username">
+        <label for="username" class="form-label">Username</label>
+        <input
+                bind:this={usernameInput}
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                placeholder="johndoe"
+                aria-describedby="username">
     </div>
     <div class="form-group">
-        <label for="register-email" class="form-label">Email</label>
-        <input type="text" class="form-control" id="register-email" name="register-email"
-               placeholder="john@example.com" aria-describedby="register-email" tabindex="2">
+        <label for="email" class="form-label">Email</label>
+        <input
+                type="text"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="john@example.com"
+                aria-describedby="email"
+        >
     </div>
     <PasswordInput label="Password"/>
     <PasswordInput label="Repeat Password"/>
