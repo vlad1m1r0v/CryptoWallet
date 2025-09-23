@@ -1,6 +1,7 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import {MediaQuery} from 'svelte/reactivity';
+    import {page} from '$app/state';
     import {
         hideOverlayMenu,
         showStaticMenu,
@@ -61,10 +62,109 @@
     </svg>
 {/snippet}
 
+
+{#snippet closeMenuIcon()}
+    <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-x d-block d-xl-none text-primary toggle-icon font-medium-4"
+    >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+{/snippet}
+
 <div
         class="main-menu menu-fixed menu-light menu-accordion menu-shadow"
-        use:outsideClick
+        use:outsideClick={{ ignore: '.menu-toggle' }}
         on:outsideclick={hideOverlayMenu}
 >
-
+    <div class="navbar-header expanded">
+        <ul class="nav navbar-nav flex-row">
+            <li class="nav-item mr-auto">
+                <a class="navbar-brand" href=" ">
+                    <span class="brand-logo">
+                        {@render vuexyLogo()}
+                    </span>
+                    <h2 class="brand-text">CryptoWallet</h2>
+                </a>
+            </li>
+            <li class="nav-item nav-toggle">
+                <a
+                        class="nav-link modern-nav-toggle pr-0"
+                        on:click={hideOverlayMenu}
+                        href=" "
+                >
+                    {@render closeMenuIcon()}
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main-menu-content">
+        <ul class="navigation navigation-main">
+            <!--Profile-->
+            <li
+                    class="nav-item"
+                    class:active={page.url.pathname.startsWith('/profiles/')}
+            >
+                <a class="d-flex align-items-center" href="/profiles/me">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-user">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span class="menu-title text-truncate">Profile</span></a>
+            </li>
+            <!--Wallets-->
+            <li
+                    class="nav-item"
+                    class:active={page.url.pathname === "/wallets"}
+            >
+                <a class="d-flex align-items-center" href="/wallets">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-credit-card">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    <span class="menu-title text-truncate">Wallets</span></a>
+            </li>
+            <!--iBay-->
+            <li
+                    class="nav-item"
+                    class:active={page.url.pathname === "/ibay"}
+            >
+                <a class="d-flex align-items-center" href="/ibay">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-shopping-bag">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="menu-title text-truncate">iBay</span></a>
+            </li>
+            <!--Chat-->
+            <li
+                    class="nav-item"
+                    class:active={page.url.pathname === "/chat"}
+            >
+                <a class="d-flex align-items-center" href="/chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-message-circle">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                    <span class="menu-title text-truncate">Chat</span></a>
+            </li>
+        </ul>
+    </div>
 </div>

@@ -1,15 +1,18 @@
-export function outsideClick(node: HTMLElement) {
-    window.addEventListener('click', handleClick);
+export function outsideClick(node: HTMLElement, options?: { ignore?: string }) {
+    const ignoreSelector = options?.ignore ?? '';
 
     function handleClick(e: MouseEvent) {
-        if (!node.contains(e.target as Node)) {
-            node.dispatchEvent(new CustomEvent('outsideclick'))
-        }
+        const target = e.target as HTMLElement;
+        if (node.contains(target)) return;
+        if (ignoreSelector && target.closest(ignoreSelector)) return;
+        node.dispatchEvent(new CustomEvent('outsideclick'));
     }
+
+    document.addEventListener('click', handleClick);
 
     return {
         destroy() {
-            window.removeEventListener('click', handleClick)
+            document.removeEventListener('click', handleClick);
         }
     };
 }
