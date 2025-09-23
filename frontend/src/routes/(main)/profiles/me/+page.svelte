@@ -1,5 +1,9 @@
 <script lang="ts">
     import PasswordInput from "$lib/components/PasswordInput.svelte";
+    import {openModal, closeModal} from "$lib/utilities/modal.ts";
+
+    let modal: HTMLDivElement;
+
 </script>
 
 <!--Profile Header-->
@@ -159,6 +163,7 @@
                 <!--Import / Create Wallet Buttons-->
                 <div class="d-flex flex-column d-md-inline-block">
                     <button
+                            on:click={() => openModal(modal)}
                             type="button"
                             class="mb-1 mb-md-0 btn btn-primary waves-effect waves-float waves-light"
                     >
@@ -173,3 +178,44 @@
     </div>
 </div>
 <!--Modal For Wallet Import-->
+<div
+        bind:this={modal}
+        class="modal fade text-left"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="import_wallet"
+        aria-modal="true"
+        style="padding-right: 15px; display: none;"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="import_wallet">Import ETH Wallet</h4>
+                <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                        on:click={() => {closeModal(modal)}}
+                >
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <PasswordInput label="Private Key"/>
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button"
+                            class="btn btn-primary waves-effect waves-float waves-light"
+                            data-dismiss="modal"
+                            on:click={() =>{ closeModal(modal)}}
+                    >
+                        Import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
