@@ -1,8 +1,6 @@
 <script lang="ts">
     let {children} = $props();
 
-    onMount
-
 </script>
 
 <svelte:head>
