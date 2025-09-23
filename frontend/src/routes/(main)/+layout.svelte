@@ -1,6 +1,7 @@
 <script lang="ts">
     import Header from "$lib/components/Header.svelte";
     import Menu from "$lib/components/Menu.svelte";
+    import Footer from "$lib/components/Footer.svelte";
 
     let {children} = $props();
 
@@ -15,7 +16,8 @@
 <Menu/>
 <div class="app-content content">
     <div class="content-overlay"></div>
-    <div class="content-area-wrapper">
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper">
         <div class="content-body">
             {@render children?.()}
         </div>
@@ -26,3 +28,4 @@
         style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"
 >
 </div>
+<Footer/>
