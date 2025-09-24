@@ -1,5 +1,5 @@
 <style>
-    .wallet-address {
+    .etherscan-address {
         display: inline-block;
         max-width: 100%;
         white-space: nowrap;
@@ -39,12 +39,13 @@
 
 <script>
 </script>
-
+<!--Wallets Header-->
 <div class="content-header row">
     <div class="content-header-left col-md-9 col-12 mb-2">
         <h2 class="float-left mb-0">Wallets</h2>
     </div>
 </div>
+<!--Wallets-->
 <div class="row">
     <div class="col">
         <div class="card">
@@ -62,7 +63,7 @@
                             <span class="font-weight-bold">Address:</span>
                             <a
                                     href="https://sepolia.etherscan.io/address/0xf04555b42b45E5283F28737D6BA65AE16878D84B"
-                                    class="wallet-address font-weight-light d-inline-block"
+                                    class="etherscan-address font-weight-light d-inline-block"
                             >
                                 0xf04555b42b45E5283F28737D6BA65AE16878D84B
                             </a>
@@ -104,7 +105,7 @@
                             <span class="font-weight-bold">Address:</span>
                             <a
                                     href="https://sepolia.etherscan.io/address/0xf04555b42b45E5283F28737D6BA65AE16878D84B"
-                                    class="wallet-address font-weight-light d-inline-block"
+                                    class="etherscan-address font-weight-light d-inline-block"
                             >
                                 0xf04555b42b45E5283F28737D6BA65AE16878D84B
                             </a>
@@ -146,7 +147,7 @@
                             <span class="font-weight-bold">Address:</span>
                             <a
                                     href="https://sepolia.etherscan.io/address/0xf04555b42b45E5283F28737D6BA65AE16878D84B"
-                                    class="wallet-address font-weight-light d-inline-block"
+                                    class="etherscan-address font-weight-light d-inline-block"
                             >
                                 0xf04555b42b45E5283F28737D6BA65AE16878D84B
                             </a>
@@ -188,7 +189,7 @@
                             <span class="font-weight-bold">Address:</span>
                             <a
                                     href="https://sepolia.etherscan.io/address/0xf04555b42b45E5283F28737D6BA65AE16878D84B"
-                                    class="wallet-address font-weight-light d-inline-block"
+                                    class="etherscan-address font-weight-light d-inline-block"
                             >
                                 0xf04555b42b45E5283F28737D6BA65AE16878D84B
                             </a>
@@ -230,7 +231,7 @@
                             <span class="font-weight-bold">Address:</span>
                             <a
                                     href="https://sepolia.etherscan.io/address/0xf04555b42b45E5283F28737D6BA65AE16878D84B"
-                                    class="wallet-address font-weight-light d-inline-block"
+                                    class="etherscan-address font-weight-light d-inline-block"
                             >
                                 0xf04555b42b45E5283F28737D6BA65AE16878D84B
                             </a>
