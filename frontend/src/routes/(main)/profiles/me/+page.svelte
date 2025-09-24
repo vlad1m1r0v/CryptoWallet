@@ -210,7 +210,7 @@
                             type="button"
                             class="btn btn-primary waves-effect waves-float waves-light"
                             data-dismiss="modal"
-                            on:click={() =>{ closeModal(modal)}}
+                            on:click={() =>{closeModal(modal)}}
                     >
                         Import
                     </button>
