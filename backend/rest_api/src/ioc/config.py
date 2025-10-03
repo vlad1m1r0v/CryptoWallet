@@ -1,7 +1,6 @@
 from dishka import Provider, provide, Scope, from_context
 
-from src.configs import Config, SecurityConfig, PostgresConfig
-
+from src.configs import Config, SecurityConfig, PostgresConfig, MailingConfig
 
 
 class ConfigProvider(Provider):
@@ -14,3 +13,8 @@ class ConfigProvider(Provider):
     @provide(scope=Scope.APP)
     def provide_postgres_config(self, config: Config) -> PostgresConfig:
         return config.postgres
+
+
+    @provide(scope=Scope.APP)
+    def provide_mailing_config(self, config: Config) -> MailingConfig:
+        return config.mailing

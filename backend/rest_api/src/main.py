@@ -14,5 +14,3 @@ app = FastAPI()
 setup_dishka(container, app)
 
 app.include_router(root_router)
-
-

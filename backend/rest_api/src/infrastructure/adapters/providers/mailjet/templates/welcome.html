@@ -1,1 +1,65 @@
-<h1>Welcome, {{username}}</h1>
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Varela+Round&display=swap"
+      rel="stylesheet"
+    />
+    <title>CryptoWallet welcome message</title>
+    <style>
+      :root {
+        --purple-color: #9b5de0;
+        --white-color: white;
+        --border-color: lightgray;
+      }
+
+      header,
+      section,
+      footer {
+        font-family: "Varela Round", sans-serif;
+        width: 600px;
+        box-sizing: border-box;
+        padding: 10px 20px;
+      }
+
+      section {
+        background: var(--white-color);
+        color: var(--purple-color);
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+      }
+
+      header,
+      footer {
+        text-align: center;
+        background-color: var(--purple-color);
+        color: var(--white-color);
+        border: 1px solid var(--border-color);
+      }
+
+      header {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      footer {
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <header>CryptoWallet</header>
+  <section>
+    <p>
+      Welcome, {{username}}👋. You have received this letter, because you had
+      successfully registered on CryptoWallet.
+    </p>
+  </section>
+  <footer>© 2025 CryptoWallet. All rights reserved.</footer>
+</html>

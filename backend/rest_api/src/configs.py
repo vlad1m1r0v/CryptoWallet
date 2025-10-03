@@ -26,17 +26,11 @@ class PostgresConfig(BaseModel):
 
 
 class MailingConfig(BaseModel):
-    MAILJET_API_KEY: str = Field(alias="MAILJET_API_KEY")
-    MAILJET_SECRET_KEY: str = Field(alias="MAILJET_SECRET_KEY")
-
-
-class RabbitMQConfig(BaseModel):
-    host: str = Field(alias="RABBITMQ_HOST")
-    port: int = Field(alias="RABBITMQ_PORT")
-    login: str = Field(alias="RABBITMQ_USER")
-    password: str = Field(alias="RABBITMQ_PASS")
+    api_key: str = Field(alias="MAILJET_API_KEY")
+    secret_key: str = Field(alias="MAILJET_SECRET_KEY")
 
 
 class Config(BaseModel):
     security: SecurityConfig = Field(default_factory=lambda: SecurityConfig(**env))
     postgres: PostgresConfig = Field(default_factory=lambda: PostgresConfig(**env))
+    mailing: MailingConfig = Field(default_factory=lambda: MailingConfig(**env))
