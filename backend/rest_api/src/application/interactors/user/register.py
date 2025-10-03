@@ -61,9 +61,9 @@ class RegisterInteractor:
         self._user_gateway.add(user)
         await self._transaction_manager.commit()
 
-        await self._mail_provider.send_welcome_email(
-            to=email,
-            username=str(username)
+        self._mail_provider.send_welcome_email(
+            to=email.value,
+            username=username.value
         )
 
         access_token = self._jwt_provider.encode({"user_id": str(user.id_.value)})

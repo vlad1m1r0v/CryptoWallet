@@ -6,7 +6,7 @@ from mailjet_rest import Client
 
 from src.configs import Config
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parents[1]
 providers_dir = BASE_DIR / "infrastructure" / "adapters" / "providers"
 
 
@@ -30,5 +30,5 @@ class InfrastructureProvider(Provider):
 
     @provide(scope=Scope.APP)
     def provide_mailjet_client(self, config: Config) -> Client:
-        return Client(auth=(config.mailing.api_key, config.mailing.secret_key))
+        return Client(auth=(config.mailing.api_key, config.mailing.secret_key), version="v3.1")
 
