@@ -8,6 +8,7 @@
 </script>
 <svelte:head>
     <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/core/menu/menu-types/vertical-menu.css">
     <!-- END: Page CSS-->
     <title>CryptoWallet</title>
 </svelte:head>
