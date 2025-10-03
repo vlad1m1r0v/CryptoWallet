@@ -50,5 +50,5 @@ class LoginInteractor:
         if not user.is_active:
             raise UserNotActivatedError()
 
-        access_token = self._jwt_provider.encode({"user_id": user.id_})
+        access_token = self._jwt_provider.encode({"user_id": str(user.id_.value)})
         return LoginUserResponse(access_token=access_token)

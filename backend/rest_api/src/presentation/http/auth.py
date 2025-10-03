@@ -8,6 +8,11 @@ from src.application.interactors.user.register import (
     RegisterUserResponse
 )
 
+from src.application.interactors.user.login import (
+    LoginInteractor,
+    LoginUserRequest,
+    LoginUserResponse
+)
 router = APIRouter(prefix="/auth")
 
 
@@ -22,4 +27,24 @@ async def register(
     response.set_cookie(
         key="access_token",
         value=result["access_token"],
+        httponly=True,
+        secure=False,
+        samesite="lax"
+    )
+
+
+@router.post("/login")
+@inject
+async def register(
+        request_data: LoginUserRequest,
+        interactor: FromDishka[LoginInteractor],
+        response: Response,
+):
+    result: LoginUserResponse = await interactor(request_data)
+    response.set_cookie(
+        key="access_token",
+        value=result["access_token"],
+        httponly=True,
+        secure=False,
+        samesite="lax"
     )
