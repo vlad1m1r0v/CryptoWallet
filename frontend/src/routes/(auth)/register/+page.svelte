@@ -4,6 +4,8 @@
     import {reporter} from '@felte/reporter-svelte';
     import {z} from 'zod';
     import Vuexy from '$lib/components/icons/Vuexy.svelte';
+    import {PUBLIC_BACKEND_URL} from '$env/static/public';
+    import {showToast} from "$lib/stores/toast.ts";
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
     const schema = z.object({
@@ -23,9 +25,21 @@
     type FormData = z.infer<typeof schema>;
 
     const {form, errors, touched, isSubmitting, isValid} = createForm<FormData>({
-        onSubmit: (values) => {
-            console.log('Submit values', values);
-            return new Promise((res) => setTimeout(res, 1000));
+        onSubmit: async (values) => {
+            const response = await fetch(`${PUBLIC_BACKEND_URL}/auth/register`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values)
+            })
+
+            if (response.ok) {
+                showToast("User registered successfully.")
+            } else {
+                showToast("Some error occurred while registering.")
+            }
         },
         extend: [
             validator({schema}),

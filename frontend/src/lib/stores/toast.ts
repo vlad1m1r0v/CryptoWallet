@@ -7,7 +7,7 @@ export interface Toast {
 
 export const toasts = writable<Toast[]>([]);
 
-export function showToast(message: string, timeout = 20000) {
+export function showToast(message: string, timeout = 5000) {
     const id = crypto.randomUUID();
     toasts.update((all) => [...all, {id, message}]);
 
