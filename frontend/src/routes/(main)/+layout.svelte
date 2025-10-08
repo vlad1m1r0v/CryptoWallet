@@ -3,12 +3,16 @@
     import {get} from 'svelte/store';
     import {MediaQuery} from "svelte/reactivity";
 
+    import ApiClient from "$lib/api.ts";
+
     import Header from "$lib/components/Header.svelte";
     import Menu from "$lib/components/Menu.svelte";
     import Footer from "$lib/components/Footer.svelte";
+    import ToastContainer from "$lib/components/ToastContainer.svelte";
 
     import {menu, State} from "$lib/stores/menu.ts";
-    import ToastContainer from "$lib/components/ToastContainer.svelte";
+    import {user} from "$lib/stores/user.ts";
+
 
     let {children} = $props();
     // Responsive appbar
@@ -53,6 +57,11 @@
             window.removeEventListener('resize', hideOverlayMenu);
         };
     });
+
+    onMount(async () => {
+        const response = await ApiClient.getMyProfile();
+        user.set({...response});
+    })
 </script>
 <svelte:head>
     <title>CryptoWallet</title>

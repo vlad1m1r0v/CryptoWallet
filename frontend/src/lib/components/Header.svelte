@@ -7,6 +7,7 @@
     import Menu from "$lib/components/icons/Menu.svelte";
 
     import {menu, State} from "$lib/stores/menu.ts";
+    import {user, initialUserState} from "$lib/stores/user.ts";
 
     let isDropdownMenuOpen = $state(false);
 
@@ -16,6 +17,8 @@
         } else if (sessionStorage.getItem("access_token")) {
             sessionStorage.removeItem("access_token")
         }
+
+        user.set({...initialUserState});
 
         await goto("/login");
     }
@@ -50,7 +53,7 @@
                    aria-expanded="false"
                 >
                     <div class="user-nav d-flex">
-                        <span class="font-weight-bolder">John Doe</span>
+                        <span class="font-weight-bolder">{$user.username}</span>
                     </div>
                     <span class="avatar">
                         <img
