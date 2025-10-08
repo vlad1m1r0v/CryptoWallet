@@ -14,6 +14,12 @@ class EmailNotFoundError(DomainError):
         super().__init__(message)
 
 
+class UserNotFoundError(DomainError):
+    def __init__(self):
+        message = f"User not found."
+        super().__init__(message)
+
+
 class PasswordsNotMatchError(DomainError):
     def __init__(self) -> None:
         message = f"Passwords do not match."

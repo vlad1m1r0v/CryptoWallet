@@ -5,13 +5,20 @@ from src.domain.exceptions.user import (
     EmailNotFoundError,
     PasswordsNotMatchError,
     UserNotActivatedError,
+    UserNotFoundError
 )
 from src.domain.exceptions.base import DomainFieldError
 
+from src.infrastructure.exceptions.auth import (
+    AccessTokenNotProvidedError,
+    InvalidAccessTokenError
+)
+
 DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
     status.HTTP_400_BAD_REQUEST: [PasswordsNotMatchError],
+    status.HTTP_401_UNAUTHORIZED: [InvalidAccessTokenError, AccessTokenNotProvidedError],
     status.HTTP_403_FORBIDDEN: [UserNotActivatedError],
-    status.HTTP_404_NOT_FOUND: [EmailNotFoundError],
+    status.HTTP_404_NOT_FOUND: [EmailNotFoundError, UserNotFoundError],
     status.HTTP_409_CONFLICT: [EmailAlreadyExistsError],
     status.HTTP_422_UNPROCESSABLE_CONTENT: [DomainFieldError],
 }
