@@ -1,4 +1,6 @@
 <script lang="ts">
+    import {goto} from "$app/navigation";
+
     import {outsideClick} from "$lib/actions/outsideClick.ts";
     import Profile from "$lib/components/icons/Profile.svelte";
     import Logout from "$lib/components/icons/Logout.svelte";
@@ -7,6 +9,16 @@
     import {menu, State} from "$lib/stores/menu.ts";
 
     let isDropdownMenuOpen = $state(false);
+
+    const onLogoutClick = async () => {
+        if (localStorage.getItem("access_token")) {
+            localStorage.removeItem("access_token")
+        } else if (sessionStorage.getItem("access_token")) {
+            sessionStorage.removeItem("access_token")
+        }
+
+        await goto("/login");
+    }
 </script>
 
 
@@ -60,7 +72,11 @@
                         Profile
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/login">
+                    <a
+                            on:click|preventDefault={onLogoutClick}
+                            class="dropdown-item"
+                            role="button"
+                    >
                         <Logout/>
                         Logout
                     </a>

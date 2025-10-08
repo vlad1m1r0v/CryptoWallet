@@ -1,5 +1,5 @@
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, Response
+from fastapi import APIRouter
 from dishka import FromDishka
 
 from src.application.interactors.user.register import (
@@ -13,6 +13,7 @@ from src.application.interactors.user.login import (
     LoginUserRequest,
     LoginUserResponse
 )
+
 router = APIRouter(prefix="/auth")
 
 
@@ -21,16 +22,8 @@ router = APIRouter(prefix="/auth")
 async def register(
         request_data: RegisterUserRequest,
         interactor: FromDishka[RegisterInteractor],
-        response: Response,
-):
-    result: RegisterUserResponse = await interactor(request_data)
-    response.set_cookie(
-        key="access_token",
-        value=result["access_token"],
-        httponly=True,
-        secure=False,
-        samesite="lax"
-    )
+) -> RegisterUserResponse:
+    return await interactor(request_data)
 
 
 @router.post("/login")
@@ -38,13 +31,5 @@ async def register(
 async def register(
         request_data: LoginUserRequest,
         interactor: FromDishka[LoginInteractor],
-        response: Response,
-):
-    result: LoginUserResponse = await interactor(request_data)
-    response.set_cookie(
-        key="access_token",
-        value=result["access_token"],
-        httponly=True,
-        secure=False,
-        samesite="lax"
-    )
+) -> LoginUserResponse:
+    return await interactor(request_data)

@@ -8,6 +8,7 @@
     import Footer from "$lib/components/Footer.svelte";
 
     import {menu, State} from "$lib/stores/menu.ts";
+    import ToastContainer from "$lib/components/ToastContainer.svelte";
 
     let {children} = $props();
     // Responsive appbar
@@ -54,9 +55,6 @@
     });
 </script>
 <svelte:head>
-    <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" type="text/css" href="/vuexy/css/core/menu/menu-types/vertical-menu.css">
-    <!-- END: Page CSS-->
     <title>CryptoWallet</title>
 </svelte:head>
 
@@ -69,6 +67,7 @@
         <div class="content-body">
             {@render children?.()}
         </div>
+        <ToastContainer/>
     </div>
 </div>
 <div

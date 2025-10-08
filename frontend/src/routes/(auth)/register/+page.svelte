@@ -3,8 +3,11 @@
     import {validator} from '@felte/validator-zod';
     import {reporter} from '@felte/reporter-svelte';
     import {z} from 'zod';
+
+    import {goto} from "$app/navigation";
+
+    import ApiClient from "$lib/api.ts";
     import Vuexy from '$lib/components/icons/Vuexy.svelte';
-    import {PUBLIC_BACKEND_URL} from '$env/static/public';
     import {showToast} from "$lib/stores/toast.ts";
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
@@ -26,19 +29,14 @@
 
     const {form, errors, touched, isSubmitting, isValid} = createForm<FormData>({
         onSubmit: async (values) => {
-            const response = await fetch(`${PUBLIC_BACKEND_URL}/auth/register`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values)
-            })
+            const response = await ApiClient.register(values);
+            const json = await response.json();
 
             if (response.ok) {
-                showToast("User registered successfully.")
+                showToast("User registered successfully.");
+                localStorage.setItem("access_token", json.access_token);
+                await goto("profiles/me");
             } else {
-                const json = await response.json();
                 showToast(json.description);
             }
         },

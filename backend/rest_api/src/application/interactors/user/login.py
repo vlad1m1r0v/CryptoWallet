@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypedDict
+from typing import TypedDict, Optional
 
 from src.application.ports.gateways.user import UserGateway
 from src.application.ports.providers.jwt import JwtProvider
@@ -18,6 +18,7 @@ from src.domain.value_objects.raw_password import RawPassword
 class LoginUserRequest:
     email: str
     password: str
+    remember_me: Optional[bool] = False
 
 
 class LoginUserResponse(TypedDict):

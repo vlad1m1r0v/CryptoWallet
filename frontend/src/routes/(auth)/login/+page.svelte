@@ -1,9 +1,14 @@
 <script lang="ts">
+    import {goto} from "$app/navigation";
+
     import {createForm} from "felte";
     import {validator} from "@felte/validator-zod";
     import {reporter} from "@felte/reporter-svelte";
     import {z} from "zod";
+
+    import ApiClient from "$lib/api.ts";
     import Vuexy from "$lib/components/icons/Vuexy.svelte";
+    import {showToast} from "$lib/stores/toast.ts";
 
     // Валідація
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
@@ -20,7 +25,23 @@
     type FormData = z.infer<typeof schema>;
 
     const {form, errors, touched, isSubmitting, isValid} = createForm<FormData>({
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
+            const response = await ApiClient.login(values);
+            const json = await response.json();
+
+            if (response.ok) {
+                showToast("User logged in successfully.");
+
+                if (values.remember_me) {
+                    localStorage.setItem("access_token", json.access_token);
+                } else {
+                    sessionStorage.setItem("access_token", json.access_token);
+                }
+
+                await goto("profiles/me");
+            } else {
+                showToast(json.description);
+            }
         },
         extend: [
             validator({schema}),

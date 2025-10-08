@@ -27,8 +27,12 @@
     <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/bordered-layout.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/semi-dark-layout.css">
 
+    <!-- BEGIN: Page CSS-->
+    <!--For auth pages-->
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/plugins/forms/form-validation.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/pages/page-auth.css">
     <!--For main pages-->
-        <link rel="stylesheet" type="text/css" href="/vuexy/css/plugins/forms/form-validation.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/core/menu/menu-types/vertical-menu.css">
     <!-- END: Page CSS-->
 </svelte:head>
 {@render children?.()}
