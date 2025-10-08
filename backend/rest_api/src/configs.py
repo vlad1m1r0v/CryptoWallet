@@ -9,6 +9,9 @@ load_dotenv()
 
 BASE_DIR = pathlib.Path(__file__).parent.parent
 
+class FrontendConfig(BaseModel):
+    url: str = Field(alias="FRONTEND_URL")
+
 
 class SecurityConfig(BaseModel):
     private_key_path: pathlib.Path = BASE_DIR / "certs" / "jwt-private.pem"
@@ -31,6 +34,10 @@ class MailingConfig(BaseModel):
 
 
 class Config(BaseModel):
+    frontend: FrontendConfig = Field(default_factory=lambda: FrontendConfig(**env))
     security: SecurityConfig = Field(default_factory=lambda: SecurityConfig(**env))
     postgres: PostgresConfig = Field(default_factory=lambda: PostgresConfig(**env))
     mailing: MailingConfig = Field(default_factory=lambda: MailingConfig(**env))
+
+
+config = Config()

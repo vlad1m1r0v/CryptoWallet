@@ -10,12 +10,11 @@ from src.domain.value_objects.email import Email
 class UserMapper(BaseMapper[UserE, UserM]):
     @staticmethod
     def to_entity(model: UserM) -> UserE:
-
         return UserE(
             id_=EntityId(model.id),
             username=Username(model.username),
             email=Email(model.email),
-            password_hash=PasswordHash(model.password_hash.encode("utf-8")),
+            password_hash=PasswordHash(value=model.password_hash),
             avatar_url=URL(model.avatar_url) if model.avatar_url else None,
             is_active=model.is_active,
         )
@@ -26,7 +25,7 @@ class UserMapper(BaseMapper[UserE, UserM]):
             id=user.id_.value,
             username=user.username.value,
             email=user.email.value,
-            password_hash=str(user.password_hash.value),
+            password_hash=user.password_hash.value,
             avatar_url=user.avatar_url.value if user.avatar_url else None,
             is_active=user.is_active,
         )

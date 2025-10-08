@@ -3,19 +3,17 @@ from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from src.configs import Config
-from src.ioc.provider_registry import get_providers
-from src.presentation.http.root import router as root_router
+from src.presentation.http.handlers.root import router as root_router
+from src.presentation.http.exceptions.exception_handler import error_handler
 
-config = Config()
+from src.configs import Config, config
+from src.ioc.provider_registry import get_providers
+
 container = make_async_container(*get_providers(), context={Config: config})
 
 app = FastAPI()
 
-origins = [
-    "http://127.0.0.1:5173",
-    "http://localhost:5173"
-]
+origins = [config.frontend.url]
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,6 +23,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-setup_dishka(container, app)
-
 app.include_router(root_router)
+
+app.add_exception_handler(Exception, error_handler)
+
+setup_dishka(container, app)

@@ -1,26 +1,29 @@
 <script lang="ts">
-    import { createForm } from "felte";
-    import { validator } from "@felte/validator-zod";
-    import { reporter } from "@felte/reporter-svelte";
-    import { z } from "zod";
+    import {createForm} from "felte";
+    import {validator} from "@felte/validator-zod";
+    import {reporter} from "@felte/reporter-svelte";
+    import {z} from "zod";
     import Vuexy from "$lib/components/icons/Vuexy.svelte";
 
     // Валідація
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
     const schema = z.object({
         email: z.string().email("Invalid email address"),
-        password: z.string().min(1, "Password is required"),
+        password: z
+            .string()
+            .min(8, 'Password must be at least 8 characters')
+            .max(20, 'Password must be at most 20 characters')
+            .regex(passwordRegex, 'Password must include lowercase, uppercase, digit and symbol'),
         remember_me: z.boolean().optional()
     });
 
     type FormData = z.infer<typeof schema>;
 
-    const { form, errors, touched, isSubmitting, isValid } = createForm<FormData>({
+    const {form, errors, touched, isSubmitting, isValid} = createForm<FormData>({
         onSubmit: (values) => {
-            console.log("Login submit", values);
-            return new Promise((res) => setTimeout(res, 1000));
         },
         extend: [
-            validator({ schema }),
+            validator({schema}),
             reporter()
         ]
     });
@@ -36,14 +39,14 @@
     <div class="form-group">
         <label for="email" class="form-label">Email</label>
         <input
-            id="email"
-            name="email"
-            type="text"
-            class="form-control"
-            class:is-valid={!$errors.email && $touched.email}
-            class:is-invalid={$errors.email && $touched.email}
-            placeholder="john@example.com"
-            aria-describedby="email"
+                id="email"
+                name="email"
+                type="text"
+                class="form-control"
+                class:is-valid={!$errors.email && $touched.email}
+                class:is-invalid={$errors.email && $touched.email}
+                placeholder="john@example.com"
+                aria-describedby="email"
         />
         {#if $touched.email && $errors.email}
             <div class="invalid-feedback">{$errors.email[0]}</div>
@@ -54,14 +57,14 @@
     <div class="form-group">
         <label for="password" class="form-label">Password</label>
         <input
-            id="password"
-            name="password"
-            type="password"
-            class="form-control"
-            class:is-valid={!$errors.password && $touched.password}
-            class:is-invalid={$errors.password && $touched.password}
-            placeholder="············"
-            aria-describedby="password"
+                id="password"
+                name="password"
+                type="password"
+                class="form-control"
+                class:is-valid={!$errors.password && $touched.password}
+                class:is-invalid={$errors.password && $touched.password}
+                placeholder="············"
+                aria-describedby="password"
         />
         {#if $touched.password && $errors.password}
             <div class="invalid-feedback">{$errors.password[0]}</div>
@@ -72,10 +75,10 @@
     <div class="form-group">
         <div class="custom-control custom-checkbox">
             <input
-                id="remember_me"
-                name="remember_me"
-                type="checkbox"
-                class="custom-control-input"
+                    id="remember_me"
+                    name="remember_me"
+                    type="checkbox"
+                    class="custom-control-input"
             />
             <label class="custom-control-label" for="remember_me">
                 Remember Me
@@ -85,9 +88,9 @@
 
     <!-- Submit -->
     <button
-        type="submit"
-        class="btn btn-primary btn-block waves-effect waves-float waves-light"
-        disabled={$isSubmitting || !$isValid}
+            type="submit"
+            class="btn btn-primary btn-block waves-effect waves-float waves-light"
+            disabled={$isSubmitting || !$isValid}
     >
         {#if $isSubmitting}Signing in...{:else}Sign in{/if}
     </button>

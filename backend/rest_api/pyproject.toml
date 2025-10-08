@@ -5,6 +5,7 @@ description = ""
 authors = [
     {name = "ant100pshnik",email = "mypochtav@gmail.com"}
 ]
+
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -24,6 +25,8 @@ dependencies = [
     "jinja2 (>=3.1.6,<4.0.0)"
 ]
 
+[tool.poetry]
+package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -1,3 +1,5 @@
+run_server:
+	uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 1
 generate_certificates:
 	@echo "Deleting old certificates directory (if it exists)..."
 	@rm -rf certs

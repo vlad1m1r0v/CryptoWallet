@@ -1,10 +1,20 @@
 from dishka import Provider, provide, Scope, from_context
 
-from src.configs import Config, SecurityConfig, PostgresConfig, MailingConfig
+from src.configs import (
+    Config,
+    FrontendConfig,
+    SecurityConfig,
+    PostgresConfig,
+    MailingConfig
+)
 
 
 class ConfigProvider(Provider):
     config = from_context(provides=Config, scope=Scope.APP)
+
+    @provide(scope=Scope.APP)
+    def provide_frontend_config(self, config: Config) -> FrontendConfig:
+        return config.frontend
 
     @provide(scope=Scope.APP)
     def provide_security_config(self, config: Config) -> SecurityConfig:
@@ -13,7 +23,6 @@ class ConfigProvider(Provider):
     @provide(scope=Scope.APP)
     def provide_postgres_config(self, config: Config) -> PostgresConfig:
         return config.postgres
-
 
     @provide(scope=Scope.APP)
     def provide_mailing_config(self, config: Config) -> MailingConfig:

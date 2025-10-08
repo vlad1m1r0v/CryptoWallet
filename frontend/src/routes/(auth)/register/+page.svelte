@@ -38,7 +38,8 @@
             if (response.ok) {
                 showToast("User registered successfully.")
             } else {
-                showToast("Some error occurred while registering.")
+                const json = await response.json();
+                showToast(json.description);
             }
         },
         extend: [

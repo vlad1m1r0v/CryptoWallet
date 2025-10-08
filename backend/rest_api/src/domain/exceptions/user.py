@@ -4,13 +4,13 @@ from src.domain.value_objects.email import Email
 
 class EmailAlreadyExistsError(DomainError):
     def __init__(self, email: Email):
-        message = f"User with email '{email.value!r}' already exists."
+        message = f"User with email {email.value!r} already exists."
         super().__init__(message)
 
 
 class EmailNotFoundError(DomainError):
     def __init__(self, email: Email):
-        message = f"User with email '{email.value!r}' is not found."
+        message = f"User with email {email.value!r} is not found."
         super().__init__(message)
 
 
