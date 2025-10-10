@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import TypedDict, Optional
+from uuid import UUID
 
 from src.application.ports.gateways.user import UserGateway
 from src.application.ports.providers.jwt import JwtProvider
@@ -16,6 +17,7 @@ class GetCurrentUserRequest:
 
 
 class GetCurrentUserResponse(TypedDict):
+    id: UUID
     username: str
     email: str
     avatar_url: Optional[str]
@@ -42,6 +44,7 @@ class GetCurrentUserInteractor:
             raise UserNotActivatedError()
 
         return GetCurrentUserResponse(
+            id=user.id_.value,
             username=user.username.value,
             email=user.email.value,
             avatar_url=user.avatar_url.value if user.avatar_url else None,

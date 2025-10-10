@@ -5,10 +5,16 @@ export interface RegisterRequest {
     repeat_password: string
 }
 
-export interface LoginRequest  {
+export interface LoginRequest {
     email: string
     password: string
     remember_me?: boolean
+}
+
+export interface UpdateProfileRequest {
+    username: string
+    password?: string | null
+    repeat_password?: string | null
 }
 
 export interface AccessTokenResponse {

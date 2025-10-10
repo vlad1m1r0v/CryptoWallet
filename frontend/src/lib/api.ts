@@ -9,7 +9,8 @@ import {
     type AccessTokenResponse,
     type ProfileResponse,
     type LoginRequest,
-    type RegisterRequest
+    type RegisterRequest,
+    type UpdateProfileRequest,
 } from "$lib/types/api.ts";
 
 const getAccessToken = () => localStorage.getItem("access_token") ?? sessionStorage.getItem("access_token");
@@ -91,6 +92,19 @@ export default class ApiClient {
         if (response) {
             user.set({...response});
         }
+    }
+
+    public static async updateMyProfile(data: UpdateProfileRequest): Promise<void | ProfileResponse> {
+        const response: ProfileResponse | void = await this.request('/profiles/me', {
+            method: 'PATCH',
+            body: JSON.stringify(data)
+        }, true);
+
+        if (response) {
+            user.set({...response});
+        }
+
+        showToast("User profile was successfully updated.")
     }
 
     public static async logout(): Promise<void> {

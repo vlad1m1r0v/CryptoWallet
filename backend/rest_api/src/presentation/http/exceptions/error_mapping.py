@@ -4,6 +4,7 @@ from src.domain.exceptions.user import (
     EmailAlreadyExistsError,
     EmailNotFoundError,
     PasswordsNotMatchError,
+    RepeatPasswordIsNotSetError,
     UserNotActivatedError,
     UserNotFoundError
 )
@@ -15,7 +16,7 @@ from src.infrastructure.exceptions.auth import (
 )
 
 DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
-    status.HTTP_400_BAD_REQUEST: [PasswordsNotMatchError],
+    status.HTTP_400_BAD_REQUEST: [PasswordsNotMatchError, RepeatPasswordIsNotSetError],
     status.HTTP_401_UNAUTHORIZED: [InvalidAccessTokenError, AccessTokenNotProvidedError],
     status.HTTP_403_FORBIDDEN: [UserNotActivatedError],
     status.HTTP_404_NOT_FOUND: [EmailNotFoundError, UserNotFoundError],

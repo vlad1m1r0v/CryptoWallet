@@ -12,6 +12,10 @@ class UserGateway(Protocol):
         ...
 
     @abstractmethod
+    async def update(self, user: User) -> User:
+        ...
+
+    @abstractmethod
     async def read_by_id(self, user_id: EntityId) -> User | None:
         ...
 

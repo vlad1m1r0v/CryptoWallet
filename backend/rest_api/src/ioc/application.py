@@ -9,6 +9,7 @@ from src.application.ports.gateways.user import UserGateway
 from src.application.interactors.user.register import RegisterInteractor
 from src.application.interactors.user.login import LoginInteractor
 from src.application.interactors.user.get_current_user import GetCurrentUserInteractor
+from src.application.interactors.user.update_user import UpdateUserInteractor
 
 from src.infrastructure.adapters.transaction.sqla_transaction_manager import SqlaTransactionManager
 from src.infrastructure.adapters.transaction.sqla_flusher import SqlaFlusher
@@ -48,5 +49,6 @@ class ApplicationProvider(Provider):
     interactors = provide_all(
         RegisterInteractor,
         LoginInteractor,
-        GetCurrentUserInteractor
+        GetCurrentUserInteractor,
+        UpdateUserInteractor,
     )

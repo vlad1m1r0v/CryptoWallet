@@ -4,15 +4,23 @@
     import {reporter} from '@felte/reporter-svelte';
     import {z} from 'zod';
 
+    import ApiClient from "$lib/api.ts";
+
+    import {user} from "$lib/stores/user.ts";
+
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
     const schema = z.object({
         username: z.string().min(1, 'Username is required'),
-        password: z
-            .string()
-            .min(8, 'Password must be at least 8 characters')
-            .max(20, 'Password must be at most 20 characters')
-            .regex(passwordRegex, 'Password must include lowercase, uppercase, digit and symbol'),
-        repeat_password: z.string()
+        password: z.preprocess((val) => (val === '' ? undefined : val),
+            z.string()
+                .min(8, 'Password must be at least 8 characters')
+                .max(20, 'Password must be at most 20 characters')
+                .regex(passwordRegex, 'Password must include lowercase, uppercase, digit and symbol')
+                .optional()
+        ),
+        repeat_password: z.preprocess((val) => (val === '' ? undefined : val),
+            z.string()
+                .optional()),
     }).refine((data) => data.password === data.repeat_password, {
         path: ['repeat_password'],
         message: 'Passwords do not match'
@@ -20,8 +28,9 @@
 
     type FormData = z.infer<typeof schema>;
 
-    const {form, errors, touched, isSubmitting, isValid} = createForm<FormData>({
+    const {form, setData, errors, touched, isSubmitting, isValid} = createForm<FormData>({
         onSubmit: async (values) => {
+            await ApiClient.updateMyProfile(values)
         },
         extend: [
             validator({schema}),
@@ -29,7 +38,9 @@
         ]
     });
 
-    import {user} from "$lib/stores/user.ts";
+    user.subscribe((state) => {
+        if (state.username) setData("username", state.username)
+    });
 </script>
 
 <!--Profile Header-->
