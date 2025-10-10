@@ -59,11 +59,9 @@ export default class ApiClient {
 
         if (response) {
             localStorage.setItem("access_token", (response as AccessTokenResponse)["access_token"]);
+            showToast("User registered successfully.");
+            await goto("/profiles/me");
         }
-
-        showToast("User registered successfully.");
-
-        await goto("/profiles/me");
     }
 
     public static async login(data: LoginRequest): Promise<void> {
@@ -78,12 +76,10 @@ export default class ApiClient {
             } else {
                 sessionStorage.setItem("access_token", (response as AccessTokenResponse)["access_token"])
             }
+
+            showToast("User logged in successfully.");
+            await goto("/profiles/me");
         }
-
-        showToast("User logged in successfully.");
-
-
-        await goto("/profiles/me");
     }
 
     public static async getMyProfile(): Promise<void> {
@@ -102,9 +98,8 @@ export default class ApiClient {
 
         if (response) {
             user.set({...response});
+            showToast("User profile was successfully updated.")
         }
-
-        showToast("User profile was successfully updated.")
     }
 
     public static async logout(): Promise<void> {
