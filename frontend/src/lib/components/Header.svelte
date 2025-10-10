@@ -1,26 +1,18 @@
 <script lang="ts">
-    import {goto} from "$app/navigation";
-
     import {outsideClick} from "$lib/actions/outsideClick.ts";
     import Profile from "$lib/components/icons/Profile.svelte";
     import Logout from "$lib/components/icons/Logout.svelte";
     import Menu from "$lib/components/icons/Menu.svelte";
 
+    import ApiClient from "$lib/api.ts";
+
     import {menu, State} from "$lib/stores/menu.ts";
-    import {user, initialUserState} from "$lib/stores/user.ts";
+    import {user} from "$lib/stores/user.ts";
 
     let isDropdownMenuOpen = $state(false);
 
     const onLogoutClick = async () => {
-        if (localStorage.getItem("access_token")) {
-            localStorage.removeItem("access_token")
-        } else if (sessionStorage.getItem("access_token")) {
-            sessionStorage.removeItem("access_token")
-        }
-
-        user.set({...initialUserState});
-
-        await goto("/login");
+        await ApiClient.logout()
     }
 </script>
 

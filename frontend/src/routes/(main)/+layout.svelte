@@ -11,7 +11,6 @@
     import ToastContainer from "$lib/components/ToastContainer.svelte";
 
     import {menu, State} from "$lib/stores/menu.ts";
-    import {user} from "$lib/stores/user.ts";
 
 
     let {children} = $props();
@@ -59,8 +58,7 @@
     });
 
     onMount(async () => {
-        const response = await ApiClient.getMyProfile();
-        user.set({...response});
+        await ApiClient.getMyProfile();
     })
 </script>
 <svelte:head>

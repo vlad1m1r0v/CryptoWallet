@@ -2,59 +2,103 @@ import {PUBLIC_BACKEND_URL} from '$env/static/public';
 
 import {goto} from "$app/navigation";
 
+import {user, initialUserState} from "$lib/stores/user.ts";
 import {showToast} from "$lib/stores/toast.ts";
-import {type LoginRequestData, type RegisterRequestData} from "$lib/types/api.ts";
 
+import {
+    type AccessTokenResponse,
+    type ProfileResponse,
+    type LoginRequest,
+    type RegisterRequest
+} from "$lib/types/api.ts";
 
 const getAccessToken = () => localStorage.getItem("access_token") ?? sessionStorage.getItem("access_token");
 
 export default class ApiClient {
-    private static BACKEND_URL: string = PUBLIC_BACKEND_URL;
+    private static get baseUrl() {
+        return PUBLIC_BACKEND_URL.replace(/\/$/, '');
+    }
 
-    private static async makeAuthorizedRequest(
-        url: string,
-        method: string,
-        data?: Record<string | number | symbol, unknown> | null
-    ) {
-        const response = await fetch(url, {
-            method,
-            headers: {
-                "Authorization": `Bearer ${getAccessToken()}`
-            },
-            body: JSON.stringify(data)
-        })
+    private static async request<T>(
+        endpoint: string,
+        options: RequestInit = {},
+        authorized = false
+    ): Promise<T | void> {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            ...(options.headers as Record<string, string>),
+        };
 
-        const json = await response.json()
-
-        if (!response.ok && response.status === 401) {
-            showToast(json.description)
-            return await goto("/login")
+        if (authorized) {
+            const token = getAccessToken();
+            if (token) headers['Authorization'] = `Bearer ${token}`;
         }
 
-        return json;
+        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            ...options,
+            headers,
+        });
+
+        const json = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            showToast(json?.description ?? 'Unexpected error');
+            if (response.status === 401) await this.logout();
+            return;
+        }
+
+        return json as T;
     }
 
-    public static async register(data: RegisterRequestData) {
-        return await fetch(`${this.BACKEND_URL}/auth/register`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
+    public static async register(data: RegisterRequest): Promise<void> {
+        const response = await this.request(
+            '/auth/register',
+            {method: 'POST', body: JSON.stringify(data)}
+        );
+
+        if (response) {
+            localStorage.setItem("access_token", (response as AccessTokenResponse)["access_token"]);
+        }
+
+        showToast("User registered successfully.");
+
+        await goto("/profiles/me");
     }
 
-    public static async login(data: LoginRequestData) {
-        return await fetch(`${this.BACKEND_URL}/auth/login`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
+    public static async login(data: LoginRequest): Promise<void> {
+        const response = await this.request(
+            '/auth/login',
+            {method: 'POST', body: JSON.stringify(data)}
+        );
+
+        if (response) {
+            if (data.remember_me) {
+                localStorage.setItem("access_token", (response as AccessTokenResponse)["access_token"])
+            } else {
+                sessionStorage.setItem("access_token", (response as AccessTokenResponse)["access_token"])
+            }
+        }
+
+        showToast("User logged in successfully.");
+
+
+        await goto("/profiles/me");
     }
 
-    public static async getMyProfile() {
-        return await this.makeAuthorizedRequest(`${this.BACKEND_URL}/profiles/me`, "GET")
+    public static async getMyProfile(): Promise<void> {
+        const response: ProfileResponse | void = await this.request('/profiles/me', {method: 'GET'}, true);
+
+        if (response) {
+            user.set({...response});
+        }
+    }
+
+    public static async logout(): Promise<void> {
+        localStorage.removeItem('access_token');
+        sessionStorage.removeItem('access_token');
+
+        user.set({...initialUserState});
+
+        await goto('/login');
     }
 }

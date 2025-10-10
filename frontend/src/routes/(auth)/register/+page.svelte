@@ -4,11 +4,9 @@
     import {reporter} from '@felte/reporter-svelte';
     import {z} from 'zod';
 
-    import {goto} from "$app/navigation";
-
     import ApiClient from "$lib/api.ts";
+
     import Vuexy from '$lib/components/icons/Vuexy.svelte';
-    import {showToast} from "$lib/stores/toast.ts";
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
     const schema = z.object({
@@ -29,16 +27,7 @@
 
     const {form, errors, touched, isSubmitting, isValid} = createForm<FormData>({
         onSubmit: async (values) => {
-            const response = await ApiClient.register(values);
-            const json = await response.json();
-
-            if (response.ok) {
-                showToast("User registered successfully.");
-                localStorage.setItem("access_token", json.access_token);
-                await goto("profiles/me");
-            } else {
-                showToast(json.description);
-            }
+            await ApiClient.register(values)
         },
         extend: [
             validator({schema}),
