@@ -1,8 +1,7 @@
 import re
 from dataclasses import dataclass
-from typing import ClassVar, Final
-
-from src.domain.exceptions.base import DomainFieldError
+from typing import ClassVar
+from src.domain.exceptions.fields import InvalidURLError
 from src.domain.value_objects.base import ValueObject
 
 
@@ -26,4 +25,4 @@ class URL(ValueObject):
 
     def _validate_url(self, url_value: str) -> None:
         if not re.fullmatch(self.PATTERN, url_value):
-            raise DomainFieldError("Invalid URL format.")
+            raise InvalidURLError()

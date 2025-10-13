@@ -2,7 +2,8 @@ import re
 from dataclasses import dataclass
 from typing import ClassVar
 
-from src.domain.exceptions.base import DomainFieldError
+from src.domain.exceptions.fields import InvalidEmailFormatError
+
 from src.domain.value_objects.base import ValueObject
 
 
@@ -21,4 +22,4 @@ class Email(ValueObject):
 
     def _validate_email(self, email_value: str) -> None:
         if not re.fullmatch(self.PATTERN, email_value):
-            raise DomainFieldError("Invalid email format.")
+            raise InvalidEmailFormatError()

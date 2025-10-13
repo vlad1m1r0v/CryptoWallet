@@ -1,38 +1,44 @@
-from src.domain.exceptions.base import DomainError
+from string import Template
+
+from src.domain.exceptions.base import (
+    DomainError,
+    DomainFieldError
+)
+
 from src.domain.value_objects.email import Email
 
 
 class EmailAlreadyExistsError(DomainError):
+    message = Template("User with email $email already exists.")
+    example_args = {"email": "user@domain.com"}
+
     def __init__(self, email: Email):
-        message = f"User with email {email.value!r} already exists."
-        super().__init__(message)
+        super().__init__(email=email.value)
 
 
 class EmailNotFoundError(DomainError):
+    message = Template("User with email 'user@domain.com' is not found.")
+    example_args = {"email": "user@domain.com"}
+
     def __init__(self, email: Email):
-        message = f"User with email {email.value!r} is not found."
-        super().__init__(message)
+        super().__init__(email=email.value)
 
 
 class UserNotFoundError(DomainError):
-    def __init__(self):
-        message = f"User not found."
-        super().__init__(message)
+    message = f"User not found."
+
+
+class IncorrectRepeatPasswordError(DomainError):
+    message = f"'Password' and 'Repeat password' do not match."
 
 
 class PasswordsNotMatchError(DomainError):
-    def __init__(self) -> None:
-        message = f"Passwords do not match."
-        super().__init__(message)
+    message = f"Passwords do not match."
 
 
 class RepeatPasswordIsNotSetError(DomainError):
-    def __init__(self) -> None:
-        message = f"Repeat password is not set."
-        super().__init__(message)
+    message = f"Repeat password is not set."
 
 
 class UserNotActivatedError(DomainError):
-    def __init__(self) -> None:
-        message = f"User is not activated."
-        super().__init__(message)
+    message = f"User is not activated."

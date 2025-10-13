@@ -1,8 +1,10 @@
 from typing import Optional
 
 from src.domain.entities.user import User
+
 from src.domain.ports.password_hasher import PasswordHasher
 from src.domain.ports.id_generator import IdGenerator
+
 from src.domain.value_objects.email import Email
 from src.domain.value_objects.raw_password import RawPassword
 from src.domain.value_objects.entity_id import EntityId
@@ -46,6 +48,10 @@ class UserService:
             hashed_password=user.password_hash.value,
         )
 
-    def change_password(self, user: User, raw_password: RawPassword) -> None:
+    def change_password(
+            self,
+            user: User,
+            raw_password: RawPassword
+    ) -> None:
         hashed_password = PasswordHash(self._password_hasher.hash(raw_password))
         user.password_hash = hashed_password

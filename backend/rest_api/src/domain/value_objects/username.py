@@ -2,7 +2,13 @@ import re
 from dataclasses import dataclass
 from typing import ClassVar
 
-from src.domain.exceptions.base import DomainFieldError
+from src.domain.exceptions.fields import (
+    InvalidUsernameLengthError,
+    InvalidUsernameStartError,
+    InvalidUsernameCharacterError,
+    InvalidUsernameConsecutiveCharactersError,
+    InvalidUsernameEndError
+)
 from src.domain.value_objects.base import ValueObject
 
 
@@ -42,29 +48,18 @@ class Username(ValueObject):
     def _validate_username_length(self, username_value: str) -> None:
         """:raises DomainFieldError:"""
         if len(username_value) < self.MIN_LEN or len(username_value) > self.MAX_LEN:
-            raise DomainFieldError(
-                f"Username must be between "
-                f"{self.MIN_LEN} and "
-                f"{self.MAX_LEN} characters.",
-            )
+            raise InvalidUsernameLengthError()
 
     def _validate_username_pattern(self, username_value: str) -> None:
         """:raises DomainFieldError:"""
         if not re.match(self.PATTERN_START, username_value):
-            raise DomainFieldError(
-                "Username must start with a letter (A-Z, a-z) or a digit (0-9).",
-            )
+            raise InvalidUsernameStartError()
+
         if not re.fullmatch(self.PATTERN_ALLOWED_CHARS, username_value):
-            raise DomainFieldError(
-                "Username can only contain letters (A-Z, a-z), digits (0-9), "
-                "dots (.), hyphens (-), and underscores (_).",
-            )
+            raise InvalidUsernameCharacterError()
+
         if not re.fullmatch(self.PATTERN_NO_CONSECUTIVE_SPECIALS, username_value):
-            raise DomainFieldError(
-                "Username cannot contain consecutive special characters"
-                " like .., --, or __.",
-            )
+            raise InvalidUsernameConsecutiveCharactersError()
+
         if not re.match(self.PATTERN_END, username_value):
-            raise DomainFieldError(
-                "Username must end with a letter (A-Z, a-z) or a digit (0-9).",
-            )
+            raise InvalidUsernameEndError()

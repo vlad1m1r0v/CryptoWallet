@@ -5,9 +5,9 @@ from uuid import UUID
 from src.application.ports.gateways.user import UserGateway
 from src.application.ports.transaction.transaction_manager import TransactionManager
 from src.domain.exceptions.user import (
-    PasswordsNotMatchError,
+    UserNotFoundError,
     RepeatPasswordIsNotSetError,
-    UserNotFoundError
+    IncorrectRepeatPasswordError
 )
 from src.domain.services.user import UserService
 from src.domain.value_objects.entity_id import EntityId
@@ -55,7 +55,7 @@ class UpdateUserInteractor:
             repeat_password = RawPassword(data.repeat_password)
 
             if password != repeat_password:
-                raise PasswordsNotMatchError()
+                raise IncorrectRepeatPasswordError()
 
             self._user_service.change_password(user, password)
 

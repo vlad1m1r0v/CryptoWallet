@@ -1,0 +1,18 @@
+from src.application.interactors.user.update_user import UpdateUserRequest, UpdateUserResponse
+
+from src.presentation.http.mappers.base import BaseMapper
+from src.presentation.http.schemas.update_user import UpdateUserSchema, UpdateUserResponseSchema
+
+
+class UpdateUserMapper(BaseMapper[UpdateUserSchema, UpdateUserRequest, UpdateUserResponse]):
+    @staticmethod
+    def to_request_dto(schema: UpdateUserSchema) -> UpdateUserRequest:
+        return UpdateUserRequest(
+            username=schema.username,
+            password=schema.password,
+            repeat_password=schema.repeat_password,
+        )
+
+    @staticmethod
+    def to_response_schema(dto: UpdateUserResponse) -> UpdateUserResponseSchema:
+        return UpdateUserResponseSchema(**dto)

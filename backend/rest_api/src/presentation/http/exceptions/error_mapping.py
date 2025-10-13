@@ -3,12 +3,23 @@ from starlette import status
 from src.domain.exceptions.user import (
     EmailAlreadyExistsError,
     EmailNotFoundError,
+    UserNotFoundError,
     PasswordsNotMatchError,
     RepeatPasswordIsNotSetError,
     UserNotActivatedError,
-    UserNotFoundError
+    IncorrectRepeatPasswordError,
 )
-from src.domain.exceptions.base import DomainFieldError
+
+from src.domain.exceptions.fields import (
+    InvalidEmailFormatError,
+    InvalidPasswordError,
+    InvalidURLError,
+    InvalidUsernameLengthError,
+    InvalidUsernameStartError,
+    InvalidUsernameCharacterError,
+    InvalidUsernameConsecutiveCharactersError,
+    InvalidUsernameEndError
+)
 
 from src.infrastructure.exceptions.auth import (
     AccessTokenNotProvidedError,
@@ -16,12 +27,31 @@ from src.infrastructure.exceptions.auth import (
 )
 
 DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
-    status.HTTP_400_BAD_REQUEST: [PasswordsNotMatchError, RepeatPasswordIsNotSetError],
-    status.HTTP_401_UNAUTHORIZED: [InvalidAccessTokenError, AccessTokenNotProvidedError],
+    status.HTTP_400_BAD_REQUEST: [
+        PasswordsNotMatchError,
+        RepeatPasswordIsNotSetError
+    ],
+    status.HTTP_401_UNAUTHORIZED: [
+        InvalidAccessTokenError,
+        AccessTokenNotProvidedError
+    ],
     status.HTTP_403_FORBIDDEN: [UserNotActivatedError],
-    status.HTTP_404_NOT_FOUND: [EmailNotFoundError, UserNotFoundError],
+    status.HTTP_404_NOT_FOUND: [
+        EmailNotFoundError,
+        UserNotFoundError
+    ],
     status.HTTP_409_CONFLICT: [EmailAlreadyExistsError],
-    status.HTTP_422_UNPROCESSABLE_CONTENT: [DomainFieldError],
+    status.HTTP_422_UNPROCESSABLE_CONTENT: [
+        IncorrectRepeatPasswordError,
+        InvalidEmailFormatError,
+        InvalidPasswordError,
+        InvalidURLError,
+        InvalidUsernameLengthError,
+        InvalidUsernameStartError,
+        InvalidUsernameCharacterError,
+        InvalidUsernameConsecutiveCharactersError,
+        InvalidUsernameEndError
+    ],
 }
 
 
