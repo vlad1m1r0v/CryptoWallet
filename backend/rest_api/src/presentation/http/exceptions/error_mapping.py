@@ -1,3 +1,5 @@
+from typing import Union, Type
+
 from starlette import status
 
 from src.domain.exceptions.user import (
@@ -5,12 +7,12 @@ from src.domain.exceptions.user import (
     EmailNotFoundError,
     UserNotFoundError,
     PasswordsNotMatchError,
-    RepeatPasswordIsNotSetError,
-    UserNotActivatedError,
-    IncorrectRepeatPasswordError,
+    UserNotActivatedError
 )
 
 from src.domain.exceptions.fields import (
+    RepeatPasswordIsNotSetError,
+    IncorrectRepeatPasswordError,
     InvalidEmailFormatError,
     InvalidPasswordError,
     InvalidURLError,
@@ -55,14 +57,16 @@ DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
 }
 
 
-def get_status_code_for_exception(exc: Exception) -> int:
+def get_status_code_for_exception(exc: Union[Exception, Type[Exception]]) -> int:
     """
-    Повертає статус код на основі класу помилки.
-    Якщо не знайдено — повертає HTTP_400_BAD_REQUEST.
+    Повертає HTTP статус код для помилки.
+    Працює як з екземплярами, так і з класами.
     """
+    is_class = isinstance(exc, type)
+    exc_class = exc if is_class else type(exc)
+
     for status_code, exc_classes in DOMAIN_EXCEPTION_MAP.items():
-        for exc_class in exc_classes:
-            if isinstance(exc, exc_class):
-                return status_code
+        if any(issubclass(exc_class, cls) for cls in exc_classes):
+            return status_code
 
     return status.HTTP_500_INTERNAL_SERVER_ERROR

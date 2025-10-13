@@ -2,8 +2,11 @@ from dataclasses import dataclass
 from typing import TypedDict
 
 from src.domain.exceptions.user import (
-    IncorrectRepeatPasswordError,
     EmailAlreadyExistsError
+)
+
+from src.domain.exceptions.fields import (
+    IncorrectRepeatPasswordError
 )
 
 from src.application.ports.gateways.user import UserGateway

@@ -1,6 +1,14 @@
 from src.domain.exceptions.base import DomainFieldError
 
 
+class IncorrectRepeatPasswordError(DomainFieldError):
+    message = f"'Password' and 'Repeat password' do not match."
+
+
+class RepeatPasswordIsNotSetError(DomainFieldError):
+    message = f"Repeat password is not set."
+
+
 class InvalidEmailFormatError(DomainFieldError):
     message = "Invalid email format."
 

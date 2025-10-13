@@ -1,6 +1,7 @@
-from dishka import FromDishka
 from fastapi import APIRouter, Depends, Body
+from starlette import status
 
+from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 
 from src.application.interactors.user.get_current_user import (
@@ -15,17 +16,33 @@ from src.presentation.http.schemas.get_current_user import GetCurrentUserRespons
 from src.presentation.http.mappers.get_current_user import GetCurrentUserMapper
 
 from src.presentation.http.schemas.update_user import UpdateUserSchema, UpdateUserResponseSchema
+
+from src.presentation.http.openapi.examples_generator import generate_examples
+
 router = APIRouter(prefix="/profiles")
 
 
-@router.get("/me")
+@router.get(
+    path="/me",
+    response_model=GetCurrentUserResponseSchema,
+    status_code=status.HTTP_200_OK,
+    responses=generate_examples(is_auth=True),
+    response_model_exclude_none=True,
+)
 @inject
 async def get_my_profile(
         user: GetCurrentUserResponse = Depends(get_current_user),
 ) -> GetCurrentUserResponseSchema:
     return GetCurrentUserMapper.to_response_schema(user)
 
-@router.patch("/me")
+
+@router.patch(
+    path="/me",
+    response_model=UpdateUserResponseSchema,
+    status_code=status.HTTP_200_OK,
+    responses=generate_examples(is_auth=True),
+    response_model_exclude_none=True,
+)
 @inject
 async def update_my_profile(
         interactor: FromDishka[UpdateUserInteractor],

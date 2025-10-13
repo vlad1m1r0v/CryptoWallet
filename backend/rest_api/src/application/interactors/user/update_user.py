@@ -5,7 +5,9 @@ from uuid import UUID
 from src.application.ports.gateways.user import UserGateway
 from src.application.ports.transaction.transaction_manager import TransactionManager
 from src.domain.exceptions.user import (
-    UserNotFoundError,
+    UserNotFoundError
+)
+from src.domain.exceptions.fields import (
     RepeatPasswordIsNotSetError,
     IncorrectRepeatPasswordError
 )

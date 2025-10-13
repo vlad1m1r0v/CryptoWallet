@@ -1,6 +1,15 @@
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter
 from dishka import FromDishka
+
+from fastapi import APIRouter
+from starlette import status
+
+from src.domain.exceptions.user import (
+    EmailAlreadyExistsError,
+    EmailNotFoundError,
+    PasswordsNotMatchError,
+    UserNotActivatedError
+)
 
 from src.application.interactors.user.register import RegisterInteractor
 from src.application.interactors.user.login import LoginInteractor
@@ -15,12 +24,21 @@ from src.presentation.http.schemas.login import (
     LoginUserSchema,
     LoginUserResponseSchema
 )
+
 from src.presentation.http.mappers.login import LoginUserMapper
+
+from src.presentation.http.openapi.examples_generator import generate_examples
 
 router = APIRouter(prefix="/auth")
 
 
-@router.post("/register")
+@router.post(
+    path="/register",
+    response_model=RegisterUserResponseSchema,
+    status_code=status.HTTP_201_CREATED,
+    responses=generate_examples(EmailAlreadyExistsError),
+    response_model_exclude_none=True,
+)
 @inject
 async def register(
         schema: RegisterUserSchema,
@@ -31,7 +49,17 @@ async def register(
     return RegisterUserMapper.to_response_schema(result)
 
 
-@router.post("/login")
+@router.post(
+    path="/login",
+    status_code=status.HTTP_200_OK,
+    response_model=LoginUserResponseSchema,
+    responses=generate_examples(
+        EmailNotFoundError,
+        PasswordsNotMatchError,
+        UserNotActivatedError
+    ),
+    response_model_exclude_none=True,
+)
 @inject
 async def login(
         schema: LoginUserSchema,
