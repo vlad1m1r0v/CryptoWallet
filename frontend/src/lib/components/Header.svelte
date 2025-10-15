@@ -50,7 +50,7 @@
                     <span class="avatar">
                         <img
                                 class="round"
-                                src="/vuexy/images/portrait/small/avatar-s-11.jpg"
+                                src={$user.avatar_url ?? "/vuexy/images/portrait/small/avatar-s-11.jpg"}
                                 alt="avatar"
                                 height="40"
                                 width="40"

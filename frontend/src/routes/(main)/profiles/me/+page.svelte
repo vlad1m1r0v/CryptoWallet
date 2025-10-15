@@ -8,9 +8,15 @@
 
     import {user} from "$lib/stores/user.ts";
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/;
     const schema = z.object({
-        username: z.string().min(1, 'Username is required'),
+        username: z.string()
+            .transform((val) => val.trim())
+            .pipe(
+                z.string()
+                    .min(5, 'Username must be at least 5 characters')
+                    .max(32, 'Username must be at most 32 characters')
+            ),
         password: z.preprocess((val) => (val === '' ? undefined : val),
             z.string()
                 .min(8, 'Password must be at least 8 characters')
@@ -30,7 +36,8 @@
 
     const {form, setData, errors, touched, isSubmitting, isValid} = createForm<FormData>({
         onSubmit: async (values) => {
-            await ApiClient.updateMyProfile(values)
+            touched.set({username: false, password: false, repeat_password: false});
+            await ApiClient.updateMyProfile({...values, avatar: avatarFile});
         },
         extend: [
             validator({schema}),
@@ -38,9 +45,21 @@
         ]
     });
 
+    let avatarFile: File | null = $state(null);
+    let avatarPreview: string | null = $state("/vuexy/images/portrait/small/avatar-s-11.jpg");
+
     user.subscribe((state) => {
-        if (state.username) setData("username", state.username)
+        if (state.username) setData("username", state.username);
+        if (state.avatar_url) avatarPreview = state.avatar_url;
     });
+
+    const onImageUpload = (e: Event) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+
+        avatarFile = file;
+        avatarPreview = URL.createObjectURL(file);
+    };
 </script>
 
 <!--Profile Header-->
@@ -54,28 +73,34 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <!--Update Avatar-->
-                <div class="media">
-                    <a href=" " class="mr-25">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-11.jpg"
-                                class="rounded mr-50"
-                                alt="profile image"
-                                height="80"
-                                width="80"
-                        >
-                    </a>
-                    <div class="media-body mt-75 ml-1">
-                        <label for="account-upload"
-                               class="btn btn-sm btn-primary mb-75 mr-75 waves-effect waves-float waves-light">Upload</label>
-                        <input type="file" id="account-upload" hidden="" accept="image/*">
-                        <button class="btn btn-sm btn-outline-secondary mb-75 waves-effect">Reset</button>
-                        <p>Allowed JPG, GIF or PNG. Max size of 800kB</p>
-                    </div>
-                </div>
                 <!--Form-->
-                <form use:form class="mt-2">
-                    <div class="row">
+                <form use:form>
+                    <!--Update Avatar-->
+                    <div class="media">
+                        <a href=" " class="mr-25">
+                            <img
+                                    src={avatarPreview}
+                                    class="rounded mr-50"
+                                    alt="profile image"
+                                    height="80"
+                                    width="80"
+                            >
+                        </a>
+                        <div class="media-body mt-75 ml-1">
+                            <label for="account-upload"
+                                   class="btn btn-sm btn-primary mb-75 mr-75 waves-effect waves-float waves-light">Upload</label>
+                            <input
+                                    onchange={onImageUpload}
+                                    type="file"
+                                    id="account-upload"
+                                    hidden=""
+                                    accept="image/*"
+                            >
+                            <button class="btn btn-sm btn-outline-secondary mb-75 waves-effect">Reset</button>
+                            <p>Allowed JPG, GIF or PNG. Max size of 800kB</p>
+                        </div>
+                    </div>
+                    <div class="row mt-1">
                         <div class="col-12 col-sm-6">
                             <div class="form-group">
                                 <label for="username">Username</label>

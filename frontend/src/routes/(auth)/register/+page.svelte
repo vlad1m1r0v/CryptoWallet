@@ -8,9 +8,15 @@
 
     import Vuexy from '$lib/components/icons/Vuexy.svelte';
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/;
     const schema = z.object({
-        username: z.string().min(1, 'Username is required'),
+        username: z.string()
+            .transform((val) => val.trim())
+            .pipe(
+                z.string()
+                    .min(5, 'Username must be at least 5 characters')
+                    .max(32, 'Username must be at most 32 characters')
+            ),
         email: z.string().email('Invalid email address'),
         password: z
             .string()

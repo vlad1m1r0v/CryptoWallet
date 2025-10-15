@@ -24,6 +24,7 @@ class SqlaUserGateway(UserGateway):
             .where(UserM.id == user.id_.value)
             .values(
                 username=user.username.value,
+                avatar_url=user.avatar_url.value,
                 password_hash=user.password_hash.value,
             )
             .returning(UserM)

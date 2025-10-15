@@ -1,4 +1,7 @@
-from fastapi.exceptions import RequestValidationError
+import typing
+
+from pydantic import ValidationError
+
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
@@ -7,25 +10,24 @@ from src.presentation.http.exceptions.error_mapping import get_status_code_for_e
 from src.configs import config
 
 
-def request_validation_error_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
+def validation_error_handler(_: Request, exc: Exception) -> JSONResponse:
+    exc = typing.cast(ValidationError, exc)
+
     errors: dict[str, list[str]] = {}
 
     for err in exc.errors():
         loc = err.get("loc", ())
         msg = err.get("msg", "Invalid input")
 
-        # якщо це поле з body
-        if loc and loc[0] == "body":
-            if len(loc) > 1:
-                field = loc[1]
+        if loc:
+            if loc[0] in ("body", "form", "file"):
+                field = loc[1] if len(loc) > 1 else "__model__"
             else:
-                # глобальна помилка, пов'язана з моделлю (after validator)
-                field = "__model__"
-            errors.setdefault(field, []).append(msg)
+                field = ".".join(str(l) for l in loc)
         else:
-            # інші локації (query, path, header)
-            field = ".".join(str(l) for l in loc)
-            errors.setdefault(field, []).append(msg)
+            field = "__model__"
+
+        errors.setdefault(field, []).append(msg)
 
     return JSONResponse(
         status_code=422,

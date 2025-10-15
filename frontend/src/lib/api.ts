@@ -26,9 +26,12 @@ export default class ApiClient {
         authorized = false
     ): Promise<T | void> {
         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
             ...(options.headers as Record<string, string>),
         };
+
+        if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+            headers['Content-Type'] = 'application/json';
+        }
 
         if (authorized) {
             const token = getAccessToken();
@@ -91,9 +94,21 @@ export default class ApiClient {
     }
 
     public static async updateMyProfile(data: UpdateProfileRequest): Promise<void | ProfileResponse> {
+        const formData = new FormData();
+        formData.append('username', data.username);
+
+        if (data.avatar) {
+            formData.append('avatar', data.avatar);
+        }
+
+        if (data.password && data.repeat_password) {
+            formData.append('password', data.password);
+            formData.append('repeat_password', data.repeat_password)
+        }
+
         const response: ProfileResponse | void = await this.request('/profiles/me', {
             method: 'PATCH',
-            body: JSON.stringify(data)
+            body: formData
         }, true);
 
         if (response) {

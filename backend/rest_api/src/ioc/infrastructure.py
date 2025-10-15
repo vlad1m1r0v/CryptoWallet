@@ -1,7 +1,12 @@
 from pathlib import Path
 
 from dishka import Provider, Scope, provide, from_context
+
 from jinja2 import Environment, ChoiceLoader, FileSystemLoader
+
+from botocore.client import BaseClient
+import boto3
+
 from mailjet_rest import Client
 
 from src.configs import Config
@@ -32,3 +37,12 @@ class InfrastructureProvider(Provider):
     def provide_mailjet_client(self, config: Config) -> Client:
         return Client(auth=(config.mailing.api_key, config.mailing.secret_key), version="v3.1")
 
+    @provide(scope=Scope.APP)
+    def provide_s3_client(self, config: Config) -> BaseClient:
+        return boto3.client(
+            "s3",
+            region_name=config.s3.space_region,
+            aws_access_key_id=config.s3.access_key,
+            aws_secret_access_key=config.s3.secret_key,
+            endpoint_url=f"https://{config.s3.space_region}.digitaloceanspaces.com"
+        )

@@ -1,12 +1,15 @@
 import re
 from typing import Optional, Annotated
 
+from fastapi import UploadFile
+
 from pydantic import field_validator, BaseModel, model_validator, StringConstraints
 
 UsernameStr = Annotated[str, StringConstraints(strip_whitespace=True, min_length=5, max_length=32)]
 PasswordStr = Annotated[str, StringConstraints(min_length=8, max_length=20)]
 
 class UpdateUserSchema(BaseModel):
+    avatar: Optional[UploadFile] = None
     username: UsernameStr
     password: Optional[PasswordStr] = None
     repeat_password: Optional[PasswordStr] = None

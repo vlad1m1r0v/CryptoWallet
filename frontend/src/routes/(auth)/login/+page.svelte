@@ -9,7 +9,7 @@
     import Vuexy from "$lib/components/icons/Vuexy.svelte";
 
     // Валідація
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/;
     const schema = z.object({
         email: z.string().email("Invalid email address"),
         password: z

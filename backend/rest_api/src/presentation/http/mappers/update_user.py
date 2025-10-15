@@ -6,8 +6,9 @@ from src.presentation.http.schemas.update_user import UpdateUserSchema, UpdateUs
 
 class UpdateUserMapper(BaseMapper[UpdateUserSchema, UpdateUserRequest, UpdateUserResponse]):
     @staticmethod
-    def to_request_dto(schema: UpdateUserSchema) -> UpdateUserRequest:
+    async def to_request_dto(schema: UpdateUserSchema) -> UpdateUserRequest:
         return UpdateUserRequest(
+            avatar=await schema.avatar.read() if schema.avatar else None,
             username=schema.username,
             password=schema.password,
             repeat_password=schema.repeat_password,

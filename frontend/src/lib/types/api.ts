@@ -12,6 +12,7 @@ export interface LoginRequest {
 }
 
 export interface UpdateProfileRequest {
+    avatar?: File | null
     username: string
     password?: string | null
     repeat_password?: string | null

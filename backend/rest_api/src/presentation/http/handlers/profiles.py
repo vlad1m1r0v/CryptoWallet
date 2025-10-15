@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, Body
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Form, UploadFile, File
 from starlette import status
 
 from dishka import FromDishka
@@ -46,10 +48,20 @@ async def get_my_profile(
 @inject
 async def update_my_profile(
         interactor: FromDishka[UpdateUserInteractor],
+        avatar: Optional[UploadFile] = File(default=None),
+        username: Optional[str] = Form(default=None),
+        password: Optional[str] = Form(default=None),
+        repeat_password: Optional[str] = Form(default=None),
         current_user: GetCurrentUserResponse = Depends(get_current_user),
-        schema: UpdateUserSchema = Body()
 ) -> UpdateUserResponseSchema:
-    dto = UpdateUserMapper.to_request_dto(schema)
+    schema = UpdateUserSchema(
+        avatar=avatar,
+        username=username,
+        password=password,
+        repeat_password=repeat_password
+    )
+
+    dto = await UpdateUserMapper.to_request_dto(schema)
 
     result = await interactor(
         data=dto,

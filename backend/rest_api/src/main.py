@@ -8,11 +8,13 @@ from starlette.middleware.cors import CORSMiddleware
 from src.presentation.http.handlers.root import router as root_router
 from src.presentation.http.exceptions.exception_handler import (
     error_handler,
-    request_validation_error_handler
+    validation_error_handler
 )
 
 from src.configs import Config, config
 from src.ioc.provider_registry import get_providers
+
+from pydantic import ValidationError
 
 container = make_async_container(*get_providers(), context={Config: config})
 
@@ -30,7 +32,8 @@ app.add_middleware(
 
 app.include_router(root_router)
 
-app.add_exception_handler(RequestValidationError, request_validation_error_handler)
+app.add_exception_handler(RequestValidationError, validation_error_handler)
+app.add_exception_handler(ValidationError, validation_error_handler)
 app.add_exception_handler(Exception, error_handler)
 
 setup_dishka(container, app)

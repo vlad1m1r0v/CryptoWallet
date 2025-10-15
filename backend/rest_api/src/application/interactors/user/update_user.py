@@ -2,8 +2,6 @@ from dataclasses import dataclass
 from typing import TypedDict, Optional
 from uuid import UUID
 
-from src.application.ports.gateways.user import UserGateway
-from src.application.ports.transaction.transaction_manager import TransactionManager
 from src.domain.exceptions.user import (
     UserNotFoundError
 )
@@ -16,9 +14,14 @@ from src.domain.value_objects.entity_id import EntityId
 from src.domain.value_objects.raw_password import RawPassword
 from src.domain.value_objects.username import Username
 
+from src.application.ports.providers.file_uploader import FileUploader
+from src.application.ports.gateways.user import UserGateway
+from src.application.ports.transaction.transaction_manager import TransactionManager
+
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class UpdateUserRequest:
+    avatar: Optional[bytes] = None
     username: str
     password: Optional[str] = None
     repeat_password: Optional[str] = None
@@ -34,10 +37,12 @@ class UpdateUserInteractor:
     def __init__(
             self,
             user_gateway: UserGateway,
+            file_uploader: FileUploader,
             user_service: UserService,
             transaction_manager: TransactionManager,
     ):
         self._user_gateway = user_gateway
+        self._file_uploader = file_uploader
         self._user_service = user_service
         self.transaction_manager = transaction_manager
 
@@ -60,6 +65,10 @@ class UpdateUserInteractor:
                 raise IncorrectRepeatPasswordError()
 
             self._user_service.change_password(user, password)
+
+        if avatar := data.avatar:
+            avatar_url = self._file_uploader.upload_image(avatar)
+            user.avatar_url = avatar_url
 
         updated = await self._user_gateway.update(user)
         await self.transaction_manager.commit()

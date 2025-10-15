@@ -6,7 +6,7 @@ from src.domain.value_objects.email import Email
 
 
 class EmailAlreadyExistsError(DomainError):
-    message = Template("User with email $email already exists.")
+    message = Template("User with email '$email' already exists.")
     example_args = {"email": "user@domain.com"}
 
     def __init__(self, email: Email):
@@ -14,7 +14,7 @@ class EmailAlreadyExistsError(DomainError):
 
 
 class EmailNotFoundError(DomainError):
-    message = Template("User with email 'user@domain.com' is not found.")
+    message = Template("User with email '$email' is not found.")
     example_args = {"email": "user@domain.com"}
 
     def __init__(self, email: Email):

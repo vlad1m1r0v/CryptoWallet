@@ -9,6 +9,7 @@ load_dotenv()
 
 BASE_DIR = pathlib.Path(__file__).parent.parent
 
+
 class FrontendConfig(BaseModel):
     url: str = Field(alias="FRONTEND_URL")
 
@@ -33,11 +34,19 @@ class MailingConfig(BaseModel):
     secret_key: str = Field(alias="MAILJET_SECRET_KEY")
 
 
+class S3Config(BaseModel):
+    space_name: str = Field(alias="S3_SPACE_NAME")
+    space_region: str = Field(alias="S3_SPACE_REGION")
+    access_key: str = Field(alias="S3_ACCESS_KEY")
+    secret_key: str = Field(alias="S3_SECRET_KEY")
+
+
 class Config(BaseModel):
     frontend: FrontendConfig = Field(default_factory=lambda: FrontendConfig(**env))
     security: SecurityConfig = Field(default_factory=lambda: SecurityConfig(**env))
     postgres: PostgresConfig = Field(default_factory=lambda: PostgresConfig(**env))
     mailing: MailingConfig = Field(default_factory=lambda: MailingConfig(**env))
+    s3: S3Config = Field(default_factory=lambda: S3Config(**env))
 
 
 config = Config()

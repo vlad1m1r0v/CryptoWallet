@@ -5,7 +5,8 @@ from src.configs import (
     FrontendConfig,
     SecurityConfig,
     PostgresConfig,
-    MailingConfig
+    MailingConfig,
+    S3Config
 )
 
 
@@ -27,3 +28,7 @@ class ConfigProvider(Provider):
     @provide(scope=Scope.APP)
     def provide_mailing_config(self, config: Config) -> MailingConfig:
         return config.mailing
+
+    @provide(scope=Scope.APP)
+    def provide_s3_config(self, config: Config) -> S3Config:
+        return config.s3
