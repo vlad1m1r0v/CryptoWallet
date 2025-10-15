@@ -1,4 +1,6 @@
 <script lang="ts">
+    import {get} from 'svelte/store';
+
     import {createForm} from 'felte';
     import {validator} from '@felte/validator-zod';
     import {reporter} from '@felte/reporter-svelte';
@@ -60,6 +62,14 @@
         avatarFile = file;
         avatarPreview = URL.createObjectURL(file);
     };
+
+    const resetAvatar = () => {
+        if (avatarPreview) {
+            URL.revokeObjectURL(avatarPreview);
+            avatarPreview = get(user).avatar_url;
+            avatarFile = null;
+        }
+    }
 </script>
 
 <!--Profile Header-->
@@ -96,7 +106,13 @@
                                     hidden=""
                                     accept="image/*"
                             >
-                            <button class="btn btn-sm btn-outline-secondary mb-75 waves-effect">Reset</button>
+                            <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-secondary mb-75 waves-effect"
+                                    onclick={resetAvatar}
+                            >
+                                Reset
+                            </button>
                             <p>Allowed JPG, GIF or PNG. Max size of 800kB</p>
                         </div>
                     </div>
