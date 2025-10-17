@@ -3,9 +3,12 @@ import uuid
 
 from botocore.client import BaseClient
 
-from src.application.ports.providers.file_uploader import FileUploader
 from src.configs import S3Config
+
+from src.application.ports.providers.file_uploader import FileUploader
+
 from src.domain.value_objects.url import URL
+from src.domain.value_objects.uploaded_file import UploadedFile
 
 
 class S3FileUploader(FileUploader):
@@ -13,10 +16,10 @@ class S3FileUploader(FileUploader):
         self._s3_config = s3_config
         self._client = client
 
-    def upload_image(self, file: bytes) -> URL:
+    def upload_image(self, file: UploadedFile) -> URL:
         ext = "png"
         mime = "image/png"
-        file_obj = io.BytesIO(file)
+        file_obj = io.BytesIO(file.value)
         name = f"{uuid.uuid4()}.{ext}"
 
         self._client.upload_fileobj(

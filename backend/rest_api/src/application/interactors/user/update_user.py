@@ -9,10 +9,13 @@ from src.domain.exceptions.fields import (
     RepeatPasswordIsNotSetError,
     IncorrectRepeatPasswordError
 )
+
 from src.domain.services.user import UserService
+
 from src.domain.value_objects.entity_id import EntityId
 from src.domain.value_objects.raw_password import RawPassword
 from src.domain.value_objects.username import Username
+from src.domain.value_objects.uploaded_file import UploadedFile
 
 from src.application.ports.providers.file_uploader import FileUploader
 from src.application.ports.gateways.user import UserGateway
@@ -52,7 +55,8 @@ class UpdateUserInteractor:
         if not user:
             raise UserNotFoundError()
 
-        user.username = Username(data.username)
+        if data.username:
+            user.username = Username(data.username)
 
         if data.password:
             if not data.repeat_password:
@@ -67,7 +71,7 @@ class UpdateUserInteractor:
             self._user_service.change_password(user, password)
 
         if avatar := data.avatar:
-            avatar_url = self._file_uploader.upload_image(avatar)
+            avatar_url = self._file_uploader.upload_image(UploadedFile(avatar))
             user.avatar_url = avatar_url
 
         updated = await self._user_gateway.update(user)

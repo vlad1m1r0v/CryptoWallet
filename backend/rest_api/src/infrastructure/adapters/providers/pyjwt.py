@@ -3,11 +3,11 @@ from typing import Any, Mapping
 
 import jwt
 
-from src.application.ports.providers.jwt import JwtProvider
-from src.infrastructure.exceptions.auth import InvalidAccessTokenError
-
 from src.configs import SecurityConfig
 
+from src.application.ports.providers.jwt import JwtProvider
+
+from src.infrastructure.exceptions.auth import InvalidAccessTokenError
 
 class PyJwtProvider(JwtProvider):
     def __init__(self, config: SecurityConfig):

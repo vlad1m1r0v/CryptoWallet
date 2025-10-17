@@ -21,7 +21,7 @@ from src.presentation.http.schemas.update_user import UpdateUserSchema, UpdateUs
 
 from src.presentation.http.openapi.examples_generator import generate_examples
 
-router = APIRouter(prefix="/profiles")
+router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
 
 @router.get(

@@ -29,7 +29,7 @@ from src.presentation.http.mappers.login import LoginUserMapper
 
 from src.presentation.http.openapi.examples_generator import generate_examples
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 @router.post(
