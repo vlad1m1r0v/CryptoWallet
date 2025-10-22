@@ -42,8 +42,8 @@ class AssetName(ValueObject):
     def __post_init__(self) -> None:
         """:raises ValueObjectException:"""
         super(AssetName, self).__post_init__()
-        self._validate_asset_name_length(self.value)
-        self._validate_asset_name_pattern(self.value)
+        # self._validate_asset_name_length(self.value)
+        # self._validate_asset_name_pattern(self.value)
 
     def _validate_asset_name_length(self, asset_name_value: str) -> None:
         """:raises ValueObjectException:"""

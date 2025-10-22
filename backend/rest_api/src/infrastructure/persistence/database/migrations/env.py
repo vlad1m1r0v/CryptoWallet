@@ -37,6 +37,8 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 target_metadata = Base.metadata
 from src.infrastructure.persistence.database.models.user import User
+from src.infrastructure.persistence.database.models.asset import Asset
+from src.infrastructure.persistence.database.models.wallet import Wallet
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

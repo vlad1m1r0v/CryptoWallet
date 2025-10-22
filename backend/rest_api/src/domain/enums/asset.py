@@ -1,7 +1,7 @@
 from enum import StrEnum
 
 
-class AssetNetworkTypeEnum(str, StrEnum):
+class AssetNetworkTypeEnum(StrEnum):
     ETHEREUM = "ethereum"
     SEPOLIA = "sepolia"
     POLYGON = "polygon"

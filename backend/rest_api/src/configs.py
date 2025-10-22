@@ -43,12 +43,25 @@ class S3Config(BaseModel):
     base_file_url: str = Field(alias="S3_BASE_FILE_URL")
 
 
+class RabbitMQConfig(BaseModel):
+    host: str = Field(alias="RABBITMQ_HOST")
+    port: int = Field(alias="RABBITMQ_PORT")
+    user: str = Field(alias="RABBITMQ_USER")
+    password: str = Field(alias="RABBITMQ_PASSWORD")
+    vhost: str = Field(alias="RABBITMQ_VHOST")
+
+    @property
+    def url(self) -> str:
+        return f"amqp://{self.user}:{self.password}@{self.host}:{self.port}/{self.vhost}"
+
+
 class Config(BaseModel):
     frontend: FrontendConfig = Field(default_factory=lambda: FrontendConfig(**env))
     security: SecurityConfig = Field(default_factory=lambda: SecurityConfig(**env))
     postgres: PostgresConfig = Field(default_factory=lambda: PostgresConfig(**env))
     mailing: MailingConfig = Field(default_factory=lambda: MailingConfig(**env))
     s3: S3Config = Field(default_factory=lambda: S3Config(**env))
+    rabbit_mq: RabbitMQConfig = Field(default_factory=lambda: RabbitMQConfig(**env))
 
 
 config = Config()

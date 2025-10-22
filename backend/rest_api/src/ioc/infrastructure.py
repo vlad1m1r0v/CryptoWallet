@@ -9,6 +9,8 @@ import boto3
 
 from mailjet_rest import Client
 
+from faststream.rabbit import RabbitBroker
+
 from src.configs import Config
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -46,3 +48,9 @@ class InfrastructureProvider(Provider):
             aws_secret_access_key=config.s3.secret_key,
             endpoint_url=f"https://{config.s3.space_region}.digitaloceanspaces.com"
         )
+
+    @provide(scope=Scope.APP)
+    async def provide_rabbitmq_client(self, config: Config) -> RabbitBroker:
+        broker = RabbitBroker(url=config.rabbit_mq.url)
+        await broker.start()
+        return broker
