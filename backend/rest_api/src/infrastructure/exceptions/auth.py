@@ -1,9 +1,9 @@
-from src.infrastructure.exceptions.base import InfrastructureError
+from src.infrastructure.exceptions.base import InfrastructureException
 
 
-class AccessTokenNotProvidedError(InfrastructureError):
+class AccessTokenNotProvidedException(InfrastructureException):
     message = f"Access token is not provided."
 
 
-class InvalidAccessTokenError(InfrastructureError):
+class InvalidAccessTokenException(InfrastructureException):
     message = f"Provided access token is invalid."

@@ -2,9 +2,11 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domain.entities.user import User as UserE
+from src.domain.value_objects.user.email import Email
+from src.domain.value_objects.shared.entity_id import EntityId
+
 from src.application.ports.gateways.user import UserGateway
-from src.domain.value_objects.email import Email
-from src.domain.value_objects.entity_id import EntityId
+
 from src.infrastructure.persistence.database.models.user import User as UserM
 from src.infrastructure.persistence.database.mappers.user import UserMapper
 
@@ -24,7 +26,7 @@ class SqlaUserGateway(UserGateway):
             .where(UserM.id == user.id_.value)
             .values(
                 username=user.username.value,
-                avatar_url=user.avatar_url.value,
+                avatar_filename=user.avatar_filename.value,
                 password_hash=user.password_hash.value,
             )
             .returning(UserM)

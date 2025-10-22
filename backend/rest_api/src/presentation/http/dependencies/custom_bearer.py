@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.security.utils import get_authorization_scheme_param
 
-from src.infrastructure.exceptions.auth import AccessTokenNotProvidedError
+from src.infrastructure.exceptions.auth import AccessTokenNotProvidedException
 
 
 async def custom_bearer(request: Request) -> str:
@@ -9,6 +9,6 @@ async def custom_bearer(request: Request) -> str:
     scheme, credentials = get_authorization_scheme_param(authorization)
 
     if not authorization or scheme.lower() != "bearer" or not credentials:
-        raise AccessTokenNotProvidedError()
+        raise AccessTokenNotProvidedException()
 
     return credentials

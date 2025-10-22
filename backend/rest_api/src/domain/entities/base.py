@@ -1,9 +1,18 @@
 from typing import Any, TypeVar
 
 from src.domain.exceptions.base import DomainError
+
 from src.domain.value_objects.base import ValueObject
 
 T = TypeVar("T", bound=ValueObject)
+
+
+class EntityCannotBeInstantiatedDirectlyException(DomainError):
+    message = "Entity can't be instantiated directly."
+
+
+class ChangingEntityIdIsNotPermittedException(DomainError):
+    message = "Changing entity ID is not permitted."
 
 
 class Entity[T: ValueObject]:
@@ -23,7 +32,7 @@ class Entity[T: ValueObject]:
     def __forbid_base_class_instantiation(self) -> None:
         """:raises DomainError:"""
         if type(self) is Entity:
-            raise DomainError("Base Entity cannot be instantiated directly.")
+            raise EntityCannotBeInstantiatedDirectlyException()
 
     def __setattr__(self, name: str, value: Any) -> None:
         """
@@ -33,7 +42,7 @@ class Entity[T: ValueObject]:
         Other attributes can be changed as usual.
         """
         if name == "id_" and getattr(self, "id_", None) is not None:
-            raise DomainError("Changing entity ID is not permitted.")
+            raise ChangingEntityIdIsNotPermittedException()
         super().__setattr__(name, value)
 
     def __eq__(self, other: Any) -> bool:

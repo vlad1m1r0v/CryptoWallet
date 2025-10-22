@@ -1,4 +1,4 @@
-from src.application.interactors.user.login import LoginUserRequest, LoginUserResponse
+from src.application.interactors.auth.login import LoginUserRequest, LoginUserResponse
 
 from src.presentation.http.schemas.login import LoginUserSchema, LoginUserResponseSchema
 from src.presentation.http.mappers.base import BaseMapper

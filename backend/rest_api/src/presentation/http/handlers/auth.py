@@ -4,15 +4,15 @@ from dishka import FromDishka
 from fastapi import APIRouter
 from starlette import status
 
-from src.domain.exceptions.user import (
-    EmailAlreadyExistsError,
-    EmailNotFoundError,
-    PasswordsNotMatchError,
+from src.domain.exceptions.auth import (
+    EmailAlreadyExistsException,
+    EmailNotFoundException,
+    WrongPasswordException,
     UserNotActivatedError
 )
 
-from src.application.interactors.user.register import RegisterInteractor
-from src.application.interactors.user.login import LoginInteractor
+from src.application.interactors.auth.register import RegisterInteractor
+from src.application.interactors.auth.login import LoginInteractor
 
 from src.presentation.http.schemas.register import (
     RegisterUserSchema,
@@ -36,7 +36,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
     path="/register",
     response_model=RegisterUserResponseSchema,
     status_code=status.HTTP_201_CREATED,
-    responses=generate_examples(EmailAlreadyExistsError),
+    responses=generate_examples(EmailAlreadyExistsException),
     response_model_exclude_none=True,
 )
 @inject
@@ -54,8 +54,8 @@ async def register(
     status_code=status.HTTP_200_OK,
     response_model=LoginUserResponseSchema,
     responses=generate_examples(
-        EmailNotFoundError,
-        PasswordsNotMatchError,
+        EmailNotFoundException,
+        WrongPasswordException,
         UserNotActivatedError
     ),
     response_model_exclude_none=True,

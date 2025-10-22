@@ -2,7 +2,8 @@ import re
 from dataclasses import dataclass
 from typing import ClassVar
 
-from src.domain.exceptions.fields import InvalidPasswordError
+from src.domain.exceptions.fields import InvalidPasswordException
+
 from src.domain.value_objects.base import ValueObject
 
 
@@ -25,4 +26,4 @@ class RawPassword(ValueObject):
 
     def _validate_password(self, password_value: str) -> None:
         if not re.fullmatch(self.PATTERN, password_value):
-            raise InvalidPasswordError()
+            raise InvalidPasswordException()

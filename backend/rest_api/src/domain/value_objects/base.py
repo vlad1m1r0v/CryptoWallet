@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
 
-from src.domain.exceptions.base import DomainFieldError
+from src.domain.exceptions.fields import ValueObjectException
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -28,7 +28,7 @@ class ValueObject:
 
     def __post_init__(self) -> None:
         """
-        :raises DomainFieldError:
+        :raises ValueObjectException:
 
         Hook for additional initialization and ensuring invariants.
         Subclasses can override this method to implement custom logic, while
@@ -47,15 +47,15 @@ class ValueObject:
         self.__check_field_existence()
 
     def __forbid_base_class_instantiation(self) -> None:
-        """:raises DomainFieldError:"""
+        """:raises ValueObjectException:"""
         if type(self) is ValueObject:
-            raise DomainFieldError("Base ValueObject cannot be instantiated directly.")
+            raise ValueObjectException("Base ValueObject cannot be instantiated directly.")
 
     def __check_field_existence(self) -> None:
-        """:raises DomainFieldError:"""
+        """:raises ValueObjectException:"""
         if not fields(self):
-            raise DomainFieldError(
-                f"{type(self).__name__} must have at least one field!",
+            raise ValueObjectException(
+                f"{type(self).__name__} must have at least one field.",
             )
 
     def __repr__(self) -> str:

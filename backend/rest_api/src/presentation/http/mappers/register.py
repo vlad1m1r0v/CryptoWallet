@@ -1,4 +1,4 @@
-from src.application.interactors.user.register import RegisterUserRequest, RegisterUserResponse
+from src.application.interactors.auth.register import RegisterUserRequest, RegisterUserResponse
 
 from src.presentation.http.mappers.base import BaseMapper
 from src.presentation.http.schemas.register import RegisterUserSchema, RegisterUserResponseSchema

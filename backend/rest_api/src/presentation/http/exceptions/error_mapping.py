@@ -2,57 +2,39 @@ from typing import Union, Type
 
 from starlette import status
 
-from src.domain.exceptions.user import (
-    EmailAlreadyExistsError,
-    EmailNotFoundError,
+from src.domain.exceptions.auth import (
+    EmailAlreadyExistsException,
+    EmailNotFoundException,
     UserNotFoundError,
-    PasswordsNotMatchError,
+    WrongPasswordException,
     UserNotActivatedError
 )
 
 from src.domain.exceptions.fields import (
-    RepeatPasswordIsNotSetError,
-    IncorrectRepeatPasswordError,
-    InvalidEmailFormatError,
-    InvalidPasswordError,
-    InvalidURLError,
-    InvalidUsernameLengthError,
-    InvalidUsernameStartError,
-    InvalidUsernameCharacterError,
-    InvalidUsernameConsecutiveCharactersError,
-    InvalidUsernameEndError
+    ValueObjectException
 )
 
 from src.infrastructure.exceptions.auth import (
-    AccessTokenNotProvidedError,
-    InvalidAccessTokenError
+    AccessTokenNotProvidedException,
+    InvalidAccessTokenException
 )
 
 DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
     status.HTTP_400_BAD_REQUEST: [
-        PasswordsNotMatchError,
-        RepeatPasswordIsNotSetError
+        WrongPasswordException,
     ],
     status.HTTP_401_UNAUTHORIZED: [
-        InvalidAccessTokenError,
-        AccessTokenNotProvidedError
+        InvalidAccessTokenException,
+        AccessTokenNotProvidedException
     ],
     status.HTTP_403_FORBIDDEN: [UserNotActivatedError],
     status.HTTP_404_NOT_FOUND: [
-        EmailNotFoundError,
+        EmailNotFoundException,
         UserNotFoundError
     ],
-    status.HTTP_409_CONFLICT: [EmailAlreadyExistsError],
+    status.HTTP_409_CONFLICT: [EmailAlreadyExistsException],
     status.HTTP_422_UNPROCESSABLE_CONTENT: [
-        IncorrectRepeatPasswordError,
-        InvalidEmailFormatError,
-        InvalidPasswordError,
-        InvalidURLError,
-        InvalidUsernameLengthError,
-        InvalidUsernameStartError,
-        InvalidUsernameCharacterError,
-        InvalidUsernameConsecutiveCharactersError,
-        InvalidUsernameEndError
+        ValueObjectException
     ],
 }
 

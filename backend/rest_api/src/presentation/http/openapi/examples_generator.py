@@ -3,18 +3,16 @@ from typing import Type
 
 from starlette import status
 
-from src.domain.exceptions.base import DomainError
+from src.shared.exception import AppException
 
-from src.infrastructure.exceptions.base import InfrastructureError
-
-from src.domain.exceptions.user import (
+from src.domain.exceptions.auth import (
     UserNotFoundError,
     UserNotActivatedError
 )
 
 from src.infrastructure.exceptions.auth import (
-    AccessTokenNotProvidedError,
-    InvalidAccessTokenError
+    AccessTokenNotProvidedException,
+    InvalidAccessTokenException
 )
 
 from src.presentation.http.exceptions.error_mapping import get_status_code_for_exception
@@ -38,7 +36,7 @@ class ExamplesGenerator:
     @classmethod
     def generate_examples(
             cls,
-            *args: Type[DomainError] | Type[InfrastructureError],
+            *args: Type[AppException],
             is_auth: bool = False
     ) -> dict:
         responses: dict = {}
@@ -46,8 +44,8 @@ class ExamplesGenerator:
         auth_errors = (
             UserNotFoundError,
             UserNotActivatedError,
-            AccessTokenNotProvidedError,
-            InvalidAccessTokenError
+            AccessTokenNotProvidedException,
+            InvalidAccessTokenException
         )
 
         if is_auth:

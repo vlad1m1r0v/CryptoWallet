@@ -4,8 +4,11 @@ import hashlib
 import base64
 
 from src.configs import SecurityConfig
+
 from src.domain.ports.password_hasher import PasswordHasher
-from src.domain.value_objects.raw_password import RawPassword
+
+from src.domain.value_objects.user.password_hash import PasswordHash
+from src.domain.value_objects.user.raw_password import RawPassword
 
 
 class BcryptPasswordHasher(PasswordHasher):
@@ -18,23 +21,14 @@ class BcryptPasswordHasher(PasswordHasher):
     def __init__(self, config: SecurityConfig):
         self._pepper = config.password_pepper
 
-    def hash(self, raw_password: RawPassword) -> bytes:
-        """
-        Створює HMAC від пароля з перцем, потім хешує через bcrypt.
-        """
+    def hash(self, raw_password: RawPassword) -> PasswordHash:
         prehashed = self._prehash(raw_password)
         salt = bcrypt.gensalt()
-        return bcrypt.hashpw(prehashed, salt)
+        return PasswordHash(bcrypt.hashpw(prehashed, salt))
 
-    def verify(self, *, raw_password: RawPassword, hashed_password: bytes) -> bool:
-        """
-        Перевіряє пароль. Хеш має бути у форматі bytes.
-        """
-        if isinstance(hashed_password, str):
-            hashed_password = hashed_password.encode("utf-8")
-
+    def verify(self, raw_password: RawPassword, hashed_password: PasswordHash) -> bool:
         prehashed = self._prehash(raw_password)
-        return bcrypt.checkpw(prehashed, hashed_password)
+        return bcrypt.checkpw(prehashed, hashed_password.value)
 
     def _prehash(self, raw_password: RawPassword) -> bytes:
         """

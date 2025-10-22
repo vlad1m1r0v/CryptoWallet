@@ -19,6 +19,7 @@ class SecurityConfig(BaseModel):
     public_key_path: pathlib.Path = BASE_DIR / "certs" / "jwt-public.pem"
     algorithm: str = "RS256"
     password_pepper: str = Field(alias="PASSWORD_PEPPER")
+    aes_secret_key: str = Field(alias="AES_SECRET_KEY")
 
 
 class PostgresConfig(BaseModel):
@@ -39,6 +40,7 @@ class S3Config(BaseModel):
     space_region: str = Field(alias="S3_SPACE_REGION")
     access_key: str = Field(alias="S3_ACCESS_KEY")
     secret_key: str = Field(alias="S3_SECRET_KEY")
+    base_file_url: str = Field(alias="S3_BASE_FILE_URL")
 
 
 class Config(BaseModel):

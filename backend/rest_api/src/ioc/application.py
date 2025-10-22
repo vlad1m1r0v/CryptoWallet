@@ -8,8 +8,8 @@ from src.application.ports.providers.mail import MailProvider
 from src.application.ports.providers.file_uploader import FileUploader
 from src.application.ports.gateways.user import UserGateway
 
-from src.application.interactors.user.register import RegisterInteractor
-from src.application.interactors.user.login import LoginInteractor
+from src.application.interactors.auth.register import RegisterInteractor
+from src.application.interactors.auth.login import LoginInteractor
 from src.application.interactors.user.get_current_user import GetCurrentUserInteractor
 from src.application.interactors.user.update_user import UpdateUserInteractor
 

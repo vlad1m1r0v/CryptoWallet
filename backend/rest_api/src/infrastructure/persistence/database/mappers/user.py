@@ -1,11 +1,14 @@
+from src.domain.value_objects.user.username import Username
+from src.domain.value_objects.user.password_hash import PasswordHash
+from src.domain.value_objects.shared.file_name import Filename
+from src.domain.value_objects.shared.entity_id import EntityId
+from src.domain.value_objects.user.email import Email
+
 from src.domain.entities.user import User as UserE
+
 from src.infrastructure.persistence.database.models.user import User as UserM
 from src.infrastructure.persistence.database.mappers.base import BaseMapper
-from src.domain.value_objects.username import Username
-from src.domain.value_objects.password_hash import PasswordHash
-from src.domain.value_objects.url import URL
-from src.domain.value_objects.entity_id import EntityId
-from src.domain.value_objects.email import Email
+
 
 class UserMapper(BaseMapper[UserE, UserM]):
     @staticmethod
@@ -15,7 +18,7 @@ class UserMapper(BaseMapper[UserE, UserM]):
             username=Username(model.username),
             email=Email(model.email),
             password_hash=PasswordHash(value=model.password_hash),
-            avatar_url=URL(model.avatar_url) if model.avatar_url else None,
+            avatar_filename=Filename(model.avatar_filename) if model.avatar_filename else None,
             is_active=model.is_active,
         )
 
@@ -26,6 +29,6 @@ class UserMapper(BaseMapper[UserE, UserM]):
             username=user.username.value,
             email=user.email.value,
             password_hash=user.password_hash.value,
-            avatar_url=user.avatar_url.value if user.avatar_url else None,
+            avatar_filename=user.avatar_filename.value if user.avatar_filename else None,
             is_active=user.is_active,
         )

@@ -3,18 +3,18 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 from src.domain.exceptions.fields import (
-    InvalidUsernameLengthError,
-    InvalidUsernameStartError,
-    InvalidUsernameCharacterError,
-    InvalidUsernameConsecutiveCharactersError,
-    InvalidUsernameEndError
+    MinMaxLengthException,
+    InvalidStartException,
+    InvalidEndException,
+    ForbiddenCharactersException,
+    ForbiddenConsecutiveCharactersException
 )
 from src.domain.value_objects.base import ValueObject
 
 
 @dataclass(frozen=True, slots=True, repr=False)
 class Username(ValueObject):
-    """raises DomainFieldError"""
+    """raises ValueObjectException"""
 
     MIN_LEN: ClassVar[int] = 5
     MAX_LEN: ClassVar[int] = 32
@@ -40,26 +40,26 @@ class Username(ValueObject):
     value: str
 
     def __post_init__(self) -> None:
-        """:raises DomainFieldError:"""
+        """:raises ValueObjectException:"""
         super(Username, self).__post_init__()
         self._validate_username_length(self.value)
         self._validate_username_pattern(self.value)
 
     def _validate_username_length(self, username_value: str) -> None:
-        """:raises DomainFieldError:"""
+        """:raises ValueObjectException:"""
         if len(username_value) < self.MIN_LEN or len(username_value) > self.MAX_LEN:
-            raise InvalidUsernameLengthError()
+            raise MinMaxLengthException(field="username", min_length=self.MIN_LEN, max_length=self.MAX_LEN)
 
     def _validate_username_pattern(self, username_value: str) -> None:
-        """:raises DomainFieldError:"""
+        """:raises ValueObjectException:"""
         if not re.match(self.PATTERN_START, username_value):
-            raise InvalidUsernameStartError()
+            raise InvalidStartException(field="username")
 
         if not re.fullmatch(self.PATTERN_ALLOWED_CHARS, username_value):
-            raise InvalidUsernameCharacterError()
+            raise ForbiddenCharactersException(value=username_value)
 
         if not re.fullmatch(self.PATTERN_NO_CONSECUTIVE_SPECIALS, username_value):
-            raise InvalidUsernameConsecutiveCharactersError()
+            raise ForbiddenConsecutiveCharactersException(field="username")
 
         if not re.match(self.PATTERN_END, username_value):
-            raise InvalidUsernameEndError()
+            raise InvalidEndException(field="username")

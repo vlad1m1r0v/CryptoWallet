@@ -4,11 +4,11 @@ from uuid import UUID
 
 from src.application.ports.gateways.user import UserGateway
 from src.application.ports.providers.jwt import JwtProvider
-from src.domain.exceptions.user import (
+from src.domain.exceptions.auth import (
     UserNotActivatedError,
     UserNotFoundError
 )
-from src.domain.value_objects.entity_id import EntityId
+from src.domain.value_objects.shared.entity_id import EntityId
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -20,7 +20,7 @@ class GetCurrentUserResponse(TypedDict):
     id: UUID
     username: str
     email: str
-    avatar_url: Optional[str]
+    avatar_filename: Optional[str]
 
 
 class GetCurrentUserInteractor:
@@ -47,5 +47,5 @@ class GetCurrentUserInteractor:
             id=user.id_.value,
             username=user.username.value,
             email=user.email.value,
-            avatar_url=user.avatar_url.value if user.avatar_url else None,
+            avatar_filename=user.avatar_filename.value if user.avatar_filename else None,
         )

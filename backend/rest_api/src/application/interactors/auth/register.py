@@ -1,22 +1,18 @@
 from dataclasses import dataclass
 from typing import TypedDict
 
-from src.domain.exceptions.user import (
-    EmailAlreadyExistsError
-)
+from src.domain.exceptions.auth import EmailAlreadyExistsException
 
-from src.domain.exceptions.fields import (
-    IncorrectRepeatPasswordError
-)
+from src.domain.exceptions.fields import FieldsDoNotMatchException
 
 from src.application.ports.gateways.user import UserGateway
 from src.application.ports.providers.jwt import JwtProvider
 from src.application.ports.providers.mail import MailProvider
 from src.application.ports.transaction.transaction_manager import TransactionManager
 
-from src.domain.value_objects.email import Email
-from src.domain.value_objects.raw_password import RawPassword
-from src.domain.value_objects.username import Username
+from src.domain.value_objects.user.email import Email
+from src.domain.value_objects.user.raw_password import RawPassword
+from src.domain.value_objects.user.username import Username
 
 from src.domain.services.user import UserService
 
@@ -56,10 +52,10 @@ class RegisterInteractor:
         repeat_password = RawPassword(data.repeat_password)
 
         if password != repeat_password:
-            raise IncorrectRepeatPasswordError()
+            raise FieldsDoNotMatchException(field_1="password", field_2="repeat_password")
 
         if await self._user_gateway.read_by_email(email):
-            raise EmailAlreadyExistsError(email=email)
+            raise EmailAlreadyExistsException(email=email)
 
         user = self._user_service.create_user(
             username=username,

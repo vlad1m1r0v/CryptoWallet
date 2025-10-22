@@ -7,7 +7,7 @@ from src.configs import SecurityConfig
 
 from src.application.ports.providers.jwt import JwtProvider
 
-from src.infrastructure.exceptions.auth import InvalidAccessTokenError
+from src.infrastructure.exceptions.auth import InvalidAccessTokenException
 
 class PyJwtProvider(JwtProvider):
     def __init__(self, config: SecurityConfig):
@@ -28,4 +28,4 @@ class PyJwtProvider(JwtProvider):
         try:
             return jwt.decode(token, self._public_key, algorithms=[self._algorithm])
         except jwt.InvalidTokenError:
-            raise InvalidAccessTokenError()
+            raise InvalidAccessTokenException()

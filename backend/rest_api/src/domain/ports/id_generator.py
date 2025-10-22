@@ -1,7 +1,8 @@
 from abc import abstractmethod, ABC
-from uuid import UUID
+
+from src.domain.value_objects.shared.entity_id import EntityId
 
 
 class IdGenerator(ABC):
     @abstractmethod
-    def __call__(self) -> UUID: ...
+    def __call__(self) -> EntityId: ...

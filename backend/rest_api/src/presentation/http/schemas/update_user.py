@@ -10,13 +10,16 @@ PasswordStr = Annotated[str, StringConstraints(min_length=8, max_length=20)]
 
 class UpdateUserSchema(BaseModel):
     avatar: Optional[UploadFile] = None
-    username: UsernameStr
+    username: Optional[UsernameStr] = None
     password: Optional[PasswordStr] = None
     repeat_password: Optional[PasswordStr] = None
 
     @field_validator("username")
     @classmethod
-    def validate_username(cls, value: str) -> str:
+    def validate_username(cls, value: Optional[str] = None) -> Optional[str]:
+        if value is None:
+            return value
+
         PATTERN_START = re.compile(r"^[a-zA-Z0-9]")
         PATTERN_ALLOWED_CHARS = re.compile(r"[a-zA-Z0-9._-]*")
         PATTERN_NO_CONSECUTIVE_SPECIALS = re.compile(r"^[a-zA-Z0-9]+([._-]?[a-zA-Z0-9]+)*[._-]?$")
