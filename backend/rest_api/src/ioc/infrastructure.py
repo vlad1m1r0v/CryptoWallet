@@ -14,7 +14,7 @@ from faststream.rabbit import RabbitBroker
 from src.configs import Config
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-providers_dir = BASE_DIR / "infrastructure" / "adapters" / "providers"
+PROVIDERS_DIR = BASE_DIR / "infrastructure" / "adapters" / "providers"
 
 
 class InfrastructureProvider(Provider):

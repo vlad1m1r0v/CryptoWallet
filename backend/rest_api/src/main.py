@@ -1,27 +1,33 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-import uvicorn
 from dishka import make_async_container
 from dishka.integrations import fastapi as fastapi_integration
 from dishka.integrations import faststream as faststream_integration
 
-from fastapi import FastAPI
-from fastapi.exceptions import RequestValidationError
-from faststream.rabbit import RabbitBroker
+import uvicorn
+
 from starlette.middleware.cors import CORSMiddleware
 
+from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+
+from faststream.rabbit import RabbitBroker
+
 from src.presentation.http.handlers.root import router as root_router
-from src.presentation.amqp.root import amqp_router
 from src.presentation.http.exceptions.exception_handler import (
     error_handler,
     validation_error_handler
 )
 
-from src.configs import Config, config
+from src.presentation.amqp.root import amqp_router
+
 from src.ioc.provider_registry import get_providers
 
+from src.configs import Config, config
+
 from pydantic import ValidationError
+
 
 def create_app() -> FastAPI:
     container = make_async_container(*get_providers(), context={Config: config})
@@ -31,7 +37,7 @@ def create_app() -> FastAPI:
     faststream_integration.setup_dishka(container, broker=broker)
 
     @asynccontextmanager
-    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         async with broker:
             await broker.start()
             yield
@@ -57,6 +63,7 @@ def create_app() -> FastAPI:
     fastapi_integration.setup_dishka(container, app)
 
     return app
+
 
 if __name__ == "__main__":
     uvicorn.run(create_app(), host="0.0.0.0", port=8000)

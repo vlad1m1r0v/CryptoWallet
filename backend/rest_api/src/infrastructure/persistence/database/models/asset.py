@@ -4,6 +4,7 @@ from src.domain.enums.asset import (
     AssetNetworkTypeEnum,
     AssetTypeEnum,
 )
+
 from src.infrastructure.persistence.database.models.base import Base
 
 
