@@ -36,9 +36,25 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 target_metadata = Base.metadata
-from src.infrastructure.persistence.database.models.user import User
-from src.infrastructure.persistence.database.models.asset import Asset
-from src.infrastructure.persistence.database.models.wallet import Wallet
+
+import importlib
+import pkgutil
+
+def import_all_models():
+    """
+    Імпортує всі модулі з пакету models, крім base.py.
+    """
+    models_pkg = "src.infrastructure.persistence.database.models"
+    package = importlib.import_module(models_pkg)
+
+    # Отримуємо всі модулі в пакеті
+    for module_info in pkgutil.iter_modules(package.__path__):
+        module_name = module_info.name
+        if module_name == "base":
+            continue  # пропускаємо base.py
+        importlib.import_module(f"{models_pkg}.{module_name}")
+
+import_all_models()
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

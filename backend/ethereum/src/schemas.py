@@ -1,57 +1,56 @@
+from enum import StrEnum
 from typing import Optional, List
-
 from uuid import UUID
 from decimal import Decimal
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
+
+
+class TransactionStatusEnum(StrEnum):
+    SUCCESSFUL = "successful"
+    PENDING = "pending"
+    FAILED = "failed"
 
 
 class TransactionSchema(BaseModel):
-    blockNumber: int
-    timeStamp: int
     hash: str
-    nonce: int
-    blockHash: str
-    transactionIndex: int
-    from_address: str = Field(..., alias="from")
-    to: str
+    from_address: str = Field(alias="from", serialization_alias="from_address")
+    to_address: str = Field(alias="to", serialization_alias="to_address")
     value: int
     gas: int
     gasPrice: int
+    timeStamp: int
     isError: bool
     txreceipt_status: Optional[bool] = None
-    input: str
-    contractAddress: Optional[str] = ""
-    cumulativeGasUsed: int
-    gasUsed: int
-    confirmations: int
-    methodId: Optional[str] = ""
-    functionName: Optional[str] = ""
 
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.convert_strings
+    class Config:
+        populate_by_name = True
+        extra = "ignore"
 
-    @classmethod
-    def convert_strings(cls, values):
-        int_fields = [
-            "blockNumber", "timeStamp", "nonce", "transactionIndex",
-            "value", "gas", "gasPrice", "cumulativeGasUsed",
-            "gasUsed", "confirmations"
-        ]
+    # === Обчислені (computed) поля ===
 
-        bool_fields = ["isError", "txreceipt_status"]
+    @computed_field
+    @property
+    def transaction_fee(self) -> Decimal:
+        """gas * gasPrice"""
+        return Decimal(self.gas) * Decimal(self.gasPrice)
 
-        for field in int_fields:
-            if field in values and isinstance(values[field], str):
-                values[field] = int(values[field])
+    @computed_field
+    @property
+    def transaction_status(self) -> TransactionStatusEnum:
+        """Визначення статусу"""
+        if self.isError or (self.txreceipt_status is not None and not self.txreceipt_status):
+            return TransactionStatusEnum.FAILED
+        elif self.txreceipt_status is None:
+            return TransactionStatusEnum.PENDING
+        return TransactionStatusEnum.SUCCESSFUL
 
-        for field in bool_fields:
-            if field in values and isinstance(values[field], str):
-                values[field] = bool(int(values[field]))
-
-        return values
+    @computed_field
+    @property
+    def created_at(self) -> datetime:
+        """Конвертація UNIX timestamp → datetime"""
+        return datetime.fromtimestamp(int(self.timeStamp))
 
 
 class EtherscanTransactionListResponseSchema(BaseModel):

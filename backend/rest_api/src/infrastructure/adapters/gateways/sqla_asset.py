@@ -14,7 +14,7 @@ class SqlaAssetGateway(AssetGateway):
     def __init__(self, session: AsyncSession):
         self._session = session
 
-    async def get_asset_by_network_type(self, network_type: AssetNetworkTypeEnum) -> AssetE:
+    async def read_by_network_type(self, network_type: AssetNetworkTypeEnum) -> AssetE:
         stmt = select(AssetM).where(AssetM.network == network_type)
         result = await self._session.execute(stmt)
         asset_m: AssetM = result.scalar_one()

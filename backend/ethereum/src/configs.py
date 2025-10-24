@@ -16,6 +16,7 @@ class InfuraConfig(BaseModel):
 
 class EtherscanConfig(BaseModel):
     api_key: str = Field(alias="ETHERSCAN_API_KEY")
+    api_base_url: str = Field(alias="ETHERSCAN_API_BASE_URL")
 
 
 class RabbitMQConfig(BaseModel):

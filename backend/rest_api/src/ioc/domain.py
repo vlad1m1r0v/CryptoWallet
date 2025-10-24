@@ -6,6 +6,7 @@ from src.domain.ports.secret_encryptor import SecretEncryptor
 
 from src.domain.services.user import UserService
 from src.domain.services.wallet import WalletService
+from src.domain.services.transaction import TransactionService
 
 from src.infrastructure.adapters.utils.bcrypt_hasher import BcryptPasswordHasher
 from src.infrastructure.adapters.utils.uuid_generator import UuidGenerator
@@ -18,6 +19,8 @@ class DomainProvider(Provider):
     user_service = provide(source=UserService)
 
     wallet_service = provide(source=WalletService)
+
+    transaction_service = provide(source=TransactionService)
 
     password_hasher = provide(
         source=BcryptPasswordHasher,

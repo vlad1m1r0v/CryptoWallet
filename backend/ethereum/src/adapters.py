@@ -39,12 +39,7 @@ class EthereumServiceAdapter(EthereumServicePort):
 
         balance_wei = self._w3.eth.get_balance(address)
 
-        url = (
-            f"https://api.etherscan.io/v2/api"
-            f"?chainid=11155111&module=account&action=txlist"
-            f"&address={address}&startblock=0&endblock=99999999"
-            f"&page=1&offset=1000&sort=asc&apikey={self._etherscan_config.api_key}"
-        )
+        url = f"{self._etherscan_config.api_base_url}&apiKey={self._etherscan_config.api_key}&address={address}"
 
         with httpx.Client(timeout=30.0) as client:
             response = client.get(url)

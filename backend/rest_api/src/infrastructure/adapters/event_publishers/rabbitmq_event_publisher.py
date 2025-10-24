@@ -15,3 +15,10 @@ class RabbitMQEventPublisher(EventPublisher):
             routing_key="rest_api.create_eth_wallet",
             message=message
         )
+
+    async def import_eth_wallet(self, user_id: UUID, private_key: str) -> None:
+        message = {"user_id": str(user_id), "private_key": private_key}
+        await self._broker.publish(
+            routing_key="rest_api.import_eth_wallet",
+            message=message
+        )

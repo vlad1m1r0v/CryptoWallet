@@ -52,4 +52,4 @@ async def import_wallet_handler(
     private_key = data["private_key"]
     wallet = ethereum_service.import_wallet(user_id=user_id, private_key=private_key)
     logger.info(f"Publishing message to ethereum.import_eth_service: {wallet.model_dump()}")
-    return wallet
+    return wallet.model_dump()

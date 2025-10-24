@@ -8,6 +8,11 @@ from src.application.interactors.wallet.save_create_wallet import (
     SaveCreateWalletInteractor
 )
 
+from src.application.interactors.wallet.save_import_wallet import (
+    WalletWithTransactionsDTO,
+    SaveImportWalletInteractor
+)
+
 amqp_router = RabbitRouter()
 
 
@@ -16,5 +21,14 @@ amqp_router = RabbitRouter()
 async def create_wallet_handler(
         data: SaveCreateWalletRequest,
         interactor: FromDishka[SaveCreateWalletInteractor]
+) -> None:
+    return await interactor(data)
+
+
+@amqp_router.subscriber("ethereum.import_eth_wallet")
+@inject
+async def import_wallet_handler(
+        data: WalletWithTransactionsDTO,
+        interactor: FromDishka[SaveImportWalletInteractor]
 ) -> None:
     return await interactor(data)

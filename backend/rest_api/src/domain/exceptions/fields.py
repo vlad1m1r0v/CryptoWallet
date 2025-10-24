@@ -146,3 +146,12 @@ class InvalidPasswordException(ValueObjectException):
         f"Password must be 8-20 characters long, " \
         "contain at least one lowercase, one uppercase, one digit, " \
         "and one special character."
+
+
+class InvalidAssetNameException(ValueObjectException):
+    message = ("Asset name should consist only of letters. "
+               "It can contain multiple words, but each word should start with upper case.")
+
+
+class InvalidTransactionHashException(ValueObjectException):
+    message = "Transaction hash should start with '0x' and contain 64 characters after that."

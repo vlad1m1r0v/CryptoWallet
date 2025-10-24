@@ -8,5 +8,5 @@ from src.domain.entities.asset import Asset
 
 class AssetGateway(Protocol):
     @abstractmethod
-    async def get_asset_by_network_type(self, network_type: AssetNetworkTypeEnum) -> Asset:
+    async def read_by_network_type(self, network_type: AssetNetworkTypeEnum) -> Asset:
         ...

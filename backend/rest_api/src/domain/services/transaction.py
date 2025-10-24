@@ -1,4 +1,6 @@
-from src.domain.entities.base import Entity
+from src.domain.entities.transaction import Transaction
+
+from src.domain.ports.id_generator import IdGenerator
 
 from src.domain.value_objects.shared.entity_id import EntityId
 from src.domain.value_objects.shared.timestamp import Timestamp
@@ -10,11 +12,16 @@ from src.domain.value_objects.transaction.value import TransactionValue
 from src.domain.value_objects.transaction.status import TransactionStatus
 from src.domain.value_objects.transaction.fee import TransactionFee
 
-class Transaction(Entity[EntityId]):
+
+class TransactionService:
     def __init__(
             self,
-            *,
-            id_: EntityId,
+            id_generator: IdGenerator
+    ) -> None:
+        self._id_generator = id_generator
+
+    def create_transaction(
+            self,
             wallet_id: EntityId,
             transaction_hash: TransactionHash,
             from_address: Address,
@@ -23,14 +30,17 @@ class Transaction(Entity[EntityId]):
             transaction_status: TransactionStatus,
             transaction_fee: TransactionFee,
             created_at: Timestamp,
-    ) -> None:
-        super().__init__(id_=id_)
-        self.wallet_id = wallet_id
-        self.transaction_hash = transaction_hash
-        self.from_address = from_address
-        self.to_address = to_address
-        self.value = value
-        self.transaction_status = transaction_status
-        self.transaction_fee = transaction_fee
-        self.created_at = created_at
+    ) -> Transaction:
+        transaction_id = self._id_generator()
 
+        return Transaction(
+            id_=transaction_id,
+            wallet_id=wallet_id,
+            transaction_hash=transaction_hash,
+            from_address=from_address,
+            to_address=to_address,
+            value=value,
+            transaction_status=transaction_status,
+            transaction_fee=transaction_fee,
+            created_at=created_at
+        )

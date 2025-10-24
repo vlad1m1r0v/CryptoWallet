@@ -41,7 +41,7 @@ class SaveCreateWalletInteractor:
         self._transaction_manager = transaction_manager
 
     async def __call__(self, data: SaveCreateWalletRequest) -> None:
-        sepolia_asset = await self._asset_gateway.get_asset_by_network_type(AssetNetworkTypeEnum.SEPOLIA)
+        sepolia_asset = await self._asset_gateway.read_by_network_type(AssetNetworkTypeEnum.SEPOLIA)
 
         entity = self._wallet_service.create_wallet(
             user_id=EntityId(data["user_id"]),
