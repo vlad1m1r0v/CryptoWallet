@@ -23,7 +23,7 @@ class InfrastructureProvider(Provider):
     @provide(scope=Scope.APP)
     def provide_jinja2_env(self) -> Environment:
         template_dirs = [
-            str(path) for path in providers_dir.rglob("templates") if path.is_dir()
+            str(path) for path in PROVIDERS_DIR.rglob("templates") if path.is_dir()
         ]
 
         loader = ChoiceLoader(
