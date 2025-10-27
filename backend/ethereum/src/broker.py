@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from decimal import Decimal
+
 from uuid import UUID
 
 import logging
@@ -10,7 +12,10 @@ from dishka.integrations.faststream import inject
 from faststream.rabbit import RabbitRouter
 
 from src.ports import EthereumServicePort
-from src.schemas import ETHWalletSchema
+from src.schemas import (
+    TransactionSchema,
+    ETHWalletSchema
+)
 
 logger = logging.getLogger("ethereum_broker")
 
@@ -44,7 +49,7 @@ class ImportWalletData(TypedDict):
 @amqp_router.publisher("ethereum.import_eth_wallet")
 @inject
 async def import_wallet_handler(
-        data: dict,
+        data: ImportWalletData,
         ethereum_service: FromDishka[EthereumServicePort]
 ) -> ETHWalletSchema:
     logger.info(f"Received message on rest_api.import_eth_service: {data}")
@@ -53,3 +58,26 @@ async def import_wallet_handler(
     wallet = ethereum_service.import_wallet(user_id=user_id, private_key=private_key)
     logger.info(f"Publishing message to ethereum.import_eth_service: {wallet.model_dump()}")
     return wallet.model_dump()
+
+
+class CreateTransactionHandler(TypedDict):
+    private_key: str
+    to_address: str
+    amount: Decimal
+
+
+@amqp_router.subscriber("rest_api.create_transaction")
+@amqp_router.publisher("ethereum.create_pending_transaction")
+@inject
+async def create_transaction_handler(
+        data: CreateTransactionHandler,
+        ethereum_service: FromDishka[EthereumServicePort]
+) -> TransactionSchema:
+    logger.info(f"Received message on rest_api.create_transaction: {data}")
+    tx = await ethereum_service.create_transaction(
+        private_key=data["private_key"],
+        to_address=data["to_address"],
+        amount=data["amount"]
+    )
+    logger.info(f"Created pending transaction: {tx.model_dump()}")
+    return tx.model_dump()

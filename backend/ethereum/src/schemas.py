@@ -20,26 +20,23 @@ class TransactionSchema(BaseModel):
     value: int
     gas: int
     gasPrice: int
-    timeStamp: int
-    isError: bool
+
+    timeStamp: Optional[int] = None
+    isError: Optional[bool] = None
     txreceipt_status: Optional[bool] = None
 
     class Config:
         populate_by_name = True
         extra = "ignore"
 
-    # === Обчислені (computed) поля ===
-
     @computed_field
     @property
     def transaction_fee(self) -> Decimal:
-        """gas * gasPrice"""
         return Decimal(self.gas) * Decimal(self.gasPrice)
 
     @computed_field
     @property
     def transaction_status(self) -> TransactionStatusEnum:
-        """Визначення статусу"""
         if self.isError or (self.txreceipt_status is not None and not self.txreceipt_status):
             return TransactionStatusEnum.FAILED
         elif self.txreceipt_status is None:
@@ -48,8 +45,9 @@ class TransactionSchema(BaseModel):
 
     @computed_field
     @property
-    def created_at(self) -> datetime:
-        """Конвертація UNIX timestamp → datetime"""
+    def created_at(self) -> Optional[datetime]:
+        if self.timeStamp is None:
+            return None
         return datetime.fromtimestamp(int(self.timeStamp))
 
 

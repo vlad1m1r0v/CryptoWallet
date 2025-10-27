@@ -1,0 +1,2 @@
+GAS: int = 21000
+GAS_PRICE_GWEI: int = 5

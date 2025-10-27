@@ -1,21 +1,35 @@
+from typing import AsyncIterator
+
 from dishka import (
     Provider,
     provide,
     Scope,
     from_context
 )
+from faststream.rabbit import RabbitBroker
 
 from web3 import Web3
+
+from redis.asyncio import Redis
 
 from src.configs import (
     Config,
     InfuraConfig,
     EtherscanConfig,
-    RabbitMQConfig
+    RabbitMQConfig,
+    RedisConfig
 )
-from src.ports import EthereumServicePort
+from src.ports import (
+    StoragePort,
+    EthereumServicePort,
+    BlockListenerPort
+)
 
-from src.adapters import EthereumServiceAdapter
+from src.adapters import (
+    RedisStorageAdapter,
+    EthereumServiceAdapter,
+    BlockListenerAdapter
+)
 
 
 class ConfigProvider(Provider):
@@ -33,6 +47,10 @@ class ConfigProvider(Provider):
     def provide_rabbit_mq_config(self, config: Config) -> RabbitMQConfig:
         return config.rabbit_mq
 
+    @provide(scope=Scope.APP)
+    def provide_redis_config(self, config: Config) -> RedisConfig:
+        return config.redis
+
 
 class ServiceProvider(Provider):
     scope = Scope.REQUEST
@@ -40,6 +58,42 @@ class ServiceProvider(Provider):
     ethereum_service = provide(
         source=EthereumServiceAdapter,
         provides=EthereumServicePort
+    )
+
+
+class RedisProvider(Provider):
+    @provide(scope=Scope.APP)
+    async def provide_redis(
+            self, redis_config: RedisConfig
+    ) -> AsyncIterator[Redis]:
+        redis = Redis.from_url(redis_config.url)
+        yield redis
+        await redis.close()
+
+
+class StorageProvider(Provider):
+    scope = Scope.APP
+
+    storage = provide(
+        source=RedisStorageAdapter,
+        provides=StoragePort
+    )
+
+
+class RabbitMQProvider(Provider):
+    @provide(scope=Scope.APP)
+    async def provide_rabbitmq_broker(self, rabbit_mq_config: RabbitMQConfig) -> RabbitBroker:
+        broker = RabbitBroker(url=rabbit_mq_config.url)
+        await broker.start()
+        return broker
+
+
+class BlockListenerProvider(Provider):
+    scope = Scope.APP
+
+    storage = provide(
+        source=BlockListenerAdapter,
+        provides=BlockListenerPort
     )
 
 

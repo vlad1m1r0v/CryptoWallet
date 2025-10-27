@@ -31,10 +31,24 @@ class RabbitMQConfig(BaseModel):
         return f"amqp://{self.user}:{self.password}@{self.host}:{self.port}/{self.vhost}"
 
 
+class RedisConfig(BaseModel):
+    host: str = Field(alias="REDIS_HOST")
+    port: int = Field(alias="REDIS_PORT")
+    db: int = Field(alias="REDIS_DB", default=0)
+    password: str | None = Field(alias="REDIS_PASSWORD", default=None)
+
+    @property
+    def url(self) -> str:
+        if self.password:
+            return f"redis://:{self.password}@{self.host}:{self.port}/{self.db}"
+        return f"redis://{self.host}:{self.port}/{self.db}"
+
+
 class Config(BaseModel):
     infura: InfuraConfig = Field(default_factory=lambda: InfuraConfig(**env))
     etherscan: EtherscanConfig = Field(default_factory=lambda: EtherscanConfig(**env))
     rabbit_mq: RabbitMQConfig = Field(default_factory=lambda: RabbitMQConfig(**env))
+    redis: RedisConfig = Field(default_factory=lambda: RedisConfig(**env))
 
 
 config = Config()
