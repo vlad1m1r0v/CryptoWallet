@@ -15,7 +15,7 @@ class WalletAlreadyExistsException(DomainError):
 
 
 class UserIsNotOwnerOfWalletException(DomainError):
-    message = Template("Current user with id '$id' is not the owner of wallet with address '$address'.")
+    message = Template("Current user with id '$user_id' is not the owner of wallet with address '$address'.")
     example_args = {
         "user_id": "019a0b8c-c5f1-7666-b8d3-74bb8b55aae2",
         "address": "0xf04555b42b45E5283F28737D6BA65AE16878D84B"
