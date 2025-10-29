@@ -13,6 +13,16 @@ from src.application.interactors.wallet.save_import_wallet import (
     SaveImportWalletInteractor
 )
 
+from src.application.interactors.transaction.create_pending_transaction import (
+    TransactionDTO,
+    CreatePendingTransactionInteractor
+)
+
+from src.application.interactors.transaction.complete_transaction import (
+    UpdateTransactionDTO,
+    CompleteTransactionInteractor
+)
+
 amqp_router = RabbitRouter()
 
 
@@ -30,5 +40,22 @@ async def create_wallet_handler(
 async def import_wallet_handler(
         data: WalletWithTransactionsDTO,
         interactor: FromDishka[SaveImportWalletInteractor]
+) -> None:
+    return await interactor(data)
+
+@amqp_router.subscriber("ethereum.create_pending_transaction")
+@inject
+async def create_pending_transaction_handler(
+        data: TransactionDTO,
+        interactor: FromDishka[CreatePendingTransactionInteractor]
+) -> None:
+    return await interactor(data)
+
+
+@amqp_router.subscriber("ethereum.complete_transaction")
+@inject
+async def complete_transaction_handler(
+        data: UpdateTransactionDTO,
+        interactor: FromDishka[CompleteTransactionInteractor]
 ) -> None:
     return await interactor(data)

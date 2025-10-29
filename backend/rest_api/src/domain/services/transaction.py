@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.domain.entities.transaction import Transaction
 
 from src.domain.ports.id_generator import IdGenerator
@@ -29,7 +31,7 @@ class TransactionService:
             value: TransactionValue,
             transaction_status: TransactionStatus,
             transaction_fee: TransactionFee,
-            created_at: Timestamp,
+            created_at: Optional[Timestamp] = None,
     ) -> Transaction:
         transaction_id = self._id_generator()
 

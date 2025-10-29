@@ -10,6 +10,12 @@ from src.domain.exceptions.auth import (
     UserNotActivatedError
 )
 
+from src.domain.exceptions.wallet import (
+    WalletAlreadyExistsException,
+    UserIsNotOwnerOfWalletException,
+    NotEnoughBalanceOnWalletException
+)
+
 from src.domain.exceptions.fields import (
     ValueObjectException
 )
@@ -22,17 +28,24 @@ from src.infrastructure.exceptions.auth import (
 DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
     status.HTTP_400_BAD_REQUEST: [
         WrongPasswordException,
+        NotEnoughBalanceOnWalletException,
     ],
     status.HTTP_401_UNAUTHORIZED: [
         InvalidAccessTokenException,
         AccessTokenNotProvidedException
     ],
-    status.HTTP_403_FORBIDDEN: [UserNotActivatedError],
+    status.HTTP_403_FORBIDDEN: [
+        UserNotActivatedError,
+        UserIsNotOwnerOfWalletException
+    ],
     status.HTTP_404_NOT_FOUND: [
         EmailNotFoundException,
         UserNotFoundError
     ],
-    status.HTTP_409_CONFLICT: [EmailAlreadyExistsException],
+    status.HTTP_409_CONFLICT: [
+        EmailAlreadyExistsException,
+        WalletAlreadyExistsException
+    ],
     status.HTTP_422_UNPROCESSABLE_CONTENT: [
         ValueObjectException
     ],

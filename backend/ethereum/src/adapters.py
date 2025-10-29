@@ -28,6 +28,7 @@ from src.ports import (
 
 from src.schemas import (
     TransactionSchema,
+    UpdateTransactionSchema,
     TransactionStatusEnum,
     EtherscanTransactionListResponseSchema,
     ETHWalletSchema
@@ -124,7 +125,7 @@ class EthereumServiceAdapter(EthereumServicePort):
         signed_tx = self._w3.eth.account.sign_transaction(tx, private_key)
 
         tx_hash = self._w3.eth.send_raw_transaction(signed_tx.raw_transaction)
-        tx_hash_hex = tx_hash.hex()
+        tx_hash_hex = self._w3.to_hex(tx_hash)
 
         await self._storage.add_transaction_hash(tx_hash_hex)
 
@@ -139,7 +140,7 @@ class EthereumServiceAdapter(EthereumServicePort):
 
 
 class BlockListenerAdapter(BlockListenerPort):
-    _poll_interval: float = 2.0
+    _poll_interval: float = 20.0
 
     def __init__(
             self,
@@ -179,23 +180,23 @@ class BlockListenerAdapter(BlockListenerPort):
         self._logger.info(f"Pending hashes: {pending_hashes}")
 
         for tx in block["transactions"]:
-            tx_hash_hex = tx["hash"].hex()
+            tx_hash_hex = self._w3.to_hex(tx["hash"])
 
             if tx_hash_hex in pending_hashes:
                 receipt = self._w3.eth.get_transaction_receipt(HexStr(tx_hash_hex))
                 status = TransactionStatusEnum.SUCCESSFUL if receipt["status"] else TransactionStatusEnum.FAILED
 
-                event_data = {
-                    "hash": tx_hash_hex,
-                    "status": status,
-                    "created_at": datetime.fromtimestamp(block["timestamp"]).isoformat()
-                }
+                event_data = UpdateTransactionSchema(
+                    hash=tx_hash_hex,
+                    transaction_status=status,
+                    created_at=datetime.fromtimestamp(block["timestamp"])
+                )
 
-                self._logger.info(f"Completed pending transaction: {event_data}")
+                self._logger.info(f"Completed pending transaction: {event_data.model_dump()}")
 
                 await self._broker.publish(
                     queue="ethereum.complete_transaction",
-                    message=event_data
+                    message=event_data.model_dump()
                 )
 
                 await self._storage.remove_transaction_hash(tx_hash_hex)

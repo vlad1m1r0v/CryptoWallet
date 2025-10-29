@@ -51,6 +51,12 @@ class TransactionSchema(BaseModel):
         return datetime.fromtimestamp(int(self.timeStamp))
 
 
+class UpdateTransactionSchema(BaseModel):
+    hash: str
+    transaction_status: TransactionStatusEnum
+    created_at: datetime
+
+
 class EtherscanTransactionListResponseSchema(BaseModel):
     status: int
     message: str

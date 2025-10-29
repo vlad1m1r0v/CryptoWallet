@@ -17,3 +17,6 @@ class Balance(ValueObject):
     def _validate_balance(balance_value: Decimal) -> None:
         if balance_value < 0:
             raise NegativeValueException(field="balance")
+
+    def __lt__(self, other: "Balance") -> bool:
+        return self.value < other.value

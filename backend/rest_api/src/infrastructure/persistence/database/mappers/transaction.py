@@ -25,7 +25,7 @@ class TransactionMapper(BaseMapper[TransactionE, TransactionM]):
             value=TransactionValue(model.value),
             transaction_status=TransactionStatus(model.transaction_status),
             transaction_fee=TransactionFee(model.transaction_fee),
-            created_at=Timestamp(model.created_at),
+            created_at=Timestamp(model.created_at) if model.created_at else None,
         )
 
     @staticmethod
@@ -39,5 +39,5 @@ class TransactionMapper(BaseMapper[TransactionE, TransactionM]):
             value=entity.value.value,
             transaction_status=entity.transaction_status.value,
             transaction_fee=entity.transaction_fee.value,
-            created_at=entity.created_at.value,
+            created_at=entity.created_at.value if entity.created_at else None,
         )

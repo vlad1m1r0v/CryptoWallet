@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.domain.entities.base import Entity
 
 from src.domain.value_objects.shared.entity_id import EntityId
@@ -22,7 +24,7 @@ class Transaction(Entity[EntityId]):
             value: TransactionValue,
             transaction_status: TransactionStatus,
             transaction_fee: TransactionFee,
-            created_at: Timestamp,
+            created_at: Optional[Timestamp] = None,
     ) -> None:
         super().__init__(id_=id_)
         self.wallet_id = wallet_id

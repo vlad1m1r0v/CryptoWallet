@@ -16,4 +16,4 @@ class Transaction(Base):
     value = Column(DECIMAL(precision=100, scale=0), nullable=False)
     transaction_status = Column(Enum(TransactionStatusEnum), nullable=False)
     transaction_fee = Column(DECIMAL(precision=100, scale=0), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True), nullable=True)
