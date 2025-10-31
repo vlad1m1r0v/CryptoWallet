@@ -22,6 +22,7 @@ from src.application.interactors.wallet.save_import_wallet import SaveImportWall
 from src.application.interactors.transaction.publish_create_transaction import PublishCreateTransactionInteractor
 from src.application.interactors.transaction.create_pending_transaction import CreatePendingTransactionInteractor
 from src.application.interactors.transaction.complete_transaction import CompleteTransactionInteractor
+from src.application.interactors.transaction.get_transactions import GetTransactionsInteractor
 
 from src.infrastructure.adapters.transaction.sqla_transaction_manager import SqlaTransactionManager
 from src.infrastructure.adapters.transaction.sqla_flusher import SqlaFlusher
@@ -102,5 +103,6 @@ class ApplicationProvider(Provider):
         SaveImportWalletInteractor,
         PublishCreateTransactionInteractor,
         CreatePendingTransactionInteractor,
-        CompleteTransactionInteractor
+        CompleteTransactionInteractor,
+        GetTransactionsInteractor
     )

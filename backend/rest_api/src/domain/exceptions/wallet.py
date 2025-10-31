@@ -27,3 +27,7 @@ class UserIsNotOwnerOfWalletException(DomainError):
 
 class NotEnoughBalanceOnWalletException(DomainError):
     message = "Not enough balance on wallet."
+
+
+class WalletNotFoundException(DomainError):
+    message = "Wallet was not found."

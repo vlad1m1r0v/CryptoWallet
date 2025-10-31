@@ -1,9 +1,15 @@
-from sqlalchemy import Column, String, DECIMAL, TIMESTAMP, ForeignKey, func, UUID, Enum
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Column, String, DECIMAL, TIMESTAMP, ForeignKey, UUID, Enum
+from sqlalchemy.orm import relationship, Mapped
 
 from src.domain.enums.transaction import TransactionStatusEnum
 
 from src.infrastructure.persistence.database.models.base import Base
 
+
+if TYPE_CHECKING:
+    from src.infrastructure.persistence.database.models.wallet import Wallet
 
 class Transaction(Base):
     __tablename__ = "transactions"
@@ -17,3 +23,5 @@ class Transaction(Base):
     transaction_status = Column(Enum(TransactionStatusEnum), nullable=False)
     transaction_fee = Column(DECIMAL(precision=100, scale=0), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=True)
+
+    wallet: Mapped["Wallet"] = relationship(back_populates="transactions")

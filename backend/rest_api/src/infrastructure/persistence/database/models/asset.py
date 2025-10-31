@@ -1,4 +1,7 @@
+from typing import List, TYPE_CHECKING
+
 from sqlalchemy import Column, Integer, String, Enum, UUID
+from sqlalchemy.orm import Mapped, relationship
 
 from src.domain.enums.asset import (
     AssetNetworkTypeEnum,
@@ -6,6 +9,9 @@ from src.domain.enums.asset import (
 )
 
 from src.infrastructure.persistence.database.models.base import Base
+
+if TYPE_CHECKING:
+    from src.infrastructure.persistence.database.models.wallet import Wallet
 
 
 class Asset(Base):
@@ -20,3 +26,9 @@ class Asset(Base):
 
     decimals = Column(Integer, nullable=False)
     contract_address = Column(String(100), nullable=True)
+
+    wallets: Mapped[List["Wallet"]] = relationship(
+        back_populates="asset",
+        uselist=True,
+        cascade="all, delete-orphan",
+    )

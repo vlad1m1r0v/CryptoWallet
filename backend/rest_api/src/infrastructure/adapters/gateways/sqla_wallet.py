@@ -3,6 +3,7 @@ from sqlalchemy import select
 
 from src.application.ports.gateways.wallet import WalletGateway
 
+from src.domain.value_objects.shared.entity_id import EntityId
 from src.domain.value_objects.wallet.address import Address
 from src.domain.entities.wallet import Wallet as WalletE
 
@@ -21,6 +22,14 @@ class SqlaWalletGateway(WalletGateway):
 
     async def read_by_address(self, address: Address) -> WalletE | None:
         stmt = select(WalletM).where(WalletM.address == address.value)
+        result = await self._session.execute(stmt)
+        model: WalletM | None = result.scalar_one_or_none()
+        if not model:
+            return None
+        return WalletMapper.to_entity(model)
+
+    async def read_by_id(self, wallet_id: EntityId) -> WalletE | None:
+        stmt = select(WalletM).where(WalletM.id == wallet_id.value)
         result = await self._session.execute(stmt)
         model: WalletM | None = result.scalar_one_or_none()
         if not model:
