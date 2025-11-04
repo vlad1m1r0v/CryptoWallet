@@ -1,14 +1,16 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from src.application.ports.gateways.wallet import WalletGateway
-
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.wallet.address import Address
+from src.domain.value_objects import (
+    EntityId,
+    Address
+)
 from src.domain.entities.wallet import Wallet as WalletE
 
-from src.infrastructure.persistence.database.models.wallet import Wallet as WalletM
-from src.infrastructure.persistence.database.mappers.wallet import WalletMapper
+from src.application.ports.gateways import WalletGateway
+
+from src.infrastructure.persistence.database.models import Wallet as WalletM
+from src.infrastructure.persistence.database.mappers import WalletMapper
 
 
 class SqlaWalletGateway(WalletGateway):

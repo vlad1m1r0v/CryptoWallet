@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from typing import ClassVar
 
-from src.domain.exceptions.fields import InvalidPasswordException
+from src.domain.exceptions import InvalidPasswordException
 
 from src.domain.value_objects.base import ValueObject
 

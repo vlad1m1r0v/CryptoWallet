@@ -4,30 +4,30 @@ from dishka import FromDishka
 from fastapi import APIRouter
 from starlette import status
 
-from src.domain.exceptions.auth import (
+from src.domain.exceptions import (
     EmailAlreadyExistsException,
     EmailNotFoundException,
     WrongPasswordException,
-    UserNotActivatedError
+    UserNotActivatedException
 )
 
-from src.application.interactors.auth.register import RegisterInteractor
-from src.application.interactors.auth.login import LoginInteractor
-
-from src.presentation.http.schemas.register import (
-    RegisterUserSchema,
-    RegisterUserResponseSchema
+from src.application.interactors import (
+    RegisterInteractor,
+    LoginInteractor
 )
-from src.presentation.http.mappers.register import RegisterUserMapper
 
-from src.presentation.http.schemas.login import (
-    LoginUserSchema,
+from src.presentation.http.schemas import (
+    RegisterUserRequestSchema,
+    RegisterUserResponseSchema,
+    LoginUserRequestSchema,
     LoginUserResponseSchema
 )
+from src.presentation.http.mappers import (
+    RegisterUserMapper,
+    LoginUserMapper
+)
 
-from src.presentation.http.mappers.login import LoginUserMapper
-
-from src.presentation.http.openapi.examples_generator import generate_examples
+from src.presentation.http.openapi import generate_examples
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -41,7 +41,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 )
 @inject
 async def register(
-        schema: RegisterUserSchema,
+        schema: RegisterUserRequestSchema,
         interactor: FromDishka[RegisterInteractor],
 ) -> RegisterUserResponseSchema:
     dto = RegisterUserMapper.to_request_dto(schema)
@@ -56,13 +56,13 @@ async def register(
     responses=generate_examples(
         EmailNotFoundException,
         WrongPasswordException,
-        UserNotActivatedError
+        UserNotActivatedException
     ),
     response_model_exclude_none=True,
 )
 @inject
 async def login(
-        schema: LoginUserSchema,
+        schema: LoginUserRequestSchema,
         interactor: FromDishka[LoginInteractor],
 ) -> LoginUserResponseSchema:
     dto = LoginUserMapper.to_request_dto(schema)

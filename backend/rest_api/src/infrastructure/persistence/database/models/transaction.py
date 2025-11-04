@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Column, String, DECIMAL, TIMESTAMP, ForeignKey, UUID, Enum
 from sqlalchemy.orm import relationship, Mapped
 
-from src.domain.enums.transaction import TransactionStatusEnum
+from src.domain.enums import TransactionStatusEnum
 
 from src.infrastructure.persistence.database.models.base import Base
 

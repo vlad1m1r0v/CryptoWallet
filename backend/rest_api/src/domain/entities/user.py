@@ -2,12 +2,13 @@ from typing import Optional
 
 from src.domain.entities.base import Entity
 
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.shared.file_name import Filename
-
-from src.domain.value_objects.user.username import Username
-from src.domain.value_objects.user.email import Email
-from src.domain.value_objects.user.password_hash import PasswordHash
+from src.domain.value_objects import (
+    EntityId,
+    Username,
+    Email,
+    PasswordHash,
+    Filename
+)
 
 
 class User(Entity[EntityId]):

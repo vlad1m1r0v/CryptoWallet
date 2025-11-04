@@ -2,13 +2,14 @@ import re
 from dataclasses import dataclass
 from typing import ClassVar
 
-from src.domain.exceptions.fields import (
+from src.domain.exceptions import (
     MinMaxLengthException,
     InvalidStartException,
     InvalidEndException,
     ForbiddenCharactersException,
     ForbiddenConsecutiveCharactersException
 )
+
 from src.domain.value_objects.base import ValueObject
 
 

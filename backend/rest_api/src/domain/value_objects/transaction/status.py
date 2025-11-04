@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Any
 
-from src.domain.exceptions.fields import InvalidChoiceException
+from src.domain.exceptions import InvalidChoiceException
 
-from src.domain.enums.transaction import TransactionStatusEnum
+from src.domain.enums import TransactionStatusEnum
 
 from src.domain.value_objects.base import ValueObject
 

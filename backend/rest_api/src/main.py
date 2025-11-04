@@ -14,15 +14,15 @@ from fastapi.exceptions import RequestValidationError
 
 from faststream.rabbit import RabbitBroker
 
-from src.presentation.http.handlers.root import router as root_router
-from src.presentation.http.exceptions.exception_handler import (
+from src.presentation.http.handlers import root_router
+from src.presentation.http.exceptions import (
     error_handler,
     validation_error_handler
 )
 
-from src.presentation.amqp.root import amqp_router
+from src.presentation.amqp.router import amqp_router
 
-from src.ioc.provider_registry import get_providers
+from src.ioc import get_providers
 
 from src.configs import Config, config
 

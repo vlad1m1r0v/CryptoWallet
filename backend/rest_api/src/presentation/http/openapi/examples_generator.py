@@ -3,19 +3,19 @@ from typing import Type
 
 from starlette import status
 
-from src.shared.exception import AppException
+from src.shared import AppException
 
-from src.domain.exceptions.auth import (
-    UserNotFoundError,
-    UserNotActivatedError
+from src.domain.exceptions import (
+    UserNotFoundException,
+    UserNotActivatedException
 )
 
-from src.infrastructure.exceptions.auth import (
+from src.infrastructure.exceptions import (
     AccessTokenNotProvidedException,
     InvalidAccessTokenException
 )
 
-from src.presentation.http.exceptions.error_mapping import get_status_code_for_exception
+from src.presentation.http.exceptions import get_status_code_for_exception
 
 
 def class_name_to_snake(name: str) -> str:
@@ -42,8 +42,8 @@ class ExamplesGenerator:
         responses: dict = {}
 
         auth_errors = (
-            UserNotFoundError,
-            UserNotActivatedError,
+            UserNotFoundException,
+            UserNotActivatedException,
             AccessTokenNotProvidedException,
             InvalidAccessTokenException
         )

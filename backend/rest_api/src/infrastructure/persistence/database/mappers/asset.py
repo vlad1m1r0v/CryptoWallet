@@ -1,18 +1,16 @@
-from src.domain.value_objects.shared.entity_id import EntityId
-
-from src.domain.value_objects.wallet.address import Address
-
-from src.domain.value_objects.asset.asset_name import AssetName
-from src.domain.value_objects.asset.asset_symbol import AssetSymbol
-from src.domain.value_objects.asset.asset_network_type import AssetNetworkType
-from src.domain.value_objects.asset.asset_type import AssetType
-from src.domain.value_objects.asset.decimals import Decimals
-
-from src.domain.entities.asset import Asset as AssetE
+from src.domain.value_objects import (
+    EntityId,
+    Address,
+    AssetName,
+    AssetSymbol,
+    AssetNetworkType,
+    AssetType,
+    Decimals
+)
+from src.domain.entities import Asset as AssetE
 
 from src.infrastructure.persistence.database.mappers.base import BaseMapper
-
-from src.infrastructure.persistence.database.models.asset import Asset as AssetM
+from src.infrastructure.persistence.database.models import Asset as AssetM
 
 
 class AssetMapper(BaseMapper[AssetE, AssetM]):

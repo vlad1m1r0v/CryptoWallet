@@ -1,23 +1,23 @@
 from typing import Any, TypeVar
 
-from src.domain.exceptions.base import DomainError
+from src.domain.exceptions.base import DomainException
 
 from src.domain.value_objects.base import ValueObject
 
 T = TypeVar("T", bound=ValueObject)
 
 
-class EntityCannotBeInstantiatedDirectlyException(DomainError):
+class EntityCannotBeInstantiatedDirectlyException(DomainException):
     message = "Entity can't be instantiated directly."
 
 
-class ChangingEntityIdIsNotPermittedException(DomainError):
+class ChangingEntityIdIsNotPermittedException(DomainException):
     message = "Changing entity ID is not permitted."
 
 
 class Entity[T: ValueObject]:
     """
-    raises DomainError
+    raises DomainException
 
     Base class for domain entities, defined by a unique identity (`id`).
     - `id`: Identity that remains constant throughout the entity's lifecycle.
@@ -25,18 +25,18 @@ class Entity[T: ValueObject]:
     """
 
     def __init__(self, *, id_: T) -> None:
-        """:raises DomainError:"""
+        """:raises DomainException:"""
         self.__forbid_base_class_instantiation()
         self.id_ = id_
 
     def __forbid_base_class_instantiation(self) -> None:
-        """:raises DomainError:"""
+        """:raises DomainException:"""
         if type(self) is Entity:
             raise EntityCannotBeInstantiatedDirectlyException()
 
     def __setattr__(self, name: str, value: Any) -> None:
         """
-        :raises DomainError:
+        :raises DomainException:
 
         Prevents modifying the `id` after it's set.
         Other attributes can be changed as usual.

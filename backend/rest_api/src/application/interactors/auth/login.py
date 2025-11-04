@@ -1,29 +1,19 @@
-from dataclasses import dataclass
-from typing import TypedDict, Optional
-
-from src.domain.exceptions.auth import (
+from src.domain.exceptions import (
     EmailNotFoundException,
     WrongPasswordException,
-    UserNotActivatedError
+    UserNotActivatedException
 )
-from src.domain.services.user import UserService
-from src.domain.value_objects.user.email import Email
-from src.domain.value_objects.user.raw_password import RawPassword
+from src.domain.services import UserService
+from src.domain.value_objects import (
+    Email,
+    RawPassword
+)
+from src.application.ports.gateways import UserGateway
+from src.application.ports.providers import JwtProvider
+from src.application.ports.transaction import TransactionManager
+from src.application.dtos.request import LoginUserRequestDTO
+from src.application.dtos.response import LoginUserResponseDTO
 
-from src.application.ports.gateways.user import UserGateway
-from src.application.ports.providers.jwt import JwtProvider
-from src.application.ports.transaction.transaction_manager import TransactionManager
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class LoginUserRequest:
-    email: str
-    password: str
-    remember_me: Optional[bool] = False
-
-
-class LoginUserResponse(TypedDict):
-    access_token: str
 
 
 class LoginInteractor:
@@ -39,7 +29,7 @@ class LoginInteractor:
         self._jwt_provider = jwt_provider
         self._transaction_manager = transaction_manager
 
-    async def __call__(self, data: LoginUserRequest) -> LoginUserResponse:
+    async def __call__(self, data: LoginUserRequestDTO) -> LoginUserResponseDTO:
         email = Email(data.email)
         password = RawPassword(data.password)
 
@@ -50,7 +40,7 @@ class LoginInteractor:
             raise WrongPasswordException(password=password)
 
         if not user.is_active:
-            raise UserNotActivatedError()
+            raise UserNotActivatedException()
 
         access_token = self._jwt_provider.encode({"user_id": str(user.id_.value)})
-        return LoginUserResponse(access_token=access_token)
+        return LoginUserResponseDTO(access_token=access_token)

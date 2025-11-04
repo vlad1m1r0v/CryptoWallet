@@ -1,14 +1,16 @@
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domain.entities.user import User as UserE
-from src.domain.value_objects.user.email import Email
-from src.domain.value_objects.shared.entity_id import EntityId
+from src.domain.entities import User as UserE
+from src.domain.value_objects import(
+    Email,
+    EntityId
+)
 
-from src.application.ports.gateways.user import UserGateway
+from src.application.ports.gateways import UserGateway
 
-from src.infrastructure.persistence.database.models.user import User as UserM
-from src.infrastructure.persistence.database.mappers.user import UserMapper
+from src.infrastructure.persistence.database.models import User as UserM
+from src.infrastructure.persistence.database.mappers import UserMapper
 
 
 class SqlaUserGateway(UserGateway):

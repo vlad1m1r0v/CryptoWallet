@@ -5,9 +5,9 @@ import jwt
 
 from src.configs import SecurityConfig
 
-from src.application.ports.providers.jwt import JwtProvider
+from src.application.ports.providers import JwtProvider
 
-from src.infrastructure.exceptions.auth import InvalidAccessTokenException
+from src.infrastructure.exceptions import InvalidAccessTokenException
 
 class PyJwtProvider(JwtProvider):
     def __init__(self, config: SecurityConfig):

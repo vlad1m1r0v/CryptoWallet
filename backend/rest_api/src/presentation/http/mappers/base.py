@@ -1,17 +1,18 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-P = TypeVar("P")
-RQ = TypeVar("RQ")
-RS = TypeVar("RS")
+RQ_DTO = TypeVar("RQ_DTO")
+RS_DTO = TypeVar("RS_DTO")
+RQ_SCHEMA = TypeVar("RQ_SCHEMA")
+RS_SCHEMA = TypeVar("RS_SCHEMA")
 
-class BaseMapper(ABC, Generic[P, RQ, RS]):
+class BaseMapper(ABC, Generic[RQ_DTO, RS_DTO, RQ_SCHEMA, RS_SCHEMA]):
     @staticmethod
     @abstractmethod
-    def to_request_dto(schema: P) -> RQ:
+    def to_request_dto(schema: RQ_SCHEMA) -> RQ_DTO:
         ...
 
     @staticmethod
     @abstractmethod
-    def to_response_schema(dto: RS) -> P:
+    def to_response_schema(dto: RS_DTO) -> RS_SCHEMA:
         ...

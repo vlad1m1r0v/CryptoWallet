@@ -1,12 +1,14 @@
 from string import Template
 
-from src.domain.exceptions.base import DomainError
+from src.domain.exceptions.base import DomainException
 
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.wallet.address import Address
+from src.domain.value_objects import (
+    EntityId,
+    Address
+)
 
 
-class WalletAlreadyExistsException(DomainError):
+class WalletAlreadyExistsException(DomainException):
     message = Template("Wallet with address '$address' has been already imported.")
     example_args = {"address": "0xf04555b42b45E5283F28737D6BA65AE16878D84B"}
 
@@ -14,7 +16,7 @@ class WalletAlreadyExistsException(DomainError):
         super().__init__(address=address.value)
 
 
-class UserIsNotOwnerOfWalletException(DomainError):
+class UserIsNotOwnerOfWalletException(DomainException):
     message = Template("Current user with id '$user_id' is not the owner of wallet with address '$address'.")
     example_args = {
         "user_id": "019a0b8c-c5f1-7666-b8d3-74bb8b55aae2",
@@ -25,9 +27,9 @@ class UserIsNotOwnerOfWalletException(DomainError):
         super().__init__(user_id=user_id, address=address.value)
 
 
-class NotEnoughBalanceOnWalletException(DomainError):
+class NotEnoughBalanceOnWalletException(DomainException):
     message = "Not enough balance on wallet."
 
 
-class WalletNotFoundException(DomainError):
+class WalletNotFoundException(DomainException):
     message = "Wallet was not found."

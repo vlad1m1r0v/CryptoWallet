@@ -1,26 +1,12 @@
-from dataclasses import dataclass
-from typing import TypedDict, Optional
-from uuid import UUID
-
-from src.application.ports.gateways.user import UserGateway
-from src.application.ports.providers.jwt import JwtProvider
-from src.domain.exceptions.auth import (
-    UserNotActivatedError,
-    UserNotFoundError
+from src.domain.exceptions import (
+    UserNotActivatedException,
+    UserNotFoundException
 )
-from src.domain.value_objects.shared.entity_id import EntityId
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class GetCurrentUserRequest:
-    access_token: str
-
-
-class GetCurrentUserResponse(TypedDict):
-    id: UUID
-    username: str
-    email: str
-    avatar_filename: Optional[str]
+from src.domain.value_objects import EntityId
+from src.application.ports.gateways import UserGateway
+from src.application.ports.providers import JwtProvider
+from src.application.dtos.request import GetCurrentUserRequestDTO
+from src.application.dtos.response import GetCurrentUserResponseDTO
 
 
 class GetCurrentUserInteractor:
@@ -32,18 +18,18 @@ class GetCurrentUserInteractor:
         self._user_gateway = user_gateway
         self._jwt_provider = jwt_provider
 
-    async def __call__(self, data: GetCurrentUserRequest) -> GetCurrentUserResponse:
+    async def __call__(self, data: GetCurrentUserRequestDTO) -> GetCurrentUserResponseDTO:
         decoded = self._jwt_provider.decode(data.access_token)
 
         user = await self._user_gateway.read_by_id(user_id=EntityId(value=decoded['user_id']))
 
         if not user:
-            raise UserNotFoundError()
+            raise UserNotFoundException()
 
         if not user.is_active:
-            raise UserNotActivatedError()
+            raise UserNotActivatedException()
 
-        return GetCurrentUserResponse(
+        return GetCurrentUserResponseDTO(
             id=user.id_.value,
             username=user.username.value,
             email=user.email.value,

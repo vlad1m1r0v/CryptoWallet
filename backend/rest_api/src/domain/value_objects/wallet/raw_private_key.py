@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from src.domain.exceptions.fields import MinMaxLengthException
+from src.domain.exceptions import MinMaxLengthException
+
 from src.domain.value_objects.base import ValueObject
 
 

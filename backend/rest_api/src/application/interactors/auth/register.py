@@ -1,32 +1,22 @@
-from dataclasses import dataclass
-from typing import TypedDict
+from src.domain.exceptions import (
+    EmailAlreadyExistsException,
+    FieldsDoNotMatchException
+)
+from src.domain.value_objects import (
+    Email,
+    RawPassword,
+    Username
+)
+from src.domain.services import UserService
 
-from src.domain.exceptions.auth import EmailAlreadyExistsException
-
-from src.domain.exceptions.fields import FieldsDoNotMatchException
-
-from src.application.ports.gateways.user import UserGateway
-from src.application.ports.providers.jwt import JwtProvider
-from src.application.ports.providers.mail import MailProvider
-from src.application.ports.transaction.transaction_manager import TransactionManager
-
-from src.domain.value_objects.user.email import Email
-from src.domain.value_objects.user.raw_password import RawPassword
-from src.domain.value_objects.user.username import Username
-
-from src.domain.services.user import UserService
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class RegisterUserRequest:
-    username: str
-    email: str
-    password: str
-    repeat_password: str
-
-
-class RegisterUserResponse(TypedDict):
-    access_token: str
+from src.application.ports.gateways import UserGateway
+from src.application.ports.providers import (
+    JwtProvider,
+    MailProvider
+)
+from src.application.ports.transaction import TransactionManager
+from src.application.dtos.request import RegisterUserRequestDTO
+from src.application.dtos.response import RegisterUserResponseDTO
 
 
 class RegisterInteractor:
@@ -45,7 +35,7 @@ class RegisterInteractor:
         self._mail_provider = mail_provider
         self._transaction_manager = transaction_manager
 
-    async def __call__(self, data: RegisterUserRequest) -> RegisterUserResponse:
+    async def __call__(self, data: RegisterUserRequestDTO) -> RegisterUserResponseDTO:
         username = Username(data.username)
         email = Email(data.email)
         password = RawPassword(data.password)
@@ -72,4 +62,4 @@ class RegisterInteractor:
         )
 
         access_token = self._jwt_provider.encode({"user_id": str(user.id_.value)})
-        return RegisterUserResponse(access_token=access_token)
+        return RegisterUserResponseDTO(access_token=access_token)

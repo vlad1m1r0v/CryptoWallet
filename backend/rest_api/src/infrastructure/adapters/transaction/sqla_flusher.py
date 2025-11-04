@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.application.ports.transaction.flusher import Flusher
+from src.application.ports.transaction import Flusher
 
 
 class SqlaFlusher(Flusher):

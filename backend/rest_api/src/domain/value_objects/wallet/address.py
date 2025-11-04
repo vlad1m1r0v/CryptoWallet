@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.domain.exceptions.fields import (
+from src.domain.exceptions import (
     MinMaxLengthException,
     InvalidAddressStartException
 )

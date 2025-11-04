@@ -1,11 +1,12 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from src.domain.value_objects.shared.entity_id import EntityId
+from src.domain.value_objects import (
+    EntityId,
+    Email
+)
 
-from src.domain.value_objects.user.email import Email
-
-from src.domain.entities.user import User
+from src.domain.entities import User
 
 
 class UserGateway(Protocol):

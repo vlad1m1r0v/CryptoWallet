@@ -1,13 +1,13 @@
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.shared.timestamp import Timestamp
+from src.domain.value_objects import (
+    EntityId,
+    Timestamp,
+    Address,
+    EncryptedPrivateKey,
+    Balance
+)
+from src.domain.entities import Wallet as WalletE
 
-from src.domain.value_objects.wallet.address import Address
-from src.domain.value_objects.wallet.encrpyted_private_key import EncryptedPrivateKey
-from src.domain.value_objects.wallet.balance import Balance
-
-from src.domain.entities.wallet import Wallet as WalletE
-
-from src.infrastructure.persistence.database.models.wallet import Wallet as WalletM
+from src.infrastructure.persistence.database.models import Wallet as WalletM
 from src.infrastructure.persistence.database.mappers.base import BaseMapper
 
 class WalletMapper(BaseMapper[WalletE, WalletM]):

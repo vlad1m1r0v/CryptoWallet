@@ -1,8 +1,8 @@
 import uuid6
 
-from src.domain.value_objects.shared.entity_id import EntityId
+from src.domain.value_objects import EntityId
 
-from src.domain.ports.id_generator import IdGenerator
+from src.domain.ports import IdGenerator
 
 
 class UuidGenerator(IdGenerator):

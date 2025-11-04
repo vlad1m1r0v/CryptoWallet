@@ -5,10 +5,12 @@ import base64
 
 from src.configs import SecurityConfig
 
-from src.domain.ports.password_hasher import PasswordHasher
+from src.domain.ports import PasswordHasher
 
-from src.domain.value_objects.user.password_hash import PasswordHash
-from src.domain.value_objects.user.raw_password import RawPassword
+from src.domain.value_objects import (
+    PasswordHash,
+    RawPassword
+)
 
 
 class BcryptPasswordHasher(PasswordHasher):

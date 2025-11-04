@@ -1,5 +1,5 @@
 from src.shared.exception import AppException
 
 
-class DomainError(AppException):
+class DomainException(AppException):
     pass

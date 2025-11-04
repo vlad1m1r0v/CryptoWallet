@@ -5,7 +5,7 @@ from botocore.client import BaseClient
 
 from src.configs import S3Config
 
-from src.application.ports.providers.file_uploader import FileUploader
+from src.application.ports.providers import FileUploader
 
 
 class S3FileUploader(FileUploader):

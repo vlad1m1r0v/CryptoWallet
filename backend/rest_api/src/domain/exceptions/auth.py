@@ -1,11 +1,11 @@
 from string import Template
 
-from src.domain.exceptions.base import DomainError
+from src.domain.exceptions.base import DomainException
 
-from src.domain.value_objects.user.email import Email
+from src.domain.value_objects import Email
 
 
-class EmailAlreadyExistsException(DomainError):
+class EmailAlreadyExistsException(DomainException):
     message = Template("User with email '$email' already exists.")
     example_args = {"email": "user@domain.com"}
 
@@ -13,7 +13,7 @@ class EmailAlreadyExistsException(DomainError):
         super().__init__(email=email.value)
 
 
-class EmailNotFoundException(DomainError):
+class EmailNotFoundException(DomainException):
     message = Template("User with email '$email' is not found.")
     example_args = {"email": "user@domain.com"}
 
@@ -21,13 +21,13 @@ class EmailNotFoundException(DomainError):
         super().__init__(email=email.value)
 
 
-class WrongPasswordException(DomainError):
+class WrongPasswordException(DomainException):
     message = f"Wrong Password."
 
 
-class UserNotFoundError(DomainError):
+class UserNotFoundException(DomainException):
     message = f"User not found."
 
 
-class UserNotActivatedError(DomainError):
+class UserNotActivatedException(DomainException):
     message = f"User is not activated."

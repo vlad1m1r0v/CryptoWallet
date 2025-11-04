@@ -1,14 +1,18 @@
 from typing import Optional
 
-from src.domain.entities.user import User
+from src.domain.entities import User
 
-from src.domain.ports.password_hasher import PasswordHasher
-from src.domain.ports.id_generator import IdGenerator
+from src.domain.ports import (
+    PasswordHasher,
+    IdGenerator
+)
 
-from src.domain.value_objects.user.email import Email
-from src.domain.value_objects.user.raw_password import RawPassword
-from src.domain.value_objects.user.username import Username
-from src.domain.value_objects.shared.file_name import Filename
+from src.domain.value_objects import (
+    Username,
+    Email,
+    RawPassword,
+    Filename
+)
 
 
 class UserService:

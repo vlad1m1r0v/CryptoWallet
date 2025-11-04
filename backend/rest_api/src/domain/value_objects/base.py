@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
 
-from src.domain.exceptions.fields import ValueObjectException
+from src.domain.exceptions import ValueObjectException
 
 
 @dataclass(frozen=True, slots=True, repr=False)

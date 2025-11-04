@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 
-from src.domain.value_objects.shared.entity_id import EntityId
+from src.domain.value_objects import EntityId
 
 
 class IdGenerator(ABC):

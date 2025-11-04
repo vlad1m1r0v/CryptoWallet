@@ -3,7 +3,7 @@ from typing import List, TYPE_CHECKING
 from sqlalchemy import Column, Integer, String, Enum, UUID
 from sqlalchemy.orm import Mapped, relationship
 
-from src.domain.enums.asset import (
+from src.domain.enums import (
     AssetNetworkTypeEnum,
     AssetTypeEnum,
 )

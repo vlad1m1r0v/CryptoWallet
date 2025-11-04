@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from decimal import Decimal
 
-from src.domain.exceptions.fields import NegativeValueException
+from src.domain.exceptions import NegativeValueException
+
 from src.domain.value_objects.base import ValueObject
 
 

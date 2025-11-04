@@ -5,30 +5,32 @@ from sqlalchemy import select, update, func
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domain.entities.transaction import Transaction as TransactionE
-
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.shared.timestamp import Timestamp
-from src.domain.value_objects.transaction.hash import TransactionHash
-from src.domain.value_objects.transaction.status import TransactionStatus
-
-from src.application.enums.sort_order import SortOrderEnum
-
-from src.application.ports.gateways.transaction import (
-    SortFieldEnum,
-    TransactionGateway
+from src.domain.entities import Transaction as TransactionE
+from src.domain.value_objects import (
+    EntityId,
+    Timestamp,
+    TransactionHash,
+    TransactionStatus
 )
 
-from src.application.dtos.response.paginated_response import PaginatedResult
-from src.application.dtos.response.transactions_list import TransactionListItemDTO
-
-from src.infrastructure.consts.pagination import RECORDS_PER_PAGE
-
-from src.infrastructure.persistence.database.models.wallet import Wallet as WalletM
-from src.infrastructure.persistence.database.models.transaction import Transaction as TransactionM
-
-from src.infrastructure.persistence.database.mappers.transaction import TransactionMapper
-from src.infrastructure.persistence.database.mappers.transactions_list import TransactionsListMapper
+from src.application.enums import (
+    SortOrderEnum,
+    TransactionSortFieldEnum
+)
+from src.application.ports.gateways import TransactionGateway
+from src.application.dtos.response import (
+    PaginatedResponseDTO,
+    TransactionsListItemResponseDTO
+)
+from src.infrastructure.consts import RECORDS_PER_PAGE
+from src.infrastructure.persistence.database.models import (
+    Wallet as WalletM,
+    Transaction as TransactionM
+)
+from src.infrastructure.persistence.database.mappers import (
+    TransactionMapper,
+    TransactionsPaginatedMapper
+)
 
 
 class SqlaTransactionGateway(TransactionGateway):
@@ -36,7 +38,7 @@ class SqlaTransactionGateway(TransactionGateway):
         self._session = session
 
     def add_many(self, transactions: list[TransactionE]) -> list[TransactionE]:
-        models: list[TransactionM] = [TransactionMapper.to_model(e) for e in transactions]
+        models: list[TransactionM] = TransactionMapper.to_model_m2m(transactions)
         self._session.add_all(models)
         return transactions
 
@@ -55,19 +57,19 @@ class SqlaTransactionGateway(TransactionGateway):
 
         result = await self._session.execute(stmt)
         models = result.scalars().all()
-        return [TransactionMapper.to_entity(m) for m in models]
+        return TransactionMapper.to_entity_m2m(models)
 
     async def get_transactions(
             self,
             wallet_id: EntityId,
-            sort_by: Optional[SortFieldEnum] = SortFieldEnum.CREATED_AT,
+            sort_by: Optional[TransactionSortFieldEnum] = TransactionSortFieldEnum.CREATED_AT,
             order: Optional[SortOrderEnum] = SortOrderEnum.ASC,
             page: Optional[int] = 1
-    ) -> PaginatedResult[TransactionListItemDTO]:
+    ) -> PaginatedResponseDTO[TransactionsListItemResponseDTO]:
         sort_field_map = {
-            SortFieldEnum.CREATED_AT: TransactionM.created_at,
-            SortFieldEnum.TRANSACTION_FEE: TransactionM.transaction_fee,
-            SortFieldEnum.STATUS: TransactionM.transaction_status
+            TransactionSortFieldEnum.CREATED_AT: TransactionM.created_at,
+            TransactionSortFieldEnum.TRANSACTION_FEE: TransactionM.transaction_fee,
+            TransactionSortFieldEnum.STATUS: TransactionM.transaction_status
         }
         sort_column = sort_field_map.get(sort_by, TransactionM.created_at)
 
@@ -96,7 +98,7 @@ class SqlaTransactionGateway(TransactionGateway):
         total_records = (await self._session.execute(count_stmt)).scalar_one()
         total_pages = (total_records + RECORDS_PER_PAGE - 1) // RECORDS_PER_PAGE
 
-        return TransactionsListMapper.to_paginated_dto(
+        return TransactionsPaginatedMapper.to_paginated_dto(
             models=models,
             page=page,
             total_pages=total_pages,

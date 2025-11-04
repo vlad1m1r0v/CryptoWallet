@@ -1,14 +1,17 @@
-from src.domain.entities.wallet import Wallet
+from src.domain.entities import Wallet
 
-from src.domain.ports.secret_encryptor import SecretEncryptor
-from src.domain.ports.id_generator import IdGenerator
+from src.domain.ports import (
+    IdGenerator,
+    SecretEncryptor
+)
 
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.shared.timestamp import Timestamp
-
-from src.domain.value_objects.wallet.address import Address
-from src.domain.value_objects.wallet.balance import Balance
-from src.domain.value_objects.wallet.raw_private_key import RawPrivateKey
+from src.domain.value_objects import (
+    EntityId,
+    Address,
+    RawPrivateKey,
+    Balance,
+    Timestamp
+)
 
 
 class WalletService:

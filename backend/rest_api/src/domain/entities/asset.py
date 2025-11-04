@@ -2,15 +2,15 @@ from typing import Optional
 
 from src.domain.entities.base import Entity
 
-from src.domain.value_objects.shared.entity_id import EntityId
-
-from src.domain.value_objects.wallet.address import Address
-
-from src.domain.value_objects.asset.asset_name import AssetName
-from src.domain.value_objects.asset.asset_symbol import AssetSymbol
-from src.domain.value_objects.asset.asset_network_type import AssetNetworkType
-from src.domain.value_objects.asset.asset_type import AssetType
-from src.domain.value_objects.asset.decimals import Decimals
+from src.domain.value_objects import (
+    EntityId,
+    AssetName,
+    AssetSymbol,
+    AssetNetworkType,
+    AssetType,
+    Decimals,
+    Address
+)
 
 
 class Asset(Entity[EntityId]):

@@ -1,10 +1,12 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.wallet.address import Address
+from src.domain.value_objects import (
+    EntityId,
+    Address
+)
 
-from src.domain.entities.wallet import Wallet
+from src.domain.entities import Wallet
 
 
 class WalletGateway(Protocol):

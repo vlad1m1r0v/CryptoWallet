@@ -1,16 +1,21 @@
 from dishka import Provider, Scope, provide
 
-from src.domain.ports.password_hasher import PasswordHasher
-from src.domain.ports.id_generator import IdGenerator
-from src.domain.ports.secret_encryptor import SecretEncryptor
+from src.domain.ports import (
+    PasswordHasher,
+    IdGenerator,
+    SecretEncryptor
+)
+from src.domain.services import (
+    UserService,
+    WalletService,
+    TransactionService
+)
 
-from src.domain.services.user import UserService
-from src.domain.services.wallet import WalletService
-from src.domain.services.transaction import TransactionService
-
-from src.infrastructure.adapters.utils.bcrypt_hasher import BcryptPasswordHasher
-from src.infrastructure.adapters.utils.uuid_generator import UuidGenerator
-from src.infrastructure.adapters.utils.aes_secret_encryptor import AESSecretEncryptor
+from src.infrastructure.adapters.utils import (
+    BcryptPasswordHasher,
+    UuidGenerator,
+    AESSecretEncryptor
+)
 
 
 class DomainProvider(Provider):

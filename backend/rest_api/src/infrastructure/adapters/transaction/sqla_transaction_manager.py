@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.application.ports.transaction.transaction_manager import TransactionManager
+from src.application.ports.transaction import TransactionManager
 
 
 class SqlaTransactionManager(TransactionManager):

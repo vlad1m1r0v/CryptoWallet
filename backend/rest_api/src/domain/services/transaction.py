@@ -1,18 +1,18 @@
 from typing import Optional
 
-from src.domain.entities.transaction import Transaction
+from src.domain.entities import Transaction
 
-from src.domain.ports.id_generator import IdGenerator
+from src.domain.ports import IdGenerator
 
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.shared.timestamp import Timestamp
-
-from src.domain.value_objects.wallet.address import Address
-
-from src.domain.value_objects.transaction.hash import TransactionHash
-from src.domain.value_objects.transaction.value import TransactionValue
-from src.domain.value_objects.transaction.status import TransactionStatus
-from src.domain.value_objects.transaction.fee import TransactionFee
+from src.domain.value_objects import (
+    EntityId,
+    TransactionHash,
+    Address,
+    TransactionValue,
+    TransactionStatus,
+    TransactionFee,
+    Timestamp
+)
 
 
 class TransactionService:

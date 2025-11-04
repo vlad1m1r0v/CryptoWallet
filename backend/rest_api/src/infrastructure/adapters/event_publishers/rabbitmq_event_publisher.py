@@ -3,7 +3,7 @@ from uuid import UUID
 
 from faststream.rabbit import RabbitBroker
 
-from src.application.ports.events.event_publisher import EventPublisher
+from src.application.ports.events import EventPublisher
 
 
 class RabbitMQEventPublisher(EventPublisher):

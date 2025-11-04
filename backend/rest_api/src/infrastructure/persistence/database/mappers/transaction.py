@@ -1,15 +1,15 @@
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.shared.timestamp import Timestamp
+from src.domain.value_objects import (
+    EntityId,
+    Timestamp,
+    Address,
+    TransactionHash,
+    TransactionValue,
+    TransactionStatus,
+    TransactionFee
+)
+from src.domain.entities import Transaction as TransactionE
 
-from src.domain.value_objects.wallet.address import Address
-
-from src.domain.value_objects.transaction.hash import TransactionHash
-from src.domain.value_objects.transaction.value import TransactionValue
-from src.domain.value_objects.transaction.status import TransactionStatus
-from src.domain.value_objects.transaction.fee import TransactionFee
-
-from src.domain.entities.transaction import Transaction as TransactionE
-from src.infrastructure.persistence.database.models.transaction import Transaction as TransactionM
+from src.infrastructure.persistence.database.models import Transaction as TransactionM
 from src.infrastructure.persistence.database.mappers.base import BaseMapper
 
 

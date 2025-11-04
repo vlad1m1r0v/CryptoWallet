@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 
-from src.domain.exceptions.fields import (
+from src.domain.exceptions import (
     UppercaseException,
     MinMaxLengthException
 )
+
 from src.domain.value_objects.base import ValueObject
 
 

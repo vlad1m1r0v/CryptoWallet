@@ -1,22 +1,12 @@
-from datetime import datetime
-from typing import TypedDict
+from src.domain.value_objects import (
+    Timestamp,
+    TransactionStatus,
+    TransactionHash
+)
 
-from src.domain.enums.transaction import TransactionStatusEnum
-
-from src.domain.value_objects.shared.timestamp import Timestamp
-from src.domain.value_objects.transaction.status import TransactionStatus
-from src.domain.value_objects.transaction.hash import TransactionHash
-
-from src.application.ports.transaction.transaction_manager import TransactionManager
-
-from src.application.ports.gateways.transaction import TransactionGateway
-
-
-class UpdateTransactionDTO(TypedDict):
-    hash: str
-    transaction_status: TransactionStatusEnum
-    created_at: datetime
-
+from src.application.ports.transaction import TransactionManager
+from src.application.ports.gateways import TransactionGateway
+from src.application.dtos.request import UpdateTransactionRequestDTO
 
 class CompleteTransactionInteractor:
     def __init__(
@@ -27,11 +17,11 @@ class CompleteTransactionInteractor:
         self._transaction_gateway = transaction_gateway
         self._transaction_manager = transaction_manager
 
-    async def __call__(self, data: UpdateTransactionDTO) -> None:
+    async def __call__(self, data: UpdateTransactionRequestDTO) -> None:
         await self._transaction_gateway.update_many(
-            created_at=Timestamp(data['created_at']),
-            status=TransactionStatus(data['transaction_status']),
-            tx_hash=TransactionHash(data['hash']),
+            created_at=Timestamp(data.created_at),
+            status=TransactionStatus(data.transaction_status),
+            tx_hash=TransactionHash(data.hash),
         )
 
         await self._transaction_manager.commit()

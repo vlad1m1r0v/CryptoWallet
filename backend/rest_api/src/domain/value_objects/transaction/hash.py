@@ -2,8 +2,9 @@ import re
 from dataclasses import dataclass
 from typing import ClassVar
 
+from src.domain.exceptions import InvalidTransactionHashException
+
 from src.domain.value_objects.base import ValueObject
-from src.domain.exceptions.fields import InvalidTransactionHashException
 
 
 @dataclass(frozen=True, slots=True, repr=False)

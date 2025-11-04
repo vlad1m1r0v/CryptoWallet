@@ -1,32 +1,27 @@
-from dataclasses import dataclass
 from decimal import Decimal
 from uuid import UUID
 
-from src.domain.enums.asset import AssetNetworkTypeEnum
-
-from src.domain.exceptions.wallet import (
+from src.domain.enums import AssetNetworkTypeEnum
+from src.domain.exceptions import (
     UserIsNotOwnerOfWalletException,
     NotEnoughBalanceOnWalletException
 )
+from src.domain.ports import SecretEncryptor
+from src.domain.value_objects import(
+    EntityId,
+    Address,
+    Balance,
+    EncryptedPrivateKey,
+    RawPrivateKey
+)
 
-from src.domain.ports.secret_encryptor import SecretEncryptor
+from src.application.ports.gateways import (
+    WalletGateway,
+    AssetGateway
+)
+from src.application.ports.events import EventPublisher
+from src.application.dtos.request import PublishCreateTransactionRequestDTO
 
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.wallet.address import Address
-from src.domain.value_objects.wallet.balance import Balance
-from src.domain.value_objects.wallet.encrpyted_private_key import EncryptedPrivateKey
-from src.domain.value_objects.wallet.raw_private_key import RawPrivateKey
-
-from src.application.ports.gateways.wallet import WalletGateway
-from src.application.ports.gateways.asset import AssetGateway
-from src.application.ports.events.event_publisher import EventPublisher
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class PublishCreateTransactionRequest:
-    from_address: str
-    to_address: str
-    amount: Decimal
 
 
 class PublishCreateTransactionInteractor:
@@ -42,7 +37,7 @@ class PublishCreateTransactionInteractor:
         self._event_publisher = event_publisher
         self._secret_encryptor = secret_encryptor
 
-    async def __call__(self, user_id: UUID, data: PublishCreateTransactionRequest) -> None:
+    async def __call__(self, user_id: UUID, data: PublishCreateTransactionRequestDTO) -> None:
         address = Address(data.from_address)
         user_id = EntityId(user_id)
         amount = Balance(data.amount)

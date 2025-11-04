@@ -1,8 +1,10 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from src.domain.value_objects.user.password_hash import PasswordHash
-from src.domain.value_objects.user.raw_password import RawPassword
+from src.domain.value_objects import (
+    PasswordHash,
+    RawPassword
+)
 
 
 class PasswordHasher(Protocol):

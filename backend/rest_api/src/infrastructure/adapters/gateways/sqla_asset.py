@@ -1,13 +1,13 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.application.ports.gateways.asset import AssetGateway
+from src.application.ports.gateways import AssetGateway
 
-from src.domain.entities.asset import Asset as AssetE
-from src.domain.enums.asset import AssetNetworkTypeEnum
+from src.domain.entities import Asset as AssetE
+from src.domain.enums import AssetNetworkTypeEnum
 
-from src.infrastructure.persistence.database.mappers.asset import AssetMapper
-from src.infrastructure.persistence.database.models.asset import Asset as AssetM
+from src.infrastructure.persistence.database.mappers import AssetMapper
+from src.infrastructure.persistence.database.models import Asset as AssetM
 
 
 class SqlaAssetGateway(AssetGateway):

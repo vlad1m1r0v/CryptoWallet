@@ -1,11 +1,12 @@
 from src.domain.entities.base import Entity
 
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.shared.timestamp import Timestamp
-
-from src.domain.value_objects.wallet.address import Address
-from src.domain.value_objects.wallet.encrpyted_private_key import EncryptedPrivateKey
-from src.domain.value_objects.wallet.balance import Balance
+from src.domain.value_objects import (
+    EntityId,
+    Address,
+    EncryptedPrivateKey,
+    Balance,
+    Timestamp
+)
 
 
 class Wallet(Entity[EntityId]):

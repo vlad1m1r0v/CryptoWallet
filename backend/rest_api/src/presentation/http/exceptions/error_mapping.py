@@ -2,21 +2,15 @@ from typing import Union, Type
 
 from starlette import status
 
-from src.domain.exceptions.auth import (
+from src.domain.exceptions import (
     EmailAlreadyExistsException,
     EmailNotFoundException,
-    UserNotFoundError,
+    UserNotFoundException,
     WrongPasswordException,
-    UserNotActivatedError
-)
-
-from src.domain.exceptions.wallet import (
+    UserNotActivatedException,
     WalletAlreadyExistsException,
     UserIsNotOwnerOfWalletException,
-    NotEnoughBalanceOnWalletException
-)
-
-from src.domain.exceptions.fields import (
+    NotEnoughBalanceOnWalletException,
     ValueObjectException
 )
 
@@ -35,12 +29,12 @@ DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
         AccessTokenNotProvidedException
     ],
     status.HTTP_403_FORBIDDEN: [
-        UserNotActivatedError,
+        UserNotActivatedException,
         UserIsNotOwnerOfWalletException
     ],
     status.HTTP_404_NOT_FOUND: [
         EmailNotFoundException,
-        UserNotFoundError
+        UserNotFoundException
     ],
     status.HTTP_409_CONFLICT: [
         EmailAlreadyExistsException,
@@ -53,10 +47,6 @@ DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
 
 
 def get_status_code_for_exception(exc: Union[Exception, Type[Exception]]) -> int:
-    """
-    Повертає HTTP статус код для помилки.
-    Працює як з екземплярами, так і з класами.
-    """
     is_class = isinstance(exc, type)
     exc_class = exc if is_class else type(exc)
 

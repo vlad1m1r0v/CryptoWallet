@@ -5,10 +5,12 @@ from cryptography.hazmat.backends import default_backend
 
 from src.configs import SecurityConfig
 
-from src.domain.value_objects.wallet.raw_private_key import RawPrivateKey
-from src.domain.value_objects.wallet.encrpyted_private_key import EncryptedPrivateKey
+from src.domain.value_objects import (
+    RawPrivateKey,
+    EncryptedPrivateKey
+)
 
-from src.domain.ports.secret_encryptor import SecretEncryptor
+from src.domain.ports import SecretEncryptor
 
 
 class AESSecretEncryptor(SecretEncryptor):

@@ -1,9 +1,9 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from src.domain.enums.asset import AssetNetworkTypeEnum
+from src.domain.enums import AssetNetworkTypeEnum
 
-from src.domain.entities.asset import Asset
+from src.domain.entities import Asset
 
 
 class AssetGateway(Protocol):

@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from src.infrastructure.exceptions.auth import AccessTokenNotProvidedException
+from src.infrastructure.exceptions import AccessTokenNotProvidedException
 
 bearer_scheme = HTTPBearer(auto_error=False)
 

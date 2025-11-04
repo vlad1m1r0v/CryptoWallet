@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
-from src.domain.value_objects.wallet.raw_private_key import RawPrivateKey
-from src.domain.value_objects.wallet.encrpyted_private_key import EncryptedPrivateKey
+from src.domain.value_objects import (
+    RawPrivateKey,
+    EncryptedPrivateKey
+)
 
 
 class SecretEncryptor(ABC):

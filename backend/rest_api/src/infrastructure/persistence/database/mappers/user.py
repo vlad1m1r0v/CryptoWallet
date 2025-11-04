@@ -1,12 +1,13 @@
-from src.domain.value_objects.user.username import Username
-from src.domain.value_objects.user.password_hash import PasswordHash
-from src.domain.value_objects.shared.file_name import Filename
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.user.email import Email
+from src.domain.value_objects import (
+    Username,
+    PasswordHash,
+    Filename,
+    EntityId,
+    Email
+)
+from src.domain.entities import User as UserE
 
-from src.domain.entities.user import User as UserE
-
-from src.infrastructure.persistence.database.models.user import User as UserM
+from src.infrastructure.persistence.database.models import User as UserM
 from src.infrastructure.persistence.database.mappers.base import BaseMapper
 
 

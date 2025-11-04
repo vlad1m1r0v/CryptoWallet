@@ -1,41 +1,25 @@
-from dataclasses import dataclass
-from typing import TypedDict, Optional
 from uuid import UUID
 
-from src.domain.exceptions.auth import (
-    UserNotFoundError
-)
-from src.domain.exceptions.fields import (
+from src.domain.exceptions import (
+    UserNotFoundException,
     FieldRequiredException,
     FieldsDoNotMatchException
 )
 
-from src.domain.services.user import UserService
+from src.domain.services import UserService
+from src.domain.value_objects import (
+    EntityId,
+    UploadedFile,
+    Filename,
+    RawPassword,
+    Username
+)
 
-from src.domain.value_objects.shared.entity_id import EntityId
-from src.domain.value_objects.shared.uploaded_file import UploadedFile
-from src.domain.value_objects.shared.file_name import Filename
-
-from src.domain.value_objects.user.raw_password import RawPassword
-from src.domain.value_objects.user.username import Username
-
-from src.application.ports.providers.file_uploader import FileUploader
-from src.application.ports.gateways.user import UserGateway
-from src.application.ports.transaction.transaction_manager import TransactionManager
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class UpdateUserRequest:
-    avatar: Optional[bytes] = None
-    username: Optional[str] = None
-    password: Optional[str] = None
-    repeat_password: Optional[str] = None
-
-
-class UpdateUserResponse(TypedDict):
-    username: str
-    email: str
-    avatar_filename: Optional[str]
+from src.application.ports.providers import FileUploader
+from src.application.ports.gateways import UserGateway
+from src.application.ports.transaction import TransactionManager
+from src.application.dtos.request import UpdateUserRequestDTO
+from src.application.dtos.response import UpdateUserResponseDTO
 
 
 class UpdateUserInteractor:
@@ -51,13 +35,11 @@ class UpdateUserInteractor:
         self._user_service = user_service
         self._transaction_manager = transaction_manager
 
-    async def __call__(self, user_id: UUID, data: UpdateUserRequest) -> UpdateUserResponse:
+    async def __call__(self, user_id: UUID, data: UpdateUserRequestDTO) -> UpdateUserResponseDTO:
         user = await self._user_gateway.read_by_id(user_id=EntityId(value=user_id))
 
-        print(data)
-
         if not user:
-            raise UserNotFoundError()
+            raise UserNotFoundException()
 
         if data.username:
             user.username = Username(data.username)
@@ -81,7 +63,7 @@ class UpdateUserInteractor:
         updated = await self._user_gateway.update(user)
         await self._transaction_manager.commit()
 
-        return UpdateUserResponse(
+        return UpdateUserResponseDTO(
             username=updated.username.value,
             email=updated.email.value,
             avatar_filename=updated.avatar_filename.value if updated.avatar_filename else None,
