@@ -60,7 +60,7 @@ async def import_wallet_handler(
     return wallet.model_dump()
 
 
-class CreateTransactionHandler(TypedDict):
+class CreateTransactionData(TypedDict):
     private_key: str
     to_address: str
     amount: Decimal
@@ -70,7 +70,7 @@ class CreateTransactionHandler(TypedDict):
 @amqp_router.publisher("ethereum.create_pending_transaction")
 @inject
 async def create_transaction_handler(
-        data: CreateTransactionHandler,
+        data: CreateTransactionData,
         ethereum_service: FromDishka[EthereumServicePort]
 ) -> TransactionSchema:
     logger.info(f"Received message on rest_api.create_transaction: {data}")
@@ -79,5 +79,22 @@ async def create_transaction_handler(
         to_address=data["to_address"],
         amount=data["amount"]
     )
+    logger.info(f"Created pending transaction: {tx.model_dump()}")
+    return tx.model_dump()
+
+
+class SendFreeETHData(TypedDict):
+    to_address: str
+
+
+@amqp_router.subscriber("rest_api.request_free_eth")
+@amqp_router.publisher("ethereum.create_pending_transaction")
+@inject
+async def send_free_eth_handler(
+        data: SendFreeETHData,
+        ethereum_service: FromDishka[EthereumServicePort]
+) -> TransactionSchema:
+    logger.info(f"Received message on rest_api.request_free_eth: {data}")
+    tx = await ethereum_service.send_free_eth(to_address=data["to_address"])
     logger.info(f"Created pending transaction: {tx.model_dump()}")
     return tx.model_dump()

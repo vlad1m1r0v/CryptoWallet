@@ -44,6 +44,10 @@ class EthereumServicePort(ABC):
     ) -> TransactionSchema:
         ...
 
+    @abstractmethod
+    async def send_free_eth(self, to_address: str) -> TransactionSchema:
+        ...
+
 
 class BlockListenerPort(ABC):
     @abstractmethod

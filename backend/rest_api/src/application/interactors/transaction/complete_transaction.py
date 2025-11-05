@@ -1,3 +1,5 @@
+from src.domain.enums import TransactionStatusEnum
+
 from src.domain.value_objects import (
     Timestamp,
     TransactionStatus,
@@ -30,6 +32,9 @@ class CompleteTransactionInteractor:
             status=TransactionStatus(data.transaction_status),
             tx_hash=TransactionHash(data.hash),
         )
+
+        if data.transaction_status != TransactionStatusEnum.SUCCESSFUL:
+            return
 
         tx = await self._transaction_gateway.get_one_by_hash(TransactionHash(data.hash))
 

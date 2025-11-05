@@ -17,7 +17,8 @@ from src.configs import (
     InfuraConfig,
     EtherscanConfig,
     RabbitMQConfig,
-    RedisConfig
+    RedisConfig,
+    FaucetConfig
 )
 from src.ports import (
     StoragePort,
@@ -50,6 +51,10 @@ class ConfigProvider(Provider):
     @provide(scope=Scope.APP)
     def provide_redis_config(self, config: Config) -> RedisConfig:
         return config.redis
+
+    @provide(scope=Scope.APP)
+    def provide_faucet_config(self, config: Config) -> FaucetConfig:
+        return config.faucet
 
 
 class ServiceProvider(Provider):

@@ -51,7 +51,7 @@ class TransactionSchema(BaseModel):
         return datetime.fromtimestamp(int(self.timeStamp))
 
 
-class UpdateTransactionSchema(BaseModel):
+class CompleteTransactionSchema(BaseModel):
     hash: str
     transaction_status: TransactionStatusEnum
     created_at: datetime

@@ -19,7 +19,11 @@ from eth_typing import HexStr
 
 import httpx
 
-from src.consts import GAS, GAS_PRICE_GWEI
+from src.consts import (
+    GAS,
+    GAS_PRICE_GWEI,
+    FREE_ETH_WEI
+)
 from src.ports import (
     StoragePort,
     EthereumServicePort,
@@ -28,13 +32,16 @@ from src.ports import (
 
 from src.schemas import (
     TransactionSchema,
-    UpdateTransactionSchema,
+    CompleteTransactionSchema,
     TransactionStatusEnum,
     EtherscanTransactionListResponseSchema,
     ETHWalletSchema
 )
 
-from src.configs import EtherscanConfig
+from src.configs import (
+    EtherscanConfig,
+    FaucetConfig
+)
 
 
 class RedisStorageAdapter(StoragePort):
@@ -59,10 +66,12 @@ class EthereumServiceAdapter(EthereumServicePort):
             self,
             w3: Web3,
             etherscan_config: EtherscanConfig,
+            faucet_config: FaucetConfig,
             storage: StoragePort,
     ):
         self._w3 = w3
         self._etherscan_config = etherscan_config
+        self._faucet_config = faucet_config
         self._storage = storage
 
     def create_wallet(self, user_id: UUID) -> ETHWalletSchema:
@@ -138,6 +147,13 @@ class EthereumServiceAdapter(EthereumServicePort):
             "gasPrice": gas_price
         })
 
+    async def send_free_eth(self, to_address: str):
+        return await self.create_transaction(
+            private_key=self._faucet_config.wallet_private_key,
+            to_address=to_address,
+            amount=Decimal(FREE_ETH_WEI)
+        )
+
 
 class BlockListenerAdapter(BlockListenerPort):
     _poll_interval: float = 20.0
@@ -186,10 +202,12 @@ class BlockListenerAdapter(BlockListenerPort):
                 receipt = self._w3.eth.get_transaction_receipt(HexStr(tx_hash_hex))
                 status = TransactionStatusEnum.SUCCESSFUL if receipt["status"] else TransactionStatusEnum.FAILED
 
-                event_data = UpdateTransactionSchema(
+                created_at = datetime.fromtimestamp(block["timestamp"])
+
+                event_data = CompleteTransactionSchema(
                     hash=tx_hash_hex,
                     transaction_status=status,
-                    created_at=datetime.fromtimestamp(block["timestamp"])
+                    created_at=created_at
                 )
 
                 self._logger.info(f"Completed pending transaction: {event_data.model_dump()}")

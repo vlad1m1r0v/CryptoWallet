@@ -44,11 +44,16 @@ class RedisConfig(BaseModel):
         return f"redis://{self.host}:{self.port}/{self.db}"
 
 
+class FaucetConfig(BaseModel):
+    wallet_private_key: str = Field(alias="FAUCET_WALLET_PRIVATE_KEY")
+
+
 class Config(BaseModel):
     infura: InfuraConfig = Field(default_factory=lambda: InfuraConfig(**env))
     etherscan: EtherscanConfig = Field(default_factory=lambda: EtherscanConfig(**env))
     rabbit_mq: RabbitMQConfig = Field(default_factory=lambda: RabbitMQConfig(**env))
     redis: RedisConfig = Field(default_factory=lambda: RedisConfig(**env))
+    faucet: FaucetConfig = Field(default_factory=lambda: FaucetConfig(**env))
 
 
 config = Config()
