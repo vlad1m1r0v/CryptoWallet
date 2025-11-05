@@ -1,6 +1,10 @@
+from typing import Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
+from sqlalchemy.orm import joinedload
 
+from src.application.dtos.response import WalletsListItemResponseDTO
 from src.domain.entities import Wallet
 from src.domain.value_objects import (
     EntityId,
@@ -11,7 +15,10 @@ from src.domain.entities.wallet import Wallet as WalletE
 from src.application.ports.gateways import WalletGateway
 
 from src.infrastructure.persistence.database.models import Wallet as WalletM
-from src.infrastructure.persistence.database.mappers import WalletMapper
+from src.infrastructure.persistence.database.mappers import (
+    WalletMapper,
+    WalletsListMapper
+)
 
 
 class SqlaWalletGateway(WalletGateway):
@@ -60,3 +67,9 @@ class SqlaWalletGateway(WalletGateway):
         result = await self._session.execute(stmt)
         model: WalletM = result.scalar_one()
         return WalletMapper.to_entity(model)
+
+    async def get_user_wallets(self, user_id: EntityId) -> list[WalletsListItemResponseDTO]:
+        stmt = select(WalletM).options(joinedload(WalletM.asset)).where(WalletM.user_id == user_id.value)
+        result = await self._session.execute(stmt)
+        models: Sequence[WalletM] = result.scalars().all()
+        return WalletsListMapper.to_dto_m2m(models)

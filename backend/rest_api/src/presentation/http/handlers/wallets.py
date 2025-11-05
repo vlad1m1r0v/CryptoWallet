@@ -4,20 +4,32 @@ from starlette import status
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 
+from src.domain.exceptions import (
+    WalletNotFoundException,
+    UserIsNotOwnerOfWalletException
+)
+
 from src.application.dtos.response import GetCurrentUserResponseDTO
 from src.application.interactors import (
     PublishCreateWalletInteractor,
     PublishImportWalletInteractor,
     PublishRequestFreeETHInteractor,
+    GetWalletsInteractor
 )
 
 from src.presentation.http.schemas import (
     ImportWalletRequestSchema,
-    FreeETHRequestSchema
+    FreeETHRequestSchema,
+    WalletsListItemResponseSchema
+)
+from src.presentation.http.mappers import (
+    WalletsListMapper
 )
 from src.presentation.http.dependencies import get_current_user
 from src.presentation.http.limiter import limiter
-from src.presentation.http.exceptions.exceptions import TooManyRequestsException
+from src.presentation.http.exceptions.exceptions import (
+    TooManyRequestsException
+)
 from src.presentation.http.openapi import generate_examples
 
 router = APIRouter(prefix="/wallets", tags=["Wallets"])
@@ -34,6 +46,21 @@ async def create_eth_wallet(
         user: GetCurrentUserResponseDTO = Depends(get_current_user)
 ) -> None:
     return await interactor(user_id=user["id"])
+
+
+@router.get(
+    path="",
+    status_code=status.HTTP_200_OK,
+    responses=generate_examples(is_auth=True),
+    response_model=list[WalletsListItemResponseSchema]
+)
+@inject
+async def get_eth_wallets(
+        interactor: FromDishka[GetWalletsInteractor],
+        user: GetCurrentUserResponseDTO = Depends(get_current_user)
+) -> list[WalletsListItemResponseSchema]:
+    result = await interactor(user_id=user["id"])
+    return WalletsListMapper.to_response_schema(result)
 
 
 @router.post(
@@ -56,7 +83,12 @@ async def import_eth_wallet(
 @router.post(
     path="/request-free-eth",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses=generate_examples(TooManyRequestsException, is_auth=True),
+    responses=generate_examples(
+        TooManyRequestsException,
+        WalletNotFoundException,
+        UserIsNotOwnerOfWalletException,
+        is_auth=True
+    ),
 )
 @limiter.limit("1/hour")
 @inject

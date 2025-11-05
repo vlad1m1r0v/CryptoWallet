@@ -6,8 +6,10 @@ from src.domain.value_objects import (
     Address,
     Balance
 )
-
 from src.domain.entities import Wallet
+
+from src.application.dtos.response import WalletsListItemResponseDTO
+
 
 
 class WalletGateway(Protocol):
@@ -29,4 +31,8 @@ class WalletGateway(Protocol):
 
     @abstractmethod
     async def increment_balance(self, wallet_id: EntityId, amount: Balance) -> Wallet:
+        ...
+
+    @abstractmethod
+    async def get_user_wallets(self, user_id: EntityId) -> list[WalletsListItemResponseDTO]:
         ...

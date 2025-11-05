@@ -13,7 +13,9 @@ from src.presentation.http.schemas.user import (
 )
 from src.presentation.http.schemas.wallet import (
     ImportWalletRequestSchema,
-    FreeETHRequestSchema
+    FreeETHRequestSchema,
+    WalletsListItemResponseAssetSchema,
+    WalletsListItemResponseSchema
 )
 from src.presentation.http.schemas.transaction import (
     GetTransactionsRequestSchema,
@@ -35,6 +37,8 @@ __all__ = [
     'UpdateUserResponseSchema',
     'ImportWalletRequestSchema',
     'FreeETHRequestSchema',
+    'WalletsListItemResponseAssetSchema',
+    'WalletsListItemResponseSchema',
     'GetTransactionsRequestSchema',
     'GetTransactionsListItemAssetSchema',
     'GetTransactionsListItemWalletSchema',

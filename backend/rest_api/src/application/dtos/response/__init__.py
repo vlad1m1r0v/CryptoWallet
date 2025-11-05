@@ -10,6 +10,11 @@ from src.application.dtos.response.user import (
     GetCurrentUserResponseDTO
 )
 
+from src.application.dtos.response.wallet import (
+    WalletsListItemResponseAssetDTO,
+    WalletsListItemResponseDTO
+)
+
 from src.application.dtos.response.transaction import (
     TransactionsListItemResponseAssetDTO,
     TransactionsListItemResponseWalletDTO,
@@ -22,6 +27,8 @@ __all__ = [
     "RegisterUserResponseDTO",
     "UpdateUserResponseDTO",
     "GetCurrentUserResponseDTO",
+    "WalletsListItemResponseAssetDTO",
+    "WalletsListItemResponseDTO",
     "TransactionsListItemResponseAssetDTO",
     "TransactionsListItemResponseWalletDTO",
     "TransactionsListItemResponseDTO",

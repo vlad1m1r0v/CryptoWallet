@@ -1,0 +1,39 @@
+from types import NoneType
+from typing import List
+
+from src.application.dtos.response import WalletsListItemResponseDTO
+
+from src.presentation.http.schemas import (
+    WalletsListItemResponseAssetSchema,
+    WalletsListItemResponseSchema
+)
+
+from src.presentation.http.mappers.base import BaseMapper
+
+
+class WalletsListMapper(
+    BaseMapper[
+        NoneType,
+        List[WalletsListItemResponseAssetSchema],
+        NoneType,
+        List[WalletsListItemResponseSchema]
+    ]):
+    @staticmethod
+    def to_request_dto(schema: NoneType) -> NoneType:
+        raise NotImplementedError
+
+    @staticmethod
+    def to_response_schema(
+            dto: List[WalletsListItemResponseDTO]
+    ) -> List[WalletsListItemResponseSchema]:
+        return [
+            WalletsListItemResponseSchema(
+                id=wallet.id,
+                address=wallet.address,
+                balance=wallet.balance,
+                asset=WalletsListItemResponseAssetSchema(
+                    symbol=wallet.asset.symbol,
+                    decimals=wallet.asset.decimals
+                )
+            ) for wallet in dto
+        ]
