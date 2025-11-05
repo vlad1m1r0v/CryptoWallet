@@ -3,7 +3,8 @@ from typing import Protocol
 
 from src.domain.value_objects import (
     EntityId,
-    Address
+    Address,
+    Balance
 )
 
 from src.domain.entities import Wallet
@@ -20,4 +21,12 @@ class WalletGateway(Protocol):
 
     @abstractmethod
     async def read_by_id(self, wallet_id: EntityId) -> Wallet | None:
+        ...
+
+    @abstractmethod
+    async def decrement_balance(self, wallet_id: EntityId, amount: Balance) -> Wallet:
+        ...
+
+    @abstractmethod
+    async def increment_balance(self, wallet_id: EntityId, amount: Balance) -> Wallet:
         ...

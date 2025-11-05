@@ -1,9 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
 
+from src.domain.entities import Wallet
 from src.domain.value_objects import (
     EntityId,
-    Address
+    Address, Balance
 )
 from src.domain.entities.wallet import Wallet as WalletE
 
@@ -36,4 +37,26 @@ class SqlaWalletGateway(WalletGateway):
         model: WalletM | None = result.scalar_one_or_none()
         if not model:
             return None
+        return WalletMapper.to_entity(model)
+
+    async def decrement_balance(self, wallet_id: EntityId, amount: Balance) -> Wallet:
+        stmt = update(WalletM).where(
+            WalletM.id == wallet_id.value
+        ).values(
+            balance=WalletM.balance - amount.value,
+        ).returning(WalletM)
+
+        result = await self._session.execute(stmt)
+        model: WalletM = result.scalar_one()
+        return WalletMapper.to_entity(model)
+
+    async def increment_balance(self, wallet_id: EntityId, amount: Balance) -> Wallet:
+        stmt = update(WalletM).where(
+            WalletM.id == wallet_id.value
+        ).values(
+            balance=WalletM.balance + amount.value,
+        ).returning(WalletM)
+
+        result = await self._session.execute(stmt)
+        model: WalletM = result.scalar_one()
         return WalletMapper.to_entity(model)

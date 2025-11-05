@@ -27,6 +27,10 @@ class TransactionGateway(Protocol):
         ...
 
     @abstractmethod
+    async def get_one_by_hash(self, tx_hash: TransactionHash) -> Transaction:
+        ...
+
+    @abstractmethod
     async def update_many(
             self,
             created_at: Timestamp,

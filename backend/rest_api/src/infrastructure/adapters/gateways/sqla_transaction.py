@@ -5,7 +5,7 @@ from sqlalchemy import select, update, func
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domain.entities import Transaction as TransactionE
+from src.domain.entities import Transaction as TransactionE, Transaction
 from src.domain.value_objects import (
     EntityId,
     Timestamp,
@@ -34,6 +34,12 @@ from src.infrastructure.persistence.database.mappers import (
 
 
 class SqlaTransactionGateway(TransactionGateway):
+    async def get_one_by_hash(self, tx_hash: TransactionHash) -> Transaction:
+        stmt = select(TransactionM).where(TransactionM.transaction_hash == tx_hash.value)
+        result = await self._session.execute(stmt)
+        model: TransactionM = result.scalars().first()
+        return TransactionMapper.to_entity(model)
+
     def __init__(self, session: AsyncSession):
         self._session = session
 
