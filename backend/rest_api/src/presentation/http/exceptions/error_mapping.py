@@ -9,6 +9,7 @@ from src.domain.exceptions import (
     WrongPasswordException,
     UserNotActivatedException,
     WalletAlreadyExistsException,
+    WalletNotFoundException,
     UserIsNotOwnerOfWalletException,
     NotEnoughBalanceOnWalletException,
     ValueObjectException
@@ -18,6 +19,8 @@ from src.infrastructure.exceptions.auth import (
     AccessTokenNotProvidedException,
     InvalidAccessTokenException
 )
+
+from src.presentation.http.exceptions.exceptions import TooManyRequestsException
 
 DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
     status.HTTP_400_BAD_REQUEST: [
@@ -34,7 +37,8 @@ DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
     ],
     status.HTTP_404_NOT_FOUND: [
         EmailNotFoundException,
-        UserNotFoundException
+        UserNotFoundException,
+        WalletNotFoundException
     ],
     status.HTTP_409_CONFLICT: [
         EmailAlreadyExistsException,
@@ -43,6 +47,9 @@ DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
     status.HTTP_422_UNPROCESSABLE_CONTENT: [
         ValueObjectException
     ],
+    status.HTTP_429_TOO_MANY_REQUESTS: [
+        TooManyRequestsException
+    ]
 }
 
 

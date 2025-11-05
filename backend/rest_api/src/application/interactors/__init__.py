@@ -10,7 +10,8 @@ from src.application.interactors.wallet import (
     PublishCreateWalletInteractor,
     PublishImportWalletInteractor,
     SaveCreateWalletInteractor,
-    SaveImportWalletInteractor
+    SaveImportWalletInteractor,
+    PublishRequestFreeETHInteractor
 )
 from src.application.interactors.transaction import (
     PublishCreateTransactionInteractor,
@@ -28,10 +29,7 @@ __all__ = [
     'PublishImportWalletInteractor',
     'SaveCreateWalletInteractor',
     'SaveImportWalletInteractor',
-    'PublishCreateWalletInteractor',
-    'PublishImportWalletInteractor',
-    'SaveCreateWalletInteractor',
-    'SaveImportWalletInteractor',
+    'PublishRequestFreeETHInteractor',
     'PublishCreateTransactionInteractor',
     'CreatePendingTransactionInteractor',
     'CompleteTransactionInteractor',

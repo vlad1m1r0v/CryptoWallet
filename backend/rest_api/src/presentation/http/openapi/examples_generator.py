@@ -15,7 +15,7 @@ from src.infrastructure.exceptions import (
     InvalidAccessTokenException
 )
 
-from src.presentation.http.exceptions import get_status_code_for_exception
+from src.presentation.http.exceptions.error_mapping import get_status_code_for_exception
 
 
 def class_name_to_snake(name: str) -> str:

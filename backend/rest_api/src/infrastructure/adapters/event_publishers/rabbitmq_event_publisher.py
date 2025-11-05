@@ -25,9 +25,16 @@ class RabbitMQEventPublisher(EventPublisher):
             message=message
         )
 
-    async def create_transaction(self, private_key: str, to_address, amount: Decimal) -> None:
+    async def create_transaction(self, private_key: str, to_address: str, amount: Decimal) -> None:
         message = {"private_key": private_key, "to_address": to_address, "amount": amount}
         await self._broker.publish(
             routing_key="rest_api.create_transaction",
+            message=message
+        )
+
+    async def request_free_eth(self, to_address: str) -> None:
+        message = {"to_address": to_address}
+        await self._broker.publish(
+            routing_key="rest_api.request_free_eth",
             message=message
         )

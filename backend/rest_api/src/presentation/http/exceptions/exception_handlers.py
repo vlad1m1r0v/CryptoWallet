@@ -5,7 +5,10 @@ from pydantic import ValidationError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from slowapi.errors import RateLimitExceeded
+
 from src.presentation.http.exceptions.error_mapping import get_status_code_for_exception
+from src.presentation.http.exceptions.exceptions import TooManyRequestsException
 
 from src.configs import config
 
@@ -37,6 +40,10 @@ def validation_error_handler(_: Request, exc: Exception) -> JSONResponse:
             "Access-Control-Allow-Credentials": "true",
         }
     )
+
+
+def rate_limit_error_handler(_: Request, exc: RateLimitExceeded) -> JSONResponse:
+    raise TooManyRequestsException()
 
 
 def error_handler(_: Request, exc: Exception):

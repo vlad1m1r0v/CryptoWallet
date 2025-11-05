@@ -4,6 +4,7 @@ from uuid import UUID
 from src.domain.enums import AssetNetworkTypeEnum
 from src.domain.exceptions import (
     UserIsNotOwnerOfWalletException,
+    WalletNotFoundException,
     NotEnoughBalanceOnWalletException
 )
 from src.domain.ports import SecretEncryptor
@@ -43,6 +44,9 @@ class PublishCreateTransactionInteractor:
         amount = Balance(data.amount)
 
         wallet = await self._wallet_gateway.read_by_address(address)
+
+        if not wallet:
+            raise WalletNotFoundException()
 
         if wallet.user_id != user_id:
             raise UserIsNotOwnerOfWalletException(user_id, address)

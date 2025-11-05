@@ -16,7 +16,7 @@ class Transaction(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     wallet_id = Column(UUID(as_uuid=True), ForeignKey("wallets.id", ondelete="CASCADE"), nullable=False)
-    transaction_hash = Column(String(66), unique=True, nullable=False)
+    transaction_hash = Column(String(66), nullable=False)
     from_address = Column(String(255), nullable=False)
     to_address = Column(String(255), nullable=False)
     value = Column(DECIMAL(precision=100, scale=0), nullable=False)

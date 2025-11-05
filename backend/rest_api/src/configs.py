@@ -55,6 +55,19 @@ class RabbitMQConfig(BaseModel):
         return f"amqp://{self.user}:{self.password}@{self.host}:{self.port}/{self.vhost}"
 
 
+class RedisConfig(BaseModel):
+    host: str = Field(alias="REDIS_HOST")
+    port: int = Field(alias="REDIS_PORT")
+    db: int = Field(alias="REDIS_DB")
+    password: str | None = Field(alias="REDIS_PASSWORD", default=None)
+
+    @property
+    def url(self) -> str:
+        if self.password:
+            return f"redis://:{self.password}@{self.host}:{self.port}/{self.db}"
+        return f"redis://{self.host}:{self.port}/{self.db}"
+
+
 class Config(BaseModel):
     frontend: FrontendConfig = Field(default_factory=lambda: FrontendConfig(**env))
     security: SecurityConfig = Field(default_factory=lambda: SecurityConfig(**env))
@@ -62,6 +75,7 @@ class Config(BaseModel):
     mailing: MailingConfig = Field(default_factory=lambda: MailingConfig(**env))
     s3: S3Config = Field(default_factory=lambda: S3Config(**env))
     rabbit_mq: RabbitMQConfig = Field(default_factory=lambda: RabbitMQConfig(**env))
+    redis: RedisConfig = Field(default_factory=lambda: RedisConfig(**env))
 
 
 config = Config()

@@ -6,7 +6,8 @@ from src.configs import (
     SecurityConfig,
     PostgresConfig,
     MailingConfig,
-    S3Config
+    S3Config,
+    RedisConfig
 )
 
 
@@ -32,3 +33,7 @@ class ConfigProvider(Provider):
     @provide(scope=Scope.APP)
     def provide_s3_config(self, config: Config) -> S3Config:
         return config.s3
+
+    @provide(scope=Scope.APP)
+    def provide_redis_config(self, config: Config) -> RedisConfig:
+        return config.redis

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, Request
 from starlette import status
 
 from dishka import FromDishka
@@ -7,11 +7,17 @@ from dishka.integrations.fastapi import inject
 from src.application.dtos.response import GetCurrentUserResponseDTO
 from src.application.interactors import (
     PublishCreateWalletInteractor,
-    PublishImportWalletInteractor
+    PublishImportWalletInteractor,
+    PublishRequestFreeETHInteractor,
 )
 
-from src.presentation.http.schemas import ImportWalletRequestSchema
+from src.presentation.http.schemas import (
+    ImportWalletRequestSchema,
+    FreeETHRequestSchema
+)
 from src.presentation.http.dependencies import get_current_user
+from src.presentation.http.limiter import limiter
+from src.presentation.http.exceptions.exceptions import TooManyRequestsException
 from src.presentation.http.openapi import generate_examples
 
 router = APIRouter(prefix="/wallets", tags=["Wallets"])
@@ -44,4 +50,23 @@ async def import_eth_wallet(
     return await interactor(
         user_id=user["id"],
         private_key=data.private_key
+    )
+
+
+@router.post(
+    path="/request-free-eth",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses=generate_examples(TooManyRequestsException, is_auth=True),
+)
+@limiter.limit("1/hour")
+@inject
+async def request_free_eth(
+        request: Request,
+        interactor: FromDishka[PublishRequestFreeETHInteractor],
+        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+        data: FreeETHRequestSchema = Body()
+) -> None:
+    return await interactor(
+        user_id=user["id"],
+        wallet_id=data.wallet_id
     )

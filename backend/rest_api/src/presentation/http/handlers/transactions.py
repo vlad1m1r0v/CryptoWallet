@@ -46,6 +46,7 @@ router = APIRouter(prefix="/transactions", tags=["Transactions"])
     responses=generate_examples(
         UserIsNotOwnerOfWalletException,
         WalletAlreadyExistsException,
+        WalletNotFoundException,
         is_auth=True
     ),
 )
