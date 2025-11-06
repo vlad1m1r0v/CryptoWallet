@@ -34,6 +34,11 @@ from src.domain.value_objects.transaction import (
     TransactionValue
 )
 
+from src.domain.value_objects.product import (
+    ProductName,
+    ProductPrice
+)
+
 __all__ = [
     "EntityId",
     "Timestamp",
@@ -55,5 +60,7 @@ __all__ = [
     "TransactionFee",
     "TransactionHash",
     "TransactionStatus",
-    "TransactionValue"
+    "TransactionValue",
+    "ProductName",
+    "ProductPrice"
 ]

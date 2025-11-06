@@ -16,7 +16,8 @@ from src.domain.exceptions.fields import (
     InvalidFilenameException,
     InvalidPasswordException,
     InvalidAssetNameException,
-    InvalidTransactionHashException
+    InvalidTransactionHashException,
+    InvalidProductNameException,
 )
 
 from src.domain.exceptions.auth import (
@@ -53,6 +54,7 @@ __all__ = [
     "InvalidPasswordException",
     "InvalidAssetNameException",
     "InvalidTransactionHashException",
+    "InvalidProductNameException",
     "EmailAlreadyExistsException",
     "EmailNotFoundException",
     "WrongPasswordException",

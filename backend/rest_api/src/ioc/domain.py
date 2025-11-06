@@ -3,18 +3,21 @@ from dishka import Provider, Scope, provide
 from src.domain.ports import (
     PasswordHasher,
     IdGenerator,
-    SecretEncryptor
+    SecretEncryptor,
+    TimestampGenerator
 )
 from src.domain.services import (
     UserService,
     WalletService,
-    TransactionService
+    TransactionService,
+    ProductService
 )
 
 from src.infrastructure.adapters.utils import (
     BcryptPasswordHasher,
     UuidGenerator,
-    AESSecretEncryptor
+    AESSecretEncryptor,
+    DatetimeGenerator
 )
 
 
@@ -26,6 +29,8 @@ class DomainProvider(Provider):
     wallet_service = provide(source=WalletService)
 
     transaction_service = provide(source=TransactionService)
+
+    product_service = provide(source=ProductService)
 
     password_hasher = provide(
         source=BcryptPasswordHasher,
@@ -40,4 +45,9 @@ class DomainProvider(Provider):
     user_id_generator = provide(
         source=UuidGenerator,
         provides=IdGenerator,
+    )
+
+    datetime_generator = provide(
+        source=DatetimeGenerator,
+        provides=TimestampGenerator
     )

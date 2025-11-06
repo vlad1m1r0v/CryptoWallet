@@ -22,6 +22,10 @@ from src.application.interactors.transaction import (
     GetTransactionsInteractor
 )
 
+from src.application.interactors.product import (
+    CreateProductInteractor
+)
+
 __all__ = [
     'RegisterInteractor',
     'LoginInteractor',
@@ -37,5 +41,6 @@ __all__ = [
     'PublishCreateTransactionInteractor',
     'CreatePendingTransactionInteractor',
     'CompleteTransactionInteractor',
-    'GetTransactionsInteractor'
+    'GetTransactionsInteractor',
+    'CreateProductInteractor'
 ]

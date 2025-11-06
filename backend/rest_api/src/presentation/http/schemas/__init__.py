@@ -26,6 +26,12 @@ from src.presentation.http.schemas.transaction import (
     GetTransactionsListItemResponseSchema,
     PublishCreateTransactionRequestSchema
 )
+from src.presentation.http.schemas.product import (
+    CreateProductRequestSchema,
+    ProductResponseAssetSchema,
+    ProductResponseWalletSchema,
+    ProductResponseSchema
+)
 
 __all__ = [
     'PaginatedResponseSchema',
@@ -47,5 +53,9 @@ __all__ = [
     'GetTransactionsListItemAssetSchema',
     'GetTransactionsListItemWalletSchema',
     'GetTransactionsListItemResponseSchema',
-    'PublishCreateTransactionRequestSchema'
+    'PublishCreateTransactionRequestSchema',
+    'CreateProductRequestSchema',
+    'ProductResponseAssetSchema',
+    'ProductResponseWalletSchema',
+    'ProductResponseSchema'
 ]

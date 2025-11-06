@@ -23,6 +23,12 @@ from src.application.dtos.response.transaction import (
     TransactionsListItemResponseDTO
 )
 
+from src.application.dtos.response.product import (
+    ProductResponseAssetDTO,
+    ProductResponseWalletDTO,
+    ProductResponseDTO
+)
+
 __all__ = [
     "PaginatedResponseDTO",
     "LoginUserResponseDTO",
@@ -36,4 +42,7 @@ __all__ = [
     "TransactionsListItemResponseAssetDTO",
     "TransactionsListItemResponseWalletDTO",
     "TransactionsListItemResponseDTO",
+    "ProductResponseAssetDTO",
+    "ProductResponseWalletDTO",
+    "ProductResponseDTO"
 ]

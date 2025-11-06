@@ -18,6 +18,10 @@ from src.presentation.http.mappers.transaction import (
     GetTransactionsMapper
 )
 
+from src.presentation.http.mappers.product import (
+    ProductMapper
+)
+
 __all__ = [
     'LoginUserMapper',
     'RegisterUserMapper',
@@ -26,5 +30,6 @@ __all__ = [
     'GetCurrentUserMapper',
     'WalletsListMapper',
     'PublishCreateTransactionMapper',
-    'GetTransactionsMapper'
+    'GetTransactionsMapper',
+    'ProductMapper'
 ]

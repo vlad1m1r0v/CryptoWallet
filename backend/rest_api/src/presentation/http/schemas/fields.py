@@ -6,6 +6,7 @@ UsernameBase = Annotated[str, StringConstraints(strip_whitespace=True, min_lengt
 PasswordBase = Annotated[str, StringConstraints(min_length=8, max_length=20)]
 AddressBase = Annotated[str, StringConstraints(strip_whitespace=True, min_length=42, max_length=42)]
 TransactionHashBase = Annotated[str, StringConstraints(min_length=66, max_length=66)]
+ProductNameBase = Annotated[str, StringConstraints(min_length=3, max_length=50)]
 
 
 def validate_username_logic(value: str) -> str:
@@ -53,9 +54,22 @@ def validate_transaction_hash_logic(value: str) -> str:
     return value
 
 
+def validate_product_name_logic(value: str) -> str:
+    PATTERN = re.compile(r"^[A-Z][a-zA-Z]*(\s[A-Z][a-zA-Z]*)*(\s[0-9]+)?$")
+
+    if not re.search(PATTERN, value):
+        raise ValueError(
+            "Product name must consist of one or more words separated by spaces. " +
+            "Each word must start with a capital letter and may optionally end with " +
+            "a space followed by digits (e.g., 'iPhone 15', 'New Product')."
+        )
+
+    return value
+
 UsernameStr = Annotated[UsernameBase, BeforeValidator(validate_username_logic)]
 PasswordStr = Annotated[PasswordBase, BeforeValidator(validate_password_logic)]
 AddressStr = Annotated[AddressBase, BeforeValidator(validate_address_logic)]
 TransactionHashStr = Annotated[TransactionHashBase, BeforeValidator(validate_transaction_hash_logic)]
+ProductNameStr = Annotated[ProductNameBase, BeforeValidator(validate_product_name_logic)]
 
-__all__ = ["UsernameStr", "PasswordStr", "AddressStr", "TransactionHashStr"]
+__all__ = ["UsernameStr", "PasswordStr", "AddressStr", "TransactionHashStr", "ProductNameStr"]

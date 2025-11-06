@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from src.infrastructure.persistence.database.models.asset import Asset
     from src.infrastructure.persistence.database.models.user import User
     from src.infrastructure.persistence.database.models.transaction import Transaction
+    from src.infrastructure.persistence.database.models.product import Product
 
 
 class Wallet(Base):
@@ -25,6 +26,11 @@ class Wallet(Base):
     asset: Mapped["Asset"] = relationship(back_populates="wallets")
     user: Mapped["User"] = relationship(back_populates="wallets")
     transactions: Mapped[List["Transaction"]] = relationship(
+        back_populates="wallet",
+        uselist=True,
+        cascade="all, delete-orphan",
+    )
+    products: Mapped[List["Product"]] = relationship(
         back_populates="wallet",
         uselist=True,
         cascade="all, delete-orphan",

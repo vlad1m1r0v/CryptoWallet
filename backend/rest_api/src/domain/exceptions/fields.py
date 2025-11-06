@@ -155,3 +155,9 @@ class InvalidAssetNameException(ValueObjectException):
 
 class InvalidTransactionHashException(ValueObjectException):
     message = "Transaction hash should start with '0x' and contain 64 characters after that."
+
+
+class InvalidProductNameException(ValueObjectException):
+    message = ("Product name must consist of one or more words separated by spaces. " +
+               "Each word must start with a capital letter and may optionally end with " +
+               "a space followed by digits (e.g., 'iPhone 15', 'New Product').")
