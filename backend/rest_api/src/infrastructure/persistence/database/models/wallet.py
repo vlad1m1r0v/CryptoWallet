@@ -7,6 +7,7 @@ from src.infrastructure.persistence.database.models.base import Base
 
 if TYPE_CHECKING:
     from src.infrastructure.persistence.database.models.asset import Asset
+    from src.infrastructure.persistence.database.models.user import User
     from src.infrastructure.persistence.database.models.transaction import Transaction
 
 
@@ -22,6 +23,7 @@ class Wallet(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
 
     asset: Mapped["Asset"] = relationship(back_populates="wallets")
+    user: Mapped["User"] = relationship(back_populates="wallets")
     transactions: Mapped[List["Transaction"]] = relationship(
         back_populates="wallet",
         uselist=True,

@@ -51,7 +51,7 @@ class CompleteTransactionInteractor:
         if to_wallet:
             await self._wallet_gateway.increment_balance(
                 wallet_id=to_wallet.id_,
-                amount=Balance(tx.transaction_fee.value + tx.value.value)
+                amount=Balance(tx.value.value)
             )
 
         await self._transaction_manager.commit()

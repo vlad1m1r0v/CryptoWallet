@@ -1,16 +1,21 @@
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from src.domain.entities import User as UserE
-from src.domain.value_objects import(
+from src.domain.value_objects import (
     Email,
     EntityId
 )
 
 from src.application.ports.gateways import UserGateway
+from src.application.dtos.response.user import GetUserProfileResponseDTO
 
 from src.infrastructure.persistence.database.models import User as UserM
-from src.infrastructure.persistence.database.mappers import UserMapper
+from src.infrastructure.persistence.database.mappers import (
+    UserMapper,
+    ProfileMapper
+)
 
 
 class SqlaUserGateway(UserGateway):
@@ -54,3 +59,16 @@ class SqlaUserGateway(UserGateway):
         if not model:
             return None
         return UserMapper.to_entity(model)
+
+    async def get_user_profile(self, user_id: EntityId) -> GetUserProfileResponseDTO | None:
+        stmt = (
+            select(UserM)
+            .options(selectinload(UserM.wallets))
+            .where(UserM.id == user_id.value)
+        )
+
+        result = await self._session.execute(stmt)
+        model: UserM | None = result.scalar_one_or_none()
+        if not model:
+            return None
+        return ProfileMapper.to_dto(model)

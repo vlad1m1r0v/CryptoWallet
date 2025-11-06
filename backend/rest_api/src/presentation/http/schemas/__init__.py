@@ -8,6 +8,8 @@ from src.presentation.http.schemas.auth import (
 from src.presentation.http.schemas.user import (
     GetCurrentUserRequestSchema,
     GetCurrentUserResponseSchema,
+    GetUserProfileResponseSchema,
+    GetUserProfileResponseWalletSchema,
     UpdateUserRequestSchema,
     UpdateUserResponseSchema
 )
@@ -33,6 +35,8 @@ __all__ = [
     'RegisterUserResponseSchema',
     'GetCurrentUserRequestSchema',
     'GetCurrentUserResponseSchema',
+    'GetUserProfileResponseSchema',
+    'GetUserProfileResponseWalletSchema',
     'UpdateUserRequestSchema',
     'UpdateUserResponseSchema',
     'ImportWalletRequestSchema',

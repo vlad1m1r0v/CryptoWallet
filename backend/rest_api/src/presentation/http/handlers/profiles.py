@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, Form, UploadFile, File
 from starlette import status
@@ -6,19 +7,24 @@ from starlette import status
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 
+from src.domain.exceptions import UserNotFoundException
+
 from src.application.dtos.response import GetCurrentUserResponseDTO
-from src.application.interactors import UpdateUserInteractor
+from src.application.interactors import (
+    GetUserProfileInteractor,
+    UpdateUserInteractor
+)
 
 from src.presentation.http.dependencies import get_current_user
 from src.presentation.http.mappers import (
     UpdateUserMapper,
-    GetCurrentUserMapper
+    GetUserProfileMapper
 )
 
 from src.presentation.http.schemas import (
-    GetCurrentUserResponseSchema,
     UpdateUserRequestSchema,
-    UpdateUserResponseSchema
+    UpdateUserResponseSchema,
+    GetUserProfileResponseSchema
 )
 
 from src.presentation.http.openapi import generate_examples
@@ -28,16 +34,35 @@ router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
 @router.get(
     path="/me",
-    response_model=GetCurrentUserResponseSchema,
+    response_model=GetUserProfileResponseSchema,
     status_code=status.HTTP_200_OK,
     responses=generate_examples(is_auth=True),
     response_model_exclude_none=True,
 )
 @inject
 async def get_my_profile(
+        interactor: FromDishka[GetUserProfileInteractor],
         user: GetCurrentUserResponseDTO = Depends(get_current_user),
-) -> GetCurrentUserResponseSchema:
-    return GetCurrentUserMapper.to_response_schema(user)
+) -> GetUserProfileResponseSchema:
+    dto = await interactor(user["id"])
+    return GetUserProfileMapper.to_response_schema(dto)
+
+
+@router.get(
+    path="/{user_id}",
+    response_model=GetUserProfileResponseSchema,
+    status_code=status.HTTP_200_OK,
+    responses=generate_examples(UserNotFoundException, is_auth=True),
+    response_model_exclude_none=True,
+)
+@inject
+async def get_user_profile(
+        interactor: FromDishka[GetUserProfileInteractor],
+        user_id: UUID,
+        _: GetCurrentUserResponseDTO = Depends(get_current_user),
+) -> GetUserProfileResponseSchema:
+    dto = await interactor(user_id)
+    return GetUserProfileMapper.to_response_schema(dto)
 
 
 @router.patch(
@@ -50,6 +75,7 @@ async def get_my_profile(
 @inject
 async def update_my_profile(
         interactor: FromDishka[UpdateUserInteractor],
+        _: GetCurrentUserResponseDTO = Depends(get_current_user),
         avatar: Optional[UploadFile] = File(default=None),
         username: Optional[str] = Form(default=None),
         password: Optional[str] = Form(default=None),

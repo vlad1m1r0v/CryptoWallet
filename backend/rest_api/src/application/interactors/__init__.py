@@ -4,6 +4,7 @@ from src.application.interactors.auth import (
 )
 from src.application.interactors.user import (
     GetCurrentUserInteractor,
+GetUserProfileInteractor,
     UpdateUserInteractor,
 )
 from src.application.interactors.wallet import (
@@ -25,6 +26,7 @@ __all__ = [
     'RegisterInteractor',
     'LoginInteractor',
     'GetCurrentUserInteractor',
+    'GetUserProfileInteractor',
     'UpdateUserInteractor',
     'PublishCreateWalletInteractor',
     'PublishImportWalletInteractor',

@@ -5,8 +5,9 @@ from src.domain.value_objects import (
     EntityId,
     Email
 )
-
 from src.domain.entities import User
+
+from src.application.dtos.response import GetUserProfileResponseDTO
 
 
 class UserGateway(Protocol):
@@ -24,4 +25,8 @@ class UserGateway(Protocol):
 
     @abstractmethod
     async def read_by_email(self, email: Email) -> User | None:
+        ...
+
+    @abstractmethod
+    async def get_user_profile(self, user_id: EntityId) -> GetUserProfileResponseDTO | None:
         ...
