@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -36,3 +38,16 @@ class SqlaProductGateway(ProductGateway):
         result = await self._session.execute(stmt)
         model: ProductM = result.scalar_one()
         return ProductMapper.to_dto(model)
+
+    async def get_products(self) -> list[ProductResponseDTO]:
+        stmt = (
+            select(ProductM)
+            .options(
+                joinedload(ProductM.wallet)
+                .joinedload(WalletM.asset)
+            )
+        )
+
+        result = await self._session.execute(stmt)
+        models: Sequence[ProductM] = result.scalars().all()
+        return ProductMapper.to_dto_m2m(models)

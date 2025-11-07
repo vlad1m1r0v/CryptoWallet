@@ -14,7 +14,8 @@ from src.domain.exceptions import (
 
 from src.application.dtos.response import GetCurrentUserResponseDTO
 from src.application.interactors import (
-    CreateProductInteractor
+    CreateProductInteractor,
+    GetProductsInteractor
 )
 
 from src.presentation.http.schemas import (
@@ -31,7 +32,7 @@ router = APIRouter(prefix="/products", tags=["Products"])
 
 @router.post(
     path="",
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_201_CREATED,
     responses=generate_examples(
         WalletNotFoundException,
         UserIsNotOwnerOfWalletException,
@@ -63,3 +64,18 @@ async def create_product(
     )
 
     return ProductMapper.to_response_schema(dto)
+
+
+@router.get(
+    path="",
+    status_code=status.HTTP_200_OK,
+    responses=generate_examples(is_auth=True),
+    response_model=list[ProductResponseSchema]
+)
+@inject
+async def get_products(
+        interactor: FromDishka[GetProductsInteractor],
+        _: GetCurrentUserResponseDTO = Depends(get_current_user),
+) -> list[ProductResponseSchema]:
+    dto = await interactor()
+    return ProductMapper.to_response_schema_m2m(dto)

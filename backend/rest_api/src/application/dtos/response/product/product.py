@@ -11,6 +11,7 @@ class ProductResponseAssetDTO(TypedDict):
 
 class ProductResponseWalletDTO(TypedDict):
     asset: ProductResponseAssetDTO
+    address: str
 
 
 class ProductResponseDTO(TypedDict):

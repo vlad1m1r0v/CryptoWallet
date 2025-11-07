@@ -40,6 +40,7 @@ class ProductMapper(
             photo_url=f"{config.s3.base_file_url}/{dto['photo_filename']}",
             created_at=dto["created_at"],
             wallet=ProductResponseWalletSchema(
+                address=dto["wallet"]["address"],
                 asset=ProductResponseAssetSchema(
                     symbol=dto["wallet"]["asset"]["symbol"],
                     decimals=dto["wallet"]["asset"]["decimals"]

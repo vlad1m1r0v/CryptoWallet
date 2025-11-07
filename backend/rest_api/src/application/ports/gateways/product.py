@@ -14,3 +14,7 @@ class ProductGateway(Protocol):
     @abstractmethod
     async def read_by_id(self, product_id: EntityId) -> ProductResponseDTO:
         ...
+
+    @abstractmethod
+    async def get_products(self) -> list[ProductResponseDTO]:
+        ...

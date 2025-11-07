@@ -33,7 +33,8 @@ from src.application.interactors import (
     CreatePendingTransactionInteractor,
     CompleteTransactionInteractor,
     GetTransactionsInteractor,
-    CreateProductInteractor
+    CreateProductInteractor,
+    GetProductsInteractor
 )
 
 from src.infrastructure.adapters.transaction import (
@@ -125,5 +126,6 @@ class ApplicationProvider(Provider):
         CreatePendingTransactionInteractor,
         CompleteTransactionInteractor,
         GetTransactionsInteractor,
-        CreateProductInteractor
+        CreateProductInteractor,
+        GetProductsInteractor
     )

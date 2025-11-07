@@ -32,6 +32,7 @@ class ProductMapper:
             photo_filename=model.photo_filename,
             created_at=model.created_at,
             wallet=ProductResponseWalletDTO(
+                address=model.wallet.address,
                 asset=ProductResponseAssetDTO(
                     symbol=model.wallet.asset.symbol,
                     decimals=model.wallet.asset.decimals

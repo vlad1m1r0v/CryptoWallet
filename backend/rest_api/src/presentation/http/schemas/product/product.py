@@ -6,7 +6,10 @@ from fastapi import UploadFile
 
 from pydantic import BaseModel, Field, computed_field
 
-from src.presentation.http.schemas.fields import ProductNameStr
+from src.presentation.http.schemas.fields import (
+    ProductNameStr,
+    AddressStr
+)
 
 
 class CreateProductRequestSchema(BaseModel):
@@ -22,7 +25,7 @@ class ProductResponseAssetSchema(BaseModel):
 
 class ProductResponseWalletSchema(BaseModel):
     asset: ProductResponseAssetSchema
-
+    address: AddressStr
 
 class ProductResponseSchema(BaseModel):
     id: UUID
@@ -39,3 +42,8 @@ class ProductResponseSchema(BaseModel):
     @property
     def asset_symbol(self) -> str:
         return self.wallet.asset.symbol
+
+    @computed_field
+    @property
+    def wallet_address(self) -> AddressStr:
+        return self.wallet.address
