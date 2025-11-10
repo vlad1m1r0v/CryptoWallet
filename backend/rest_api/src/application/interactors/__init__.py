@@ -4,7 +4,7 @@ from src.application.interactors.auth import (
 )
 from src.application.interactors.user import (
     GetCurrentUserInteractor,
-GetUserProfileInteractor,
+    GetUserProfileInteractor,
     UpdateUserInteractor,
 )
 from src.application.interactors.wallet import (
@@ -27,6 +27,10 @@ from src.application.interactors.product import (
     GetProductsInteractor
 )
 
+from src.application.interactors.order import (
+    CreateOrderInteractor
+)
+
 __all__ = [
     'RegisterInteractor',
     'LoginInteractor',
@@ -44,5 +48,6 @@ __all__ = [
     'CompleteTransactionInteractor',
     'GetTransactionsInteractor',
     'CreateProductInteractor',
-    'GetProductsInteractor'
+    'GetProductsInteractor',
+    'CreateOrderInteractor'
 ]

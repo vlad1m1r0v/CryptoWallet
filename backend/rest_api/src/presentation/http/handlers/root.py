@@ -5,6 +5,7 @@ from src.presentation.http.handlers.profiles import router as profiles_router
 from src.presentation.http.handlers.wallets import router as wallet_router
 from src.presentation.http.handlers.transactions import router as transactions_router
 from src.presentation.http.handlers.products import router as products_router
+from src.presentation.http.handlers.orders import router as orders_router
 
 router = APIRouter()
 
@@ -13,3 +14,4 @@ router.include_router(profiles_router)
 router.include_router(wallet_router)
 router.include_router(transactions_router)
 router.include_router(products_router)
+router.include_router(orders_router)

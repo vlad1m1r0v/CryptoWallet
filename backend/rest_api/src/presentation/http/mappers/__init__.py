@@ -22,6 +22,10 @@ from src.presentation.http.mappers.product import (
     ProductMapper
 )
 
+from src.presentation.http.mappers.order import (
+    OrderMapper
+)
+
 __all__ = [
     'LoginUserMapper',
     'RegisterUserMapper',
@@ -31,5 +35,6 @@ __all__ = [
     'WalletsListMapper',
     'PublishCreateTransactionMapper',
     'GetTransactionsMapper',
-    'ProductMapper'
+    'ProductMapper',
+    'OrderMapper'
 ]

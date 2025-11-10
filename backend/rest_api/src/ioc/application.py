@@ -15,7 +15,8 @@ from src.application.ports.gateways import (
     WalletGateway,
     AssetGateway,
     TransactionGateway,
-    ProductGateway
+    ProductGateway,
+    OrderGateway
 )
 from src.application.interactors import (
     RegisterInteractor,
@@ -34,7 +35,8 @@ from src.application.interactors import (
     CompleteTransactionInteractor,
     GetTransactionsInteractor,
     CreateProductInteractor,
-    GetProductsInteractor
+    GetProductsInteractor,
+    CreateOrderInteractor
 )
 
 from src.infrastructure.adapters.transaction import (
@@ -48,7 +50,8 @@ from src.infrastructure.adapters.gateways import (
     SqlaAssetGateway,
     SqlaWalletGateway,
     SqlaTransactionGateway,
-    SqlaProductGateway
+    SqlaProductGateway,
+    SqlaOrderGateway
 )
 
 
@@ -110,6 +113,11 @@ class ApplicationProvider(Provider):
         provides=ProductGateway
     )
 
+    order_gateway = provide(
+        source=SqlaOrderGateway,
+        provides=OrderGateway
+    )
+
     interactors = provide_all(
         RegisterInteractor,
         LoginInteractor,
@@ -127,5 +135,6 @@ class ApplicationProvider(Provider):
         CompleteTransactionInteractor,
         GetTransactionsInteractor,
         CreateProductInteractor,
-        GetProductsInteractor
+        GetProductsInteractor,
+        CreateOrderInteractor
     )

@@ -35,6 +35,10 @@ from src.domain.exceptions.wallet import (
     WalletNotFoundException
 )
 
+from src.domain.exceptions.product import (
+    ProductNotFoundException
+)
+
 __all__ = [
     "ValueObjectException",
     "FieldRequiredException",
@@ -63,5 +67,6 @@ __all__ = [
     "WalletAlreadyExistsException",
     "UserIsNotOwnerOfWalletException",
     "NotEnoughBalanceOnWalletException",
-    "WalletNotFoundException"
+    "WalletNotFoundException",
+    "ProductNotFoundException"
 ]

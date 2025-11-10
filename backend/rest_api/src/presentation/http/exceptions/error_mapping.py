@@ -12,7 +12,8 @@ from src.domain.exceptions import (
     WalletNotFoundException,
     UserIsNotOwnerOfWalletException,
     NotEnoughBalanceOnWalletException,
-    ValueObjectException
+    ValueObjectException,
+    ProductNotFoundException
 )
 
 from src.infrastructure.exceptions.auth import (
@@ -38,7 +39,8 @@ DOMAIN_EXCEPTION_MAP: dict[int, list[type[Exception]]] = {
     status.HTTP_404_NOT_FOUND: [
         EmailNotFoundException,
         UserNotFoundException,
-        WalletNotFoundException
+        WalletNotFoundException,
+        ProductNotFoundException
     ],
     status.HTTP_409_CONFLICT: [
         EmailAlreadyExistsException,

@@ -5,4 +5,4 @@ from uuid import UUID
 @dataclass(frozen=True, slots=True, kw_only=True)
 class CreateOrderRequestDTO:
     product_id: UUID
-    wallet_id: str
+    wallet_id: UUID
