@@ -12,7 +12,8 @@ from src.domain.exceptions import (
 
 from src.application.dtos.response import GetCurrentUserResponseDTO
 from src.application.interactors import (
-    CreateOrderInteractor
+    CreateOrderInteractor,
+    GetOrdersInteractor
 )
 
 from src.presentation.http.schemas import (
@@ -52,3 +53,18 @@ async def create_order(
     )
 
     return OrderMapper.to_response_schema(dto)
+
+
+@router.get(
+    path="",
+    status_code=status.HTTP_200_OK,
+    responses=generate_examples(is_auth=True),
+    response_model=list[OrderResponseSchema]
+)
+@inject
+async def get_orders(
+        interactor: FromDishka[GetOrdersInteractor],
+        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+) -> list[OrderResponseSchema]:
+    dto = await interactor(user_id=user["id"])
+    return OrderMapper.to_response_schema_m2m(dto)
