@@ -7,9 +7,10 @@ from src.domain.enums import TransactionStatusEnum
 
 from src.infrastructure.persistence.database.models.base import Base
 
-
 if TYPE_CHECKING:
     from src.infrastructure.persistence.database.models.wallet import Wallet
+    from src.infrastructure.persistence.database.models.order import Order
+
 
 class Transaction(Base):
     __tablename__ = "transactions"
@@ -25,3 +26,13 @@ class Transaction(Base):
     created_at = Column(TIMESTAMP(timezone=True), nullable=True)
 
     wallet: Mapped["Wallet"] = relationship(back_populates="transactions")
+    payment_order: Mapped["Order"] = relationship(
+        back_populates="payment_transaction",
+        primaryjoin="Order.payment_transaction_id == Transaction.id",
+        uselist=False
+    )
+    return_order: Mapped["Order"] = relationship(
+        back_populates="return_transaction",
+        primaryjoin="Order.return_transaction_id == Transaction.id",
+        uselist=False
+    )

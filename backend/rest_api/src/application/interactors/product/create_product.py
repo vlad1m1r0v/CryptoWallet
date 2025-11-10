@@ -69,4 +69,4 @@ class CreateProductInteractor:
         self._product_gateway.add(entity)
         await self._transaction_manager.commit()
 
-        return await self._product_gateway.read_by_id(entity.id_)
+        return await self._product_gateway.get_product(entity.id_)

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import Column, String, DECIMAL, TIMESTAMP, ForeignKey, UUID
 from sqlalchemy.orm import relationship, Mapped
@@ -9,6 +9,7 @@ from src.infrastructure.persistence.database.models.base import Base
 
 if TYPE_CHECKING:
     from src.infrastructure.persistence.database.models.wallet import Wallet
+    from src.infrastructure.persistence.database.models.order import Order
 
 class Product(Base):
     __tablename__ = "products"
@@ -21,3 +22,9 @@ class Product(Base):
     created_at = Column(TIMESTAMP(timezone=True), nullable=False)
 
     wallet: Mapped["Wallet"] = relationship(back_populates="products")
+
+    orders: Mapped[List["Order"]] = relationship(
+        back_populates="product",
+        uselist=True,
+        cascade="all, delete-orphan",
+    )

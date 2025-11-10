@@ -3,11 +3,13 @@ from src.application.ports.gateways.asset import AssetGateway
 from src.application.ports.gateways.wallet import WalletGateway
 from src.application.ports.gateways.transaction import TransactionGateway
 from src.application.ports.gateways.product import ProductGateway
+from src.application.ports.gateways.order import OrderGateway
 
 __all__ = [
     'UserGateway',
     'AssetGateway',
     'WalletGateway',
     'TransactionGateway',
-    'ProductGateway'
+    'ProductGateway',
+    'OrderGateway'
 ]

@@ -6,6 +6,7 @@ from src.infrastructure.persistence.database.mappers.wallets_list import Wallets
 from src.infrastructure.persistence.database.mappers.transaction import TransactionMapper
 from src.infrastructure.persistence.database.mappers.transactions_list import TransactionsPaginatedMapper
 from src.infrastructure.persistence.database.mappers.product import ProductMapper
+from src.infrastructure.persistence.database.mappers.order import OrderMapper
 
 __all__ = [
     'UserMapper',
@@ -15,5 +16,6 @@ __all__ = [
     'WalletsListMapper',
     'TransactionMapper',
     'TransactionsPaginatedMapper',
-    'ProductMapper'
+    'ProductMapper',
+    'OrderMapper'
 ]

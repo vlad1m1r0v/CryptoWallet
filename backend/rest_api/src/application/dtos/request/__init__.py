@@ -25,6 +25,10 @@ from src.application.dtos.request.product import (
     CreateProductRequestDTO
 )
 
+from src.application.dtos.request.order import (
+    CreateOrderRequestDTO
+)
+
 __all__ = [
     "LoginUserRequestDTO",
     "RegisterUserRequestDTO",
@@ -38,4 +42,5 @@ __all__ = [
     "UpdateTransactionRequestDTO",
     "GetTransactionsRequestDTO",
     "CreateProductRequestDTO",
+    "CreateOrderRequestDTO"
 ]

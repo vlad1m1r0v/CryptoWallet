@@ -1,5 +1,12 @@
 from typing import Sequence
 
+from src.domain.value_objects import (
+    EntityId,
+    Filename,
+    Timestamp,
+    ProductName,
+    ProductPrice,
+)
 from src.domain.entities.product import Product as ProductE
 
 from src.application.dtos.response import (
@@ -21,6 +28,17 @@ class ProductMapper:
             price=product.price.value,
             photo_filename=product.photo_filename.value,
             created_at=product.created_at.value
+        )
+
+    @staticmethod
+    def to_entity(model: ProductM) -> ProductE:
+        return ProductE(
+            id_=EntityId(model.id),
+            wallet_id=EntityId(model.wallet_id),
+            name=ProductName(model.name),
+            price=ProductPrice(model.price),
+            photo_filename=Filename(model.photo_filename),
+            created_at=Timestamp(model.created_at)
         )
 
     @staticmethod
