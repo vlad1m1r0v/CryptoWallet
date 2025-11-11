@@ -13,6 +13,7 @@ from src.application.dtos.response import (
     OrderResponseProductWalletDTO,
     OrderResponseProductDTO,
     OrderResponseTransactionDTO,
+    OrderResponseWalletDTO,
     OrderResponseDTO
 )
 
@@ -50,6 +51,9 @@ class OrderMapper:
             id=model.id,
             status=model.status,
             created_at=model.created_at,
+            wallet=OrderResponseWalletDTO(
+                address=model.wallet.address
+            ),
             payment_transaction=OrderResponseTransactionDTO(
                 transaction_hash=model.payment_transaction.transaction_hash
             ) if model.payment_transaction else None,

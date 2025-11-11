@@ -27,9 +27,14 @@ class OrderResponseTransactionDTO(TypedDict):
     transaction_hash: str
 
 
+class OrderResponseWalletDTO(TypedDict):
+    address: str
+
+
 class OrderResponseDTO(TypedDict):
     id: UUID
     product: OrderResponseProductDTO
+    wallet: OrderResponseWalletDTO
     payment_transaction: Optional[OrderResponseTransactionDTO]
     return_transaction: Optional[OrderResponseTransactionDTO]
     status: OrderStatusEnum

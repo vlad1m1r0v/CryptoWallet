@@ -31,11 +31,16 @@ class SqlaOrderGateway(OrderGateway):
         stmt = (
             select(OrderM)
             .options(
+                # Order -> Product -> Wallet -> Asset
                 joinedload(OrderM.product)
                 .joinedload(ProductM.wallet)
                 .joinedload(WalletM.asset),
+                # Order -> Payment Transaction
                 joinedload(OrderM.payment_transaction),
-                joinedload(OrderM.return_transaction)
+                # Order -> Return Transaction
+                joinedload(OrderM.return_transaction),
+                # Order -> Wallet
+                joinedload(OrderM.wallet)
             )
             .where(OrderM.id == order_id.value)
         )
@@ -50,16 +55,21 @@ class SqlaOrderGateway(OrderGateway):
         stmt = (
             select(OrderM)
             .options(
+                # Order -> Product -> Wallet -> Asset
                 joinedload(OrderM.product)
-                .joinedload(ProductM.wallet)
-                .joinedload(WalletM.asset),
+                .joinedload(ProductM.wallet.of_type(wallet_alias))
+                .joinedload(wallet_alias.asset),
+                # Order -> Product -> Wallet -> User
                 joinedload(OrderM.product)
-                .joinedload(ProductM.wallet)
-                .joinedload(WalletM.user),
+                .joinedload(ProductM.wallet.of_type(wallet_alias))
+                .joinedload(wallet_alias.user),
+                # Order -> Payment Transaction
                 joinedload(OrderM.payment_transaction),
-                joinedload(OrderM.return_transaction)
+                # Order -> Return Transaction
+                joinedload(OrderM.return_transaction),
+                # Order -> Wallet
+                joinedload(OrderM.wallet)
             )
-            .join(wallet_alias, OrderM.wallet)
             .where(and_(wallet_alias.user_id == user_id.value))
         )
         result = await self._session.execute(stmt)

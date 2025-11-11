@@ -3,6 +3,7 @@ from src.application.dtos.response.order.order import (
     OrderResponseProductWalletDTO,
     OrderResponseProductDTO,
     OrderResponseTransactionDTO,
+    OrderResponseWalletDTO,
     OrderResponseDTO
 )
 
@@ -11,5 +12,6 @@ __all__ = [
     'OrderResponseProductWalletDTO',
     'OrderResponseProductDTO',
     'OrderResponseTransactionDTO',
+    'OrderResponseWalletDTO',
     'OrderResponseDTO'
 ]
