@@ -55,20 +55,23 @@ class OrderMapper:
                 address=model.wallet.address
             ),
             payment_transaction=OrderResponseTransactionDTO(
-                transaction_hash=model.payment_transaction.transaction_hash
+                transaction_hash=model.payment_transaction.transaction_hash,
+                transaction_fee=model.payment_transaction.transaction_fee
             ) if model.payment_transaction else None,
             return_transaction=OrderResponseTransactionDTO(
-                transaction_hash=model.return_transaction.transaction_hash
+                transaction_hash=model.return_transaction.transaction_hash,
+                transaction_fee=model.return_transaction.transaction_fee
             ) if model.return_transaction else None,
             product=OrderResponseProductDTO(
                 name=model.product.name,
                 price=model.product.price,
                 photo_filename=model.product.photo_filename,
                 wallet=OrderResponseProductWalletDTO(
-                    address=model.wallet.address,
+                    address=model.product.wallet.address,
+                    encrypted_private_key=model.product.wallet.private_key,
                     asset=OrderResponseProductWalletAssetDTO(
-                        symbol=model.wallet.asset.symbol,
-                        decimals=model.wallet.asset.decimals
+                        symbol=model.product.wallet.asset.symbol,
+                        decimals=model.product.wallet.asset.decimals
                     )
                 )
             )

@@ -1,4 +1,5 @@
 from src.domain.value_objects import (
+    EntityId,
     TransactionHash,
     TransactionStatus,
     TransactionFee,
@@ -8,10 +9,14 @@ from src.domain.value_objects import (
 from src.domain.entities import Transaction
 from src.domain.services import TransactionService
 
-from src.application.ports.transaction import TransactionManager
+from src.application.ports.transaction import (
+    TransactionManager,
+    Flusher
+)
 from src.application.ports.gateways import (
     WalletGateway,
-    TransactionGateway
+    TransactionGateway,
+    OrderGateway
 )
 from src.application.dtos.request import CreatePendingTransactionRequestDTO
 
@@ -20,13 +25,17 @@ class CreatePendingTransactionInteractor:
             self,
             wallet_gateway: WalletGateway,
             transaction_gateway: TransactionGateway,
+            order_gateway: OrderGateway,
             transaction_service: TransactionService,
             transaction_manager: TransactionManager,
+            flusher: Flusher
     ) -> None:
         self._wallet_gateway = wallet_gateway
         self._transaction_gateway = transaction_gateway
+        self._order_gateway = order_gateway
         self._transaction_service = transaction_service
         self._transaction_manager = transaction_manager
+        self._flusher = flusher
 
     async def __call__(self, data: CreatePendingTransactionRequestDTO) -> None:
         transactions: list[Transaction] = []
@@ -62,5 +71,19 @@ class CreatePendingTransactionInteractor:
             transactions.append(transaction)
 
         self._transaction_gateway.add_many(transactions)
+
+        await self._flusher.flush()
+
+        if data.payment_order_id:
+            await self._order_gateway.update(
+                order_id=EntityId(data.payment_order_id),
+                payment_transaction_id=transactions[0].id_
+            )
+
+        if data.return_order_id:
+            await self._order_gateway.update(
+                order_id=EntityId(data.return_order_id),
+                return_transaction_id=transactions[0].id_
+            )
 
         await self._transaction_manager.commit()

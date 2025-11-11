@@ -1,6 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import TypedDict
+from typing import TypedDict, Optional
 from uuid import UUID
 
 from src.domain.enums import TransactionStatusEnum
@@ -34,6 +34,8 @@ class SaveImportWalletRequestDict(TypedDict):
 
 
 class CreatePendingTransactionRequestDict(TypedDict):
+    payment_order_id: Optional[UUID]
+    return_order_id: Optional[UUID]
     hash: str
     from_address: str
     to_address: str

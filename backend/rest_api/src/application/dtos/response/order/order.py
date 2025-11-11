@@ -14,6 +14,7 @@ class OrderResponseProductWalletAssetDTO(TypedDict):
 class OrderResponseProductWalletDTO(TypedDict):
     asset: OrderResponseProductWalletAssetDTO
     address: str
+    encrypted_private_key: bytes
 
 
 class OrderResponseProductDTO(TypedDict):
@@ -25,6 +26,7 @@ class OrderResponseProductDTO(TypedDict):
 
 class OrderResponseTransactionDTO(TypedDict):
     transaction_hash: str
+    transaction_fee: Decimal
 
 
 class OrderResponseWalletDTO(TypedDict):
