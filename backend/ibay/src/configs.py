@@ -13,6 +13,14 @@ class PostgresConfig(BaseModel):
     password: str = Field(alias="POSTGRES_PASSWORD")
     database: str = Field(alias="POSTGRES_DB")
 
+    @property
+    def async_url(self) -> str:
+        return f"postgresql+asyncpg://{self.login}:{self.password}@{self.host}:{self.port}/{self.database}"
+
+    @property
+    def sync_url(self) -> str:
+        return f"postgresql+psycopg2://{self.login}:{self.password}@{self.host}:{self.port}/{self.database}"
+
 
 class RabbitMQConfig(BaseModel):
     host: str = Field(alias="RABBITMQ_HOST")
@@ -32,3 +40,8 @@ class Config(BaseModel):
 
 
 config = Config()
+
+__all__ = [
+    config,
+    Config
+]

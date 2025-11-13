@@ -32,3 +32,17 @@ async def create_order_handler(
         repository: FromDishka[OrderRepositoryPort]
 ) -> None:
     await repository.add_order(OrderDTO(**data))
+
+
+class UpdateOrderDict(TypedDict):
+    id: UUID
+    status: OrderStatusEnum
+
+
+@amqp_router.subscriber("rest_api.update_order")
+@inject
+async def update_order_handler(
+        data: UpdateOrderDict,
+        repository: FromDishka[OrderRepositoryPort]
+) -> None:
+    await repository.update_order(order_id=data["id"], status=data["status"])

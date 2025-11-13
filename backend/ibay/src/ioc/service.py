@@ -1,6 +1,6 @@
 from dishka import Provider, provide, Scope
 
-from src.services import (
+from src.faststream.services import (
     RequestServicePort,
     RequestServiceAdapter
 )

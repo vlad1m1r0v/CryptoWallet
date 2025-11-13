@@ -5,9 +5,5 @@ endif
 	poetry run alembic revision --autogenerate -m "$(name)"
 upgrade:
 	poetry run alembic upgrade head
-worker:
-	taskiq worker src.taskiq:broker src.taskiq
-scheduler:
-	taskiq scheduler src.taskiq:scheduler src.taskiq
 faststream:
 	faststream run src.faststream:app
