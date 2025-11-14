@@ -48,3 +48,6 @@ class UpdateTransactionRequestDict(TypedDict):
     hash: str
     transaction_status: TransactionStatusEnum
     created_at: datetime
+
+class OrderRequestDict(TypedDict):
+    order_id: UUID

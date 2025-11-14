@@ -2,12 +2,13 @@ from src.domain.enums import (
     TransactionStatusEnum,
     OrderStatusEnum
 )
-
+from src.domain.ports import SecretEncryptor
 from src.domain.value_objects import (
     EntityId,
     Timestamp,
     TransactionStatus,
     TransactionHash,
+    EncryptedPrivateKey,
     Balance,
     OrderStatus
 )
@@ -29,13 +30,15 @@ class CompleteTransactionInteractor:
             wallet_gateway: WalletGateway,
             order_gateway: OrderGateway,
             transaction_manager: TransactionManager,
-            event_publisher: EventPublisher
+            event_publisher: EventPublisher,
+            secret_encryptor: SecretEncryptor
     ) -> None:
         self._transaction_gateway = transaction_gateway
         self._wallet_gateway = wallet_gateway
         self._order_gateway = order_gateway
         self._transaction_manager = transaction_manager
         self._event_publisher = event_publisher
+        self._secret_encryptor = secret_encryptor
 
     async def __call__(self, data: UpdateTransactionRequestDTO) -> None:
         await self._transaction_gateway.update_many(
@@ -49,20 +52,33 @@ class CompleteTransactionInteractor:
         if order:
 
             if order["status"] == OrderStatusEnum.NEW:
-
+                # payment transaction is complete
                 if order["payment_transaction"]["transaction_hash"] == data.hash:
-
+                    # if payment transaction failed
                     if data.transaction_status == TransactionStatusEnum.FAILED:
-                        await self._event_publisher.update_order(
-                            order_id=order["id"],
-                            status=OrderStatusEnum.FAILED
-                        )
-
+                        # change status to FAILED
                         await self._order_gateway.update(
                             order_id=EntityId(order["id"]),
                             status=OrderStatus(OrderStatusEnum.FAILED)
                         )
+                        # change status to FAILED in marketplace microservice
+                        await self._event_publisher.update_order(
+                            order_id=order["id"],
+                            status=OrderStatusEnum.FAILED
+                        )
+                        # create return transaction
+                        await self._event_publisher.create_transaction(
+                            # from product seller
+                            private_key=self._secret_encryptor.decrypt(
+                                EncryptedPrivateKey(order["product"]["wallet"]["encrypted_private_key"])
+                            ).value,
+                            # to customer
+                            to_address=order["wallet"]["address"],
+                            amount=order["product"]["price"] - 1.5 * order["payment_transaction"]["transaction_fee"],
+                            return_order_id=order["id"]
+                        )
 
+                    # if payment transaction completed successfully
                     if data.transaction_status == TransactionStatusEnum.SUCCESSFUL:
                         await self._event_publisher.pay_order(order_id=order["id"])
 

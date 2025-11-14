@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TypedDict, NotRequired
 
 from decimal import Decimal
 
@@ -61,6 +61,8 @@ async def import_wallet_handler(
 
 
 class CreateTransactionData(TypedDict):
+    payment_order_id: NotRequired[UUID]
+    return_order_id: NotRequired[UUID]
     private_key: str
     to_address: str
     amount: Decimal
@@ -74,11 +76,7 @@ async def create_transaction_handler(
         ethereum_service: FromDishka[EthereumServicePort]
 ) -> TransactionSchema:
     logger.info(f"Received message on rest_api.create_transaction: {data}")
-    tx = await ethereum_service.create_transaction(
-        private_key=data["private_key"],
-        to_address=data["to_address"],
-        amount=data["amount"]
-    )
+    tx = await ethereum_service.create_transaction(**data)
     logger.info(f"Created pending transaction: {tx.model_dump()}")
     return tx.model_dump()
 

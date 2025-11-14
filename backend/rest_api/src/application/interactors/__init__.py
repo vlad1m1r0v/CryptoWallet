@@ -29,6 +29,7 @@ from src.application.interactors.product import (
 
 from src.application.interactors.order import (
     CreateOrderInteractor,
+    UpdateOrderInteractor,
     GetOrdersInteractor
 )
 
@@ -51,5 +52,6 @@ __all__ = [
     'CreateProductInteractor',
     'GetProductsInteractor',
     'CreateOrderInteractor',
+    'UpdateOrderInteractor',
     'GetOrdersInteractor'
 ]

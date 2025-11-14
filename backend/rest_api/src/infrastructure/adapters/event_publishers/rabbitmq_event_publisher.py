@@ -60,7 +60,7 @@ class RabbitMQEventPublisher(EventPublisher):
         )
 
     async def create_order(self, order_id: UUID, status: OrderStatusEnum, created_at: datetime) -> None:
-        message = {"order_id": order_id, "status": status, "created_at": created_at}
+        message = {"id": order_id, "status": status, "created_at": created_at}
 
         await self._broker.publish(
             routing_key="rest_api.create_order",
@@ -68,7 +68,7 @@ class RabbitMQEventPublisher(EventPublisher):
         )
 
     async def pay_order(self, order_id: UUID) -> None:
-        message = {"order_id": order_id}
+        message = {"id": order_id}
 
         await self._broker.publish(
             routing_key="rest_api.pay_order",
@@ -76,7 +76,7 @@ class RabbitMQEventPublisher(EventPublisher):
         )
 
     async def update_order(self, order_id: UUID, status: OrderStatusEnum) -> None:
-        message = {"order_id": order_id, "status": status}
+        message = {"id": order_id, "status": status}
 
         await self._broker.publish(
             routing_key="rest_api.update_order",

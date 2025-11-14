@@ -14,6 +14,8 @@ class TransactionStatusEnum(StrEnum):
 
 
 class TransactionSchema(BaseModel):
+    payment_order_id: Optional[UUID] = None
+    return_order_id: Optional[UUID] = None
     hash: str
     from_address: str = Field(alias="from", serialization_alias="from_address")
     to_address: str = Field(alias="to", serialization_alias="to_address")

@@ -34,20 +34,20 @@ class RequestServiceAdapter(RequestServicePort):
                 task = asyncio.create_task(self._fetch_url(session, HTTP_URL, semaphore))
                 tasks.append(task)
 
-        start_time = time.time()
-        logger.info(f"Execution of {REQUESTS_AMOUNT} requests started with concurrency limit {CONCURRENCY_LIMIT}.")
+            start_time = time.time()
+            logger.info(f"Execution of {REQUESTS_AMOUNT} requests started with concurrency limit {CONCURRENCY_LIMIT}.")
 
-        try:
-            await asyncio.gather(*tasks)
+            try:
+                await asyncio.gather(*tasks)
 
-        except Exception as exc:
-            logger.error(f"Execution stopped. Exception message:\n {exc}")
-            is_successful = False
+            except Exception as exc:
+                logger.error(f"Execution stopped. Exception message:\n {exc}")
+                is_successful = False
 
-        end_time = time.time()
-        duration = end_time - start_time
+            end_time = time.time()
+            duration = end_time - start_time
 
-        message = f"Execution ended successfully." if is_successful else f"Execution failed."
-        logger.info(f"{message}.\nDuration: {duration} seconds.")
+            message = f"Execution ended successfully." if is_successful else f"Execution failed."
+            logger.info(f"{message}.\nDuration: {duration} seconds.")
 
         return is_successful

@@ -50,10 +50,10 @@ class OrderMapper(
                 )
             ),
             payment_transaction=OrderResponseTransactionSchema(
-                transaction_hash=dto["payment_transaction"]["hash"],
+                transaction_hash=dto["payment_transaction"]["transaction_hash"],
             ) if dto["payment_transaction"] else None,
             return_transaction=OrderResponseTransactionSchema(
-                transaction_hash=dto["return_transaction"]["hash"],
+                transaction_hash=dto["return_transaction"]["transaction_hash"],
             ) if dto["return_transaction"] else None,
         )
 

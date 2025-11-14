@@ -41,6 +41,8 @@ class EthereumServicePort(ABC):
             amount: Decimal,
             gas: int = GAS,
             gas_price_gwei: int = GAS_PRICE_GWEI,
+            payment_order_id: UUID | None = None,
+            return_order_id: UUID | None = None,
     ) -> TransactionSchema:
         ...
 

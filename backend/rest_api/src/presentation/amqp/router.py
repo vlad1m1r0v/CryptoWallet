@@ -3,18 +3,22 @@ from dishka.integrations.faststream import inject
 
 from faststream.rabbit import RabbitRouter
 
+from src.domain.enums import OrderStatusEnum
+
 from src.application.interactors import (
     SaveCreateWalletInteractor,
     SaveImportWalletInteractor,
     CreatePendingTransactionInteractor,
-    CompleteTransactionInteractor
+    CompleteTransactionInteractor,
+    UpdateOrderInteractor
 )
 
 from src.presentation.amqp.types import (
     SaveCreateWalletRequestDict,
     SaveImportWalletRequestDict,
     CreatePendingTransactionRequestDict,
-    UpdateTransactionRequestDict
+    UpdateTransactionRequestDict,
+    OrderRequestDict
 )
 
 from src.presentation.amqp.mappers import (
@@ -65,3 +69,39 @@ async def complete_transaction_handler(
 ) -> None:
     dto = UpdateTransactionRequestMapper.to_dataclass(data)
     return await interactor(dto)
+
+
+@amqp_router.subscriber("ibay.fail_order")
+@inject
+async def fail_order_handler(
+        data: OrderRequestDict,
+        interactor: FromDishka[UpdateOrderInteractor]
+) -> None:
+    await interactor(order_id=data["order_id"], status=OrderStatusEnum.FAILED)
+
+
+@amqp_router.subscriber("ibay.deliver_order")
+@inject
+async def deliver_order_handler(
+        data: OrderRequestDict,
+        interactor: FromDishka[UpdateOrderInteractor]
+) -> None:
+    await interactor(order_id=data["order_id"], status=OrderStatusEnum.DELIVERING)
+
+
+@amqp_router.subscriber("ibay.return_order")
+@inject
+async def return_order_handler(
+        data: OrderRequestDict,
+        interactor: FromDishka[UpdateOrderInteractor]
+) -> None:
+    await interactor(order_id=data["order_id"], status=OrderStatusEnum.RETURNED)
+
+
+@amqp_router.subscriber("ibay.complete_order")
+@inject
+async def return_order_handler(
+        data: OrderRequestDict,
+        interactor: FromDishka[UpdateOrderInteractor]
+) -> None:
+    await interactor(order_id=data["order_id"], status=OrderStatusEnum.COMPLETED)

@@ -37,6 +37,7 @@ from src.application.interactors import (
     CreateProductInteractor,
     GetProductsInteractor,
     CreateOrderInteractor,
+    UpdateOrderInteractor,
     GetOrdersInteractor
 )
 
@@ -138,5 +139,7 @@ class ApplicationProvider(Provider):
         CreateProductInteractor,
         GetProductsInteractor,
         CreateOrderInteractor,
-        GetOrdersInteractor
+        UpdateOrderInteractor,
+        GetOrdersInteractor,
+
     )

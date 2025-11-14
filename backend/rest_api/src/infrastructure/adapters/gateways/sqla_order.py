@@ -131,7 +131,7 @@ class SqlaOrderGateway(OrderGateway):
             values_to_update["payment_transaction_id"] = payment_transaction_id.value
 
         if return_transaction_id:
-            values_to_update["OrderM.return_transaction_id"] = return_transaction_id.value
+            values_to_update["return_transaction_id"] = return_transaction_id.value
 
         stmt = update(OrderM).where(OrderM.id == order_id.value).values(**values_to_update).returning(OrderM)
         result = await self._session.execute(stmt)

@@ -115,6 +115,8 @@ class EthereumServiceAdapter(EthereumServicePort):
             amount: Decimal,
             gas: int = GAS,
             gas_price_gwei: int = GAS_PRICE_GWEI,
+            payment_order_id: UUID | None = None,
+            return_order_id: UUID | None = None
     ) -> TransactionSchema:
         account = Account.from_key(private_key)
         from_address = account.address
@@ -138,14 +140,22 @@ class EthereumServiceAdapter(EthereumServicePort):
 
         await self._storage.add_transaction_hash(tx_hash_hex)
 
-        return TransactionSchema(**{
+        schema_data = {
             "hash": tx_hash_hex,
             "from": from_address,
             "to": to_address,
             "value": Decimal(amount),
             "gas": gas,
             "gasPrice": gas_price
-        })
+        }
+
+        if payment_order_id:
+            schema_data.setdefault("payment_order_id", payment_order_id)
+
+        if return_order_id:
+            schema_data.setdefault("return_order_id", return_order_id)
+
+        return TransactionSchema(**schema_data)
 
     async def send_free_eth(self, to_address: str):
         return await self.create_transaction(
@@ -156,7 +166,7 @@ class EthereumServiceAdapter(EthereumServicePort):
 
 
 class BlockListenerAdapter(BlockListenerPort):
-    _poll_interval: float = 20.0
+    _poll_interval: float = 10.0
 
     def __init__(
             self,
