@@ -1,4 +1,5 @@
 from src.infrastructure.persistence.database.models.user import User
+from src.infrastructure.persistence.database.models.permissions import Permissions
 from src.infrastructure.persistence.database.models.asset import Asset
 from src.infrastructure.persistence.database.models.wallet import Wallet
 from src.infrastructure.persistence.database.models.transaction import Transaction
@@ -7,6 +8,7 @@ from src.infrastructure.persistence.database.models.order import Order
 
 __all__ = [
     'User',
+    'Permissions',
     'Asset',
     'Wallet',
     'Transaction',

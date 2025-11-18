@@ -1,9 +1,9 @@
-from src.application.dtos.response.wallet.get_wallets import (
-    WalletsListItemResponseAssetDTO,
-    WalletsListItemResponseDTO
+from src.application.dtos.response.wallet.wallet import (
+    WalletResponseAssetDTO,
+    WalletResponseDTO
 )
 
 __all__ = [
-    'WalletsListItemResponseDTO',
-    'WalletsListItemResponseAssetDTO'
+    'WalletResponseDTO',
+    'WalletResponseAssetDTO'
 ]

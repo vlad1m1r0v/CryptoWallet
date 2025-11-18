@@ -3,10 +3,10 @@ from typing import Protocol
 
 from src.domain.enums import AssetNetworkTypeEnum
 
-from src.domain.entities import Asset
+from src.application.dtos.response import AssetResponseDTO
 
 
 class AssetGateway(Protocol):
     @abstractmethod
-    async def read_by_network_type(self, network_type: AssetNetworkTypeEnum) -> Asset:
+    async def read(self, network_type: AssetNetworkTypeEnum) -> AssetResponseDTO | None:
         ...

@@ -21,8 +21,8 @@ class Asset(Base):
     name = Column(String(255), nullable=False)
     symbol = Column(String(50), nullable=False, unique=True)
 
-    network = Column(Enum(AssetNetworkTypeEnum), nullable=False)
-    asset_type = Column(Enum(AssetTypeEnum), nullable=True)
+    network = Column(Enum(AssetNetworkTypeEnum, native_enum=False), nullable=False)
+    asset_type = Column(Enum(AssetTypeEnum, nativate_enum=False), nullable=True)
 
     decimals = Column(Integer, nullable=False)
     contract_address = Column(String(100), nullable=True)

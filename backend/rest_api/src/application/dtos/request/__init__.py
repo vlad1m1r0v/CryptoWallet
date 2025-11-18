@@ -4,7 +4,6 @@ from src.application.dtos.request.auth import (
 )
 
 from src.application.dtos.request.user import (
-    GetCurrentUserRequestDTO,
     UpdateUserRequestDTO
 )
 
@@ -18,7 +17,8 @@ from src.application.dtos.request.transaction import (
     PublishCreateTransactionRequestDTO,
     CreatePendingTransactionRequestDTO,
     UpdateTransactionRequestDTO,
-    GetTransactionsRequestDTO
+    GetTransactionsRequestDTO,
+    TransactionSortField
 )
 
 from src.application.dtos.request.product import (
@@ -33,7 +33,6 @@ __all__ = [
     "LoginUserRequestDTO",
     "RegisterUserRequestDTO",
     "UpdateUserRequestDTO",
-    "GetCurrentUserRequestDTO",
     "SaveCreateWalletRequestDTO",
     "SaveImportWalletRequestTransactionDTO",
     "SaveImportWalletRequestDTO",
@@ -41,6 +40,7 @@ __all__ = [
     "CreatePendingTransactionRequestDTO",
     "UpdateTransactionRequestDTO",
     "GetTransactionsRequestDTO",
+    "TransactionSortField",
     "CreateProductRequestDTO",
     "CreateOrderRequestDTO"
 ]

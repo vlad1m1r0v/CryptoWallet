@@ -1,14 +1,13 @@
 from abc import abstractmethod
 from typing import (
     Protocol,
-    Optional
+    Optional,
+    overload,
+    Union
 )
+from uuid import UUID
 
-from src.domain.value_objects import (
-    EntityId,
-    OrderStatus,
-    TransactionHash
-)
+from src.domain.enums import OrderStatusEnum
 from src.domain.entities import Order
 
 from src.application.dtos.response import OrderResponseDTO
@@ -16,29 +15,33 @@ from src.application.dtos.response import OrderResponseDTO
 
 class OrderGateway(Protocol):
     @abstractmethod
-    def add(self, order: Order) -> Order:
+    def add(self, order: Order) -> None:
+        ...
+
+    @overload
+    @abstractmethod
+    async def read(self, order_id: UUID) -> OrderResponseDTO | None:
+        ...
+
+    @overload
+    @abstractmethod
+    async def read(self, tx_hash: str) -> OrderResponseDTO | None:
         ...
 
     @abstractmethod
-    async def get_order(self, order_id: EntityId) -> OrderResponseDTO:
+    async def read(self, arg: Union[str, UUID]) -> OrderResponseDTO | None:
         ...
 
     @abstractmethod
-    async def get_order_by_tx_hash(self, tx_hash: TransactionHash) -> OrderResponseDTO | None:
-        ...
-
-    @abstractmethod
-    async def get_orders(self, user_id: EntityId) -> list[OrderResponseDTO]:
+    async def list(self, user_id: UUID) -> list[OrderResponseDTO]:
         ...
 
     @abstractmethod
     async def update(
             self,
-            order_id: EntityId,
-            status: Optional[OrderStatus] = None,
-            payment_transaction_id: Optional[EntityId] = None,
-            return_transaction_id: Optional[EntityId] = None
-    ) -> Order:
+            order_id: UUID,
+            status: Optional[OrderStatusEnum] = None,
+            payment_transaction_id: Optional[UUID] = None,
+            return_transaction_id: Optional[UUID] = None
+    ) -> None:
         ...
-
-

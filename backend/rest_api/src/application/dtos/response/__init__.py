@@ -6,21 +6,25 @@ from src.application.dtos.response.auth import (
 )
 
 from src.application.dtos.response.user import (
-    UpdateUserResponseDTO,
-    GetCurrentUserResponseDTO,
-    GetUserProfileResponseDTO,
-    GetUserProfileResponseWalletDTO
+    JwtPayloadDTO,
+    UserResponseDTO,
+    UserResponseWalletDTO,
+    UserResponsePermissionsDTO
+)
+
+from src.application.dtos.response.asset import (
+    AssetResponseDTO
 )
 
 from src.application.dtos.response.wallet import (
-    WalletsListItemResponseAssetDTO,
-    WalletsListItemResponseDTO
+    WalletResponseAssetDTO,
+    WalletResponseDTO
 )
 
 from src.application.dtos.response.transaction import (
-    TransactionsListItemResponseAssetDTO,
-    TransactionsListItemResponseWalletDTO,
-    TransactionsListItemResponseDTO
+    TransactionResponseAssetDTO,
+    TransactionResponseWalletDTO,
+    TransactionResponseDTO
 )
 
 from src.application.dtos.response.product import (
@@ -43,15 +47,16 @@ __all__ = [
     "PaginatedResponseDTO",
     "LoginUserResponseDTO",
     "RegisterUserResponseDTO",
-    "UpdateUserResponseDTO",
-    "GetCurrentUserResponseDTO",
-    "GetUserProfileResponseDTO",
-    "GetUserProfileResponseWalletDTO",
-    "WalletsListItemResponseAssetDTO",
-    "WalletsListItemResponseDTO",
-    "TransactionsListItemResponseAssetDTO",
-    "TransactionsListItemResponseWalletDTO",
-    "TransactionsListItemResponseDTO",
+    "UserResponseDTO",
+    "UserResponseWalletDTO",
+    "UserResponsePermissionsDTO",
+    "UserResponseDTO",
+    "AssetResponseDTO",
+    "WalletResponseAssetDTO",
+    "WalletResponseDTO",
+    "TransactionResponseAssetDTO",
+    "TransactionResponseWalletDTO",
+    "TransactionResponseDTO",
     "ProductResponseAssetDTO",
     "ProductResponseWalletDTO",
     "ProductResponseDTO",

@@ -1,35 +1,40 @@
-from src.domain.value_objects import (
-    Username,
-    PasswordHash,
-    Filename,
-    EntityId,
-    Email
+from src.application.dtos.response import (
+    UserResponseDTO,
+    UserResponseWalletDTO,
+    UserResponsePermissionsDTO
 )
 from src.domain.entities import User as UserE
 
 from src.infrastructure.persistence.database.models import User as UserM
-from src.infrastructure.persistence.database.mappers.base import BaseMapper
 
 
-class UserMapper(BaseMapper[UserE, UserM]):
+class UserMapper:
     @staticmethod
-    def to_entity(model: UserM) -> UserE:
-        return UserE(
-            id_=EntityId(model.id),
-            username=Username(model.username),
-            email=Email(model.email),
-            password_hash=PasswordHash(value=model.password_hash),
-            avatar_filename=Filename(model.avatar_filename) if model.avatar_filename else None,
-            is_active=model.is_active,
-        )
-
-    @staticmethod
-    def to_model(user: UserE) -> UserM:
+    def to_model(entity: UserE) -> UserM:
         return UserM(
-            id=user.id_.value,
-            username=user.username.value,
-            email=user.email.value,
-            password_hash=user.password_hash.value,
-            avatar_filename=user.avatar_filename.value if user.avatar_filename else None,
-            is_active=user.is_active,
+            id=entity.id_.value,
+            username=entity.username.value,
+            email=entity.email.value,
+            password_hash=entity.password_hash.value,
+            avatar_filename=entity.avatar_filename.value if entity.avatar_filename else None,
+            is_active=entity.is_active,
         )
+
+    @staticmethod
+    def to_dto(model: UserM) -> UserResponseDTO:
+        return UserResponseDTO(
+            id=model.id,
+            username=model.username,
+            email=model.email,
+            avatar_filename=model.avatar_filename,
+            wallets=[
+                UserResponseWalletDTO(
+                    id=wallet.id,
+                    address=wallet.address
+                ) for wallet in model.wallets
+            ],
+            permissions=UserResponsePermissionsDTO(
+                has_chat_access=model.permissions.has_chat_access
+            )
+        )
+

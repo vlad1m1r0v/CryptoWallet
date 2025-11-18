@@ -7,17 +7,17 @@ from src.domain.enums import TransactionStatusEnum
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class TransactionsListItemResponseAssetDTO:
+class TransactionResponseAssetDTO:
     symbol: str
     decimals: int
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class TransactionsListItemResponseWalletDTO:
-    asset: TransactionsListItemResponseAssetDTO
+class TransactionResponseWalletDTO:
+    asset: TransactionResponseAssetDTO
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class TransactionsListItemResponseDTO:
+class TransactionResponseDTO:
     id: UUID
     transaction_hash: str
     from_address: str
@@ -26,4 +26,4 @@ class TransactionsListItemResponseDTO:
     transaction_fee: Decimal
     transaction_status: TransactionStatusEnum
     created_at: datetime
-    wallet: TransactionsListItemResponseWalletDTO
+    wallet: TransactionResponseWalletDTO

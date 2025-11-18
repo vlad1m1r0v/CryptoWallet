@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Protocol
+from uuid import UUID
 
-from src.domain.value_objects import EntityId
 from src.domain.entities import Product
 
 from src.application.dtos.response import ProductResponseDTO
@@ -9,17 +9,13 @@ from src.application.dtos.response import ProductResponseDTO
 
 class ProductGateway(Protocol):
     @abstractmethod
-    def add(self, product: Product) -> Product:
+    def add(self, product: Product) -> None:
         ...
 
     @abstractmethod
-    async def get_product(self, product_id: EntityId) -> ProductResponseDTO:
+    async def read(self, product_id: UUID) -> ProductResponseDTO | None:
         ...
 
     @abstractmethod
-    async def get_products(self) -> list[ProductResponseDTO]:
-        ...
-
-    @abstractmethod
-    async def read_by_id(self, product_id: EntityId) -> Product | None:
+    async def list(self) -> list[ProductResponseDTO]:
         ...

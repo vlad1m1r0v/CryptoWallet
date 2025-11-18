@@ -1,110 +1,111 @@
-from typing import Optional
+from datetime import datetime
+from typing import Optional, List
+from uuid import UUID
 
-from sqlalchemy import select, update, func
+from sqlalchemy import select, update, func, Select
 
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.domain.entities import Transaction as TransactionE, Transaction
-from src.domain.value_objects import (
-    EntityId,
-    Timestamp,
-    TransactionHash,
-    TransactionStatus
-)
+from src.domain.entities import Transaction
+from src.domain.enums import TransactionStatusEnum
 
-from src.application.enums import (
-    SortOrderEnum,
-    TransactionSortFieldEnum
-)
+from src.application.enums import SortOrderEnum
 from src.application.ports.gateways import TransactionGateway
+from src.application.dtos.request import TransactionSortField
 from src.application.dtos.response import (
     PaginatedResponseDTO,
-    TransactionsListItemResponseDTO
+    TransactionResponseDTO
 )
+
 from src.infrastructure.consts import RECORDS_PER_PAGE
 from src.infrastructure.persistence.database.models import (
     Wallet as WalletM,
     Transaction as TransactionM
 )
-from src.infrastructure.persistence.database.mappers import (
-    TransactionMapper,
-    TransactionsPaginatedMapper
-)
+from src.infrastructure.persistence.database.mappers import TransactionMapper
 
 
 class SqlaTransactionGateway(TransactionGateway):
-    async def get_one_by_hash(self, tx_hash: TransactionHash) -> Transaction:
-        stmt = select(TransactionM).where(TransactionM.transaction_hash == tx_hash.value)
-        result = await self._session.execute(stmt)
-        model: TransactionM = result.scalars().first()
-        return TransactionMapper.to_entity(model)
-
     def __init__(self, session: AsyncSession):
         self._session = session
 
-    def add_many(self, transactions: list[TransactionE]) -> list[TransactionE]:
-        models: list[TransactionM] = TransactionMapper.to_model_m2m(transactions)
+    def add(self, transactions: List[Transaction]) -> None:
+        models: list[TransactionM] = TransactionMapper.to_model(transactions)
         self._session.add_all(models)
-        return transactions
 
-    async def update_many(
-            self,
-            created_at: Timestamp,
-            tx_hash: TransactionHash,
-            status: TransactionStatus,
-    ) -> list[TransactionE]:
-        stmt = update(TransactionM).where(
-            TransactionM.transaction_hash == tx_hash.value
-        ).values(
-            created_at=created_at.value,
-            transaction_status=status.value
-        ).returning(TransactionM)
+    async def read(self, tx_hash: str) -> TransactionResponseDTO | None:
+        stmt = (
+            select(TransactionM)
+            .options(joinedload(TransactionM.wallet).joinedload(WalletM.asset))
+            .where(TransactionM.transaction_hash == tx_hash)
+        )
 
         result = await self._session.execute(stmt)
-        models = result.scalars().all()
-        return TransactionMapper.to_entity_m2m(models)
+        model = result.scalars().first()
 
-    async def get_transactions(
+        if not model:
+            return None
+
+        return TransactionMapper.to_dto(model)
+
+    async def update(
             self,
-            wallet_id: EntityId,
-            sort_by: Optional[TransactionSortFieldEnum] = TransactionSortFieldEnum.CREATED_AT,
+            created_at: datetime,
+            tx_hash: str,
+            status: TransactionStatusEnum
+    ) -> None:
+        stmt = update(TransactionM).where(
+            TransactionM.transaction_hash == tx_hash
+        ).values(
+            created_at=created_at,
+            transaction_status=status
+        )
+
+        await self._session.execute(stmt)
+
+    async def list(
+            self,
+            wallet_id: UUID,
+            sort: Optional[TransactionSortField] = "created_at",
             order: Optional[SortOrderEnum] = SortOrderEnum.ASC,
             page: Optional[int] = 1
-    ) -> PaginatedResponseDTO[TransactionsListItemResponseDTO]:
+    ) -> PaginatedResponseDTO[TransactionResponseDTO]:
         sort_field_map = {
-            TransactionSortFieldEnum.CREATED_AT: TransactionM.created_at,
-            TransactionSortFieldEnum.TRANSACTION_FEE: TransactionM.transaction_fee,
-            TransactionSortFieldEnum.STATUS: TransactionM.transaction_status
+            "created_at": TransactionM.created_at,
+            "transaction_fee": TransactionM.transaction_fee,
+            "status": TransactionM.transaction_status
         }
-        sort_column = sort_field_map.get(sort_by, TransactionM.created_at)
+        sort_column = sort_field_map.get(str(sort))
 
-        stmt = (
+        stmt: Select = (
             select(TransactionM)
             .options(
                 joinedload(TransactionM.wallet).joinedload(WalletM.asset)
             )
-            .where(TransactionM.wallet_id == wallet_id.value)
+            .where(TransactionM.wallet_id == wallet_id)
             .order_by(
                 sort_column.asc() if order == SortOrderEnum.ASC else sort_column.desc()
             )
+        )
+
+        result = await self._session.execute(
+            stmt
             .limit(RECORDS_PER_PAGE)
             .offset(RECORDS_PER_PAGE * (page - 1))
         )
-
-        result = await self._session.execute(stmt)
         models = result.scalars().unique().all()
 
         count_stmt = (
             select(func.count())
             .select_from(TransactionM)
-            .where(TransactionM.wallet_id == wallet_id.value)
+            .where(TransactionM.wallet_id == wallet_id)
         )
 
         total_records = (await self._session.execute(count_stmt)).scalar_one()
         total_pages = (total_records + RECORDS_PER_PAGE - 1) // RECORDS_PER_PAGE
 
-        return TransactionsPaginatedMapper.to_paginated_dto(
+        return TransactionMapper.to_dto(
             models=models,
             page=page,
             total_pages=total_pages,

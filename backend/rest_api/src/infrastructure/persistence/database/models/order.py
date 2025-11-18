@@ -29,7 +29,11 @@ class Order(Base):
         ForeignKey("transactions.id", ondelete="CASCADE"),
         nullable=True
     )
-    status = Column(Enum(OrderStatusEnum), server_default=OrderStatusEnum.NEW, nullable=False)
+    status = Column(
+        Enum(OrderStatusEnum, native_enum=False),
+        server_default=OrderStatusEnum.NEW,
+        nullable=False
+    )
     created_at = Column(TIMESTAMP(timezone=True))
 
     wallet: Mapped["Wallet"] = relationship(back_populates="orders")

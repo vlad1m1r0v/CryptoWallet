@@ -14,4 +14,4 @@ RUN poetry install --no-root --no-interaction --no-ansi
 
 COPY . .
 
-ENTRYPOINT ["/bin/bash", "-c", "poetry run make run_migrations && poetry run make run_server"]
+ENTRYPOINT ["/bin/bash", "-c", "poetry run make migrate && poetry run make server"]

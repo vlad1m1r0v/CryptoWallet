@@ -1,40 +1,31 @@
-from src.domain.value_objects import (
-    EntityId,
-    Address,
-    AssetName,
-    AssetSymbol,
-    AssetNetworkType,
-    AssetType,
-    Decimals
-)
 from src.domain.entities import Asset as AssetE
 
-from src.infrastructure.persistence.database.mappers.base import BaseMapper
+from src.application.dtos.response import AssetResponseDTO
+
 from src.infrastructure.persistence.database.models import Asset as AssetM
 
 
-class AssetMapper(BaseMapper[AssetE, AssetM]):
+class AssetMapper:
     @staticmethod
-    def to_entity(model: AssetM) -> AssetE:
-        return AssetE(
-            id_=EntityId(model.id),
-            asset_name=AssetName(model.name),
-            asset_symbol=AssetSymbol(model.symbol),
-            asset_network_type=AssetNetworkType(model.network),
-            asset_type=AssetType(model.asset_type),
-            decimals=Decimals(model.decimals),
-            contract_address=Address(model.contract_address) if model.contract_address else None
-
+    def to_model(entity: AssetE) -> AssetM:
+        return AssetM(
+            id=entity.id_.value,
+            name=entity.asset_name.value,
+            symbol=entity.asset_symbol.value,
+            network=entity.asset_network_type.value,
+            asset_type=entity.asset_type.value,
+            decimals=entity.decimals.value,
+            contract_address=entity.contract_address.value if entity.contract_address else None
         )
 
     @staticmethod
-    def to_model(asset: AssetE) -> AssetM:
-        return AssetM(
-            id=asset.id_.value,
-            name=asset.asset_name.value,
-            symbol=asset.asset_symbol.value,
-            network=asset.asset_network_type.value,
-            asset_type=asset.asset_type.value,
-            decimals=asset.decimals.value,
-            contract_address=asset.contract_address.value if asset.contract_address else None
+    def to_dto(model: AssetM) -> AssetResponseDTO:
+        return AssetResponseDTO(
+            id=model.id,
+            name=model.name,
+            symbol=model.symbol,
+            network=model.network,
+            asset_type=model.asset_type,
+            decimals=model.decimals,
+            contract_address=model.contract_address
         )

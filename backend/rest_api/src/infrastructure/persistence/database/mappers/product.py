@@ -1,12 +1,5 @@
-from typing import Sequence
+from typing import Sequence, overload
 
-from src.domain.value_objects import (
-    EntityId,
-    Filename,
-    Timestamp,
-    ProductName,
-    ProductPrice,
-)
 from src.domain.entities.product import Product as ProductE
 
 from src.application.dtos.response import (
@@ -20,29 +13,18 @@ from src.infrastructure.persistence.database.models import Product as ProductM
 
 class ProductMapper:
     @staticmethod
-    def to_model(product: ProductE) -> ProductM:
+    def to_model(entity: ProductE) -> ProductM:
         return ProductM(
-            id=product.id_.value,
-            wallet_id=product.wallet_id.value,
-            name=product.name.value,
-            price=product.price.value,
-            photo_filename=product.photo_filename.value,
-            created_at=product.created_at.value
+            id=entity.id_.value,
+            wallet_id=entity.wallet_id.value,
+            name=entity.name.value,
+            price=entity.price.value,
+            photo_filename=entity.photo_filename.value,
+            created_at=entity.created_at.value
         )
 
     @staticmethod
-    def to_entity(model: ProductM) -> ProductE:
-        return ProductE(
-            id_=EntityId(model.id),
-            wallet_id=EntityId(model.wallet_id),
-            name=ProductName(model.name),
-            price=ProductPrice(model.price),
-            photo_filename=Filename(model.photo_filename),
-            created_at=Timestamp(model.created_at)
-        )
-
-    @staticmethod
-    def to_dto(model: ProductM) -> ProductResponseDTO:
+    def __base_to_dto(model: ProductM) -> ProductResponseDTO:
         return ProductResponseDTO(
             id=model.id,
             name=model.name,
@@ -58,6 +40,19 @@ class ProductMapper:
             )
         )
 
-    @classmethod
-    def to_dto_m2m(cls, models: Sequence[ProductM]) -> list[ProductResponseDTO]:
-        return [cls.to_dto(model) for model in models]
+    @overload
+    @staticmethod
+    def to_dto(model: ProductM) -> ProductResponseDTO:
+        ...
+
+    @overload
+    @staticmethod
+    def to_dto(models: Sequence[ProductM]) -> list[ProductResponseDTO]:
+        ...
+
+    @staticmethod
+    def to_dto(arg: ProductM | Sequence[ProductM]) -> ProductResponseDTO | list[ProductResponseDTO]:
+        if isinstance(arg, ProductM):
+            return ProductMapper.__base_to_dto(arg)
+        else:
+            return [ProductMapper.__base_to_dto(arg) for arg in arg]

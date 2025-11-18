@@ -21,7 +21,7 @@ class Transaction(Base):
     from_address = Column(String(255), nullable=False)
     to_address = Column(String(255), nullable=False)
     value = Column(DECIMAL(precision=100, scale=0), nullable=False)
-    transaction_status = Column(Enum(TransactionStatusEnum), nullable=False)
+    transaction_status = Column(Enum(TransactionStatusEnum, native_enum=False), nullable=False)
     transaction_fee = Column(DECIMAL(precision=100, scale=0), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=True)
 

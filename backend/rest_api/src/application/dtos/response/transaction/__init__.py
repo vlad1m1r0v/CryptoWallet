@@ -1,11 +1,11 @@
-from src.application.dtos.response.transaction.transactions_list import (
-    TransactionsListItemResponseAssetDTO,
-    TransactionsListItemResponseWalletDTO,
-    TransactionsListItemResponseDTO
+from src.application.dtos.response.transaction.transaction import (
+    TransactionResponseAssetDTO,
+    TransactionResponseWalletDTO,
+    TransactionResponseDTO
 )
 
 __all__ = [
-    "TransactionsListItemResponseAssetDTO",
-    "TransactionsListItemResponseWalletDTO",
-    "TransactionsListItemResponseDTO"
+    "TransactionResponseAssetDTO",
+    "TransactionResponseWalletDTO",
+    "TransactionResponseDTO"
 ]

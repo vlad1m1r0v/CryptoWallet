@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
+import logging
 
 from dishka import make_async_container
 from dishka.integrations import fastapi as fastapi_integration
@@ -30,6 +31,12 @@ from src.ioc import get_providers
 from src.configs import Config, config
 
 from pydantic import ValidationError
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',  # ОНОВЛЕНИЙ РЯДОК
+    datefmt='%H:%M:%S'
+)
 
 
 def create_app() -> FastAPI:

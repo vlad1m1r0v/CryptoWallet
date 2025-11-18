@@ -1,74 +1,73 @@
-from sqlalchemy import select, update
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from typing import Union, Optional
+from uuid import UUID
 
-from src.domain.entities import User as UserE
-from src.domain.value_objects import (
-    Email,
-    EntityId
-)
+from sqlalchemy import select, update, Select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
+
+from src.domain.entities import User
 
 from src.application.ports.gateways import UserGateway
-from src.application.dtos.response.user import GetUserProfileResponseDTO
+from src.application.dtos.response import UserResponseDTO
 
 from src.infrastructure.persistence.database.models import User as UserM
-from src.infrastructure.persistence.database.mappers import (
-    UserMapper,
-    ProfileMapper
-)
+from src.infrastructure.persistence.database.mappers import UserMapper
 
 
 class SqlaUserGateway(UserGateway):
     def __init__(self, session: AsyncSession):
         self._session = session
 
-    def add(self, user: UserE) -> UserE:
+    def add(self, user: User) -> None:
         model = UserMapper.to_model(user)
         self._session.add(model)
-        return user
 
-    async def update(self, user: UserE) -> UserE:
+    async def update(
+            self,
+            user_id: UUID,
+            username: Optional[str] = None,
+            password_hash: Optional[bytes] = None,
+            avatar_filename: Optional[str] = None,
+    ) -> None:
+        values_to_update = {}
+
+        if username is not None:
+            values_to_update["username"] = username
+
+        if password_hash is not None:
+            values_to_update["password_hash"] = password_hash
+
+        if avatar_filename is not None:
+            values_to_update["avatar_filename"] = avatar_filename
+
+        if not values_to_update:
+            return
+
         stmt = (
             update(UserM)
-            .where(UserM.id == user.id_.value)
-            .values(
-                username=user.username.value,
-                avatar_filename=user.avatar_filename.value,
-                password_hash=user.password_hash.value,
-            )
-            .returning(UserM)
+            .where(UserM.id == user_id)
+            .values(**values_to_update)
         )
 
-        result = await self._session.execute(stmt)
-        updated_model = result.scalar_one()
+        await self._session.execute(stmt)
 
-        return UserMapper.to_entity(updated_model)
-
-    async def read_by_id(self, user_id: EntityId) -> UserE | None:
-        stmt = select(UserM).where(UserM.id == user_id.value)
-        result = await self._session.execute(stmt)
-        model: UserM | None = result.scalar_one_or_none()
-        if not model:
-            return None
-        return UserMapper.to_entity(model)
-
-    async def read_by_email(self, email: Email) -> UserE | None:
-        stmt = select(UserM).where(UserM.email == email.value)
-        result = await self._session.execute(stmt)
-        model: UserM | None = result.scalar_one_or_none()
-        if not model:
-            return None
-        return UserMapper.to_entity(model)
-
-    async def get_user_profile(self, user_id: EntityId) -> GetUserProfileResponseDTO | None:
-        stmt = (
-            select(UserM)
-            .options(selectinload(UserM.wallets))
-            .where(UserM.id == user_id.value)
+    async def read(self, arg: Union[UUID, str]) -> UserResponseDTO | None:
+        stmt: Select = (select(UserM)
+        .options(
+            joinedload(UserM.permissions),
+            selectinload(UserM.wallets))
         )
 
+        if isinstance(arg, UUID):
+            stmt = stmt.where(UserM.id == arg)
+
+        else:
+            stmt = stmt.where(UserM.email == arg)
+
         result = await self._session.execute(stmt)
         model: UserM | None = result.scalar_one_or_none()
+
         if not model:
             return None
-        return ProfileMapper.to_dto(model)
+
+        return UserMapper.to_dto(model)

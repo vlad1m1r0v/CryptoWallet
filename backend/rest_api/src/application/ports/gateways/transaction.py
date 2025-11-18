@@ -1,50 +1,42 @@
 from typing import Protocol, List, Optional
 from abc import abstractmethod
+from datetime import datetime
+from uuid import UUID
 
-from src.domain.value_objects import (
-    EntityId,
-    Timestamp,
-    TransactionHash,
-    TransactionStatus
-)
-
+from src.domain.enums import TransactionStatusEnum
 from src.domain.entities import Transaction
 
-from src.application.enums import (
-    SortOrderEnum,
-    TransactionSortFieldEnum
-)
-
+from src.application.enums import SortOrderEnum
+from src.application.dtos.request import TransactionSortField
 from src.application.dtos.response import (
     PaginatedResponseDTO,
-    TransactionsListItemResponseDTO
+    TransactionResponseDTO
 )
-
 
 class TransactionGateway(Protocol):
     @abstractmethod
-    def add_many(self, transactions: List[Transaction]) -> List[Transaction]:
+    def add(self, transactions: List[Transaction]) -> None:
         ...
 
     @abstractmethod
-    async def get_one_by_hash(self, tx_hash: TransactionHash) -> Transaction:
+    async def read(self, tx_hash: str) -> TransactionResponseDTO | None:
         ...
 
     @abstractmethod
-    async def update_many(
+    async def update(
             self,
-            created_at: Timestamp,
-            tx_hash: TransactionHash,
-            status: TransactionStatus,
-    ) -> List[Transaction]:
+            created_at: datetime,
+            tx_hash: str,
+            status: TransactionStatusEnum,
+    ) -> None:
         ...
 
     @abstractmethod
-    async def get_transactions(
+    async def list(
             self,
-            wallet_id: EntityId,
-            sort_by: Optional[TransactionSortFieldEnum] = TransactionSortFieldEnum.CREATED_AT,
+            wallet_id: UUID,
+            sort: Optional[TransactionSortField] = "created_at",
             order: Optional[SortOrderEnum] = SortOrderEnum.ASC,
             page: Optional[int] = 1
-    ) -> PaginatedResponseDTO[TransactionsListItemResponseDTO]:
+    ) -> PaginatedResponseDTO[TransactionResponseDTO]:
         ...
