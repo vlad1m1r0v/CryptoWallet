@@ -25,7 +25,7 @@ from src.presentation.http.schemas import (
 from src.presentation.http.mappers import (
     WalletsListMapper
 )
-from src.presentation.http.dependencies import get_current_user
+from src.presentation.http.dependencies import jwt_payload
 from src.presentation.http.limiter import limiter
 from src.presentation.http.exceptions.exceptions import (
     TooManyRequestsException
@@ -43,7 +43,7 @@ router = APIRouter(prefix="/wallets", tags=["Wallets"])
 @inject
 async def create_eth_wallet(
         interactor: FromDishka[PublishCreateWalletInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user)
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload)
 ) -> None:
     return await interactor(user_id=user["id"])
 
@@ -57,7 +57,7 @@ async def create_eth_wallet(
 @inject
 async def get_eth_wallets(
         interactor: FromDishka[GetWalletsInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user)
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload)
 ) -> list[WalletsListItemResponseSchema]:
     result = await interactor(user_id=user["id"])
     return WalletsListMapper.to_response_schema(result)
@@ -71,7 +71,7 @@ async def get_eth_wallets(
 @inject
 async def import_eth_wallet(
         interactor: FromDishka[PublishImportWalletInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
         data: ImportWalletRequestSchema = Body()
 ) -> None:
     return await interactor(
@@ -95,7 +95,7 @@ async def import_eth_wallet(
 async def request_free_eth(
         request: Request,
         interactor: FromDishka[PublishRequestFreeETHInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
         data: FreeETHRequestSchema = Body()
 ) -> None:
     return await interactor(

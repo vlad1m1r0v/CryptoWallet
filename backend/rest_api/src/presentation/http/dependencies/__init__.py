@@ -1,5 +1,5 @@
-from src.presentation.http.dependencies.get_current_user import get_current_user
+from src.presentation.http.dependencies.jwt_payload import jwt_payload
 
 __all__ = [
-    'get_current_user'
+    'jwt_payload'
 ]

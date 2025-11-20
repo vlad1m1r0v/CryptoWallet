@@ -1,15 +1,15 @@
-from enum import StrEnum
+from enum import StrEnum, auto
 
 
 class AssetNetworkTypeEnum(StrEnum):
-    ETHEREUM = "ETHEREUM"
-    SEPOLIA = "SEPOLIA"
-    POLYGON = "POLYGON"
-    BSC = "BSC"
-    AVALANCHE = "AVALANCHE"
+    ETHEREUM = auto()
+    SEPOLIA = auto()
+    POLYGON = auto()
+    BSC = auto()
+    AVALANCHE = auto()
 
 
 class AssetTypeEnum(StrEnum):
-    NATIVE = "NATIVE"
-    ERC20 = "ERC20"
-    ERC721 = "ERC721"
+    NATIVE = auto()
+    ERC20 = auto()
+    ERC721 = auto()

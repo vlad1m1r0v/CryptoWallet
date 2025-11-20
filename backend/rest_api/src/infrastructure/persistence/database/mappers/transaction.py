@@ -56,6 +56,8 @@ class TransactionMapper:
             transaction_status=model.transaction_status,
             created_at=model.created_at,
             wallet=TransactionResponseWalletDTO(
+                user_id=model.wallet.user_id,
+                address=model.wallet.address,
                 asset=TransactionResponseAssetDTO(
                     symbol=model.wallet.asset.symbol,
                     decimals=model.wallet.asset.decimals

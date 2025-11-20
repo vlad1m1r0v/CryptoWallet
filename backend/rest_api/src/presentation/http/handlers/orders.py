@@ -21,7 +21,7 @@ from src.presentation.http.schemas import (
     OrderResponseSchema
 )
 from src.presentation.http.mappers import OrderMapper
-from src.presentation.http.dependencies import get_current_user
+from src.presentation.http.dependencies import jwt_payload
 
 from src.presentation.http.openapi import generate_examples
 
@@ -42,7 +42,7 @@ router = APIRouter(prefix="/orders", tags=["Orders"])
 @inject
 async def create_order(
         interactor: FromDishka[CreateOrderInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
         schema: CreateOrderRequestSchema = Body()
 ) -> OrderResponseSchema:
     request_dto = await OrderMapper.to_request_dto(schema)
@@ -64,7 +64,7 @@ async def create_order(
 @inject
 async def get_orders(
         interactor: FromDishka[GetOrdersInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
 ) -> list[OrderResponseSchema]:
     dto = await interactor(user_id=user["id"])
     return OrderMapper.to_response_schema_m2m(dto)

@@ -47,6 +47,7 @@ __all__ = [
     "PaginatedResponseDTO",
     "LoginUserResponseDTO",
     "RegisterUserResponseDTO",
+    "JwtPayloadDTO",
     "UserResponseDTO",
     "UserResponseWalletDTO",
     "UserResponsePermissionsDTO",

@@ -9,22 +9,21 @@ from dishka.integrations.fastapi import inject
 
 from src.domain.exceptions import UserNotFoundException
 
-from src.application.dtos.response import GetCurrentUserResponseDTO
+from src.application.dtos.response import JwtPayloadDTO
 from src.application.interactors import (
-    GetUserProfileInteractor,
+    GetUserInteractor,
     UpdateUserInteractor
 )
 
-from src.presentation.http.dependencies import get_current_user
+from src.presentation.http.dependencies import jwt_payload
 from src.presentation.http.mappers import (
     UpdateUserMapper,
-    GetUserProfileMapper
+    GetUserMapper
 )
 
 from src.presentation.http.schemas import (
     UpdateUserRequestSchema,
-    UpdateUserResponseSchema,
-    GetUserProfileResponseSchema
+    GetUserResponseSchema
 )
 
 from src.presentation.http.openapi import generate_examples
@@ -34,40 +33,40 @@ router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
 @router.get(
     path="/me",
-    response_model=GetUserProfileResponseSchema,
+    response_model=GetUserResponseSchema,
     status_code=status.HTTP_200_OK,
     responses=generate_examples(is_auth=True),
     response_model_exclude_none=True,
 )
 @inject
 async def get_my_profile(
-        interactor: FromDishka[GetUserProfileInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user),
-) -> GetUserProfileResponseSchema:
-    dto = await interactor(user["id"])
-    return GetUserProfileMapper.to_response_schema(dto)
+        interactor: FromDishka[GetUserInteractor],
+        user: JwtPayloadDTO = Depends(jwt_payload),
+) -> GetUserResponseSchema:
+    dto = await interactor(user["user_id"])
+    return GetUserMapper.to_response_schema(dto)
 
 
 @router.get(
     path="/{user_id}",
-    response_model=GetUserProfileResponseSchema,
+    response_model=GetUserResponseSchema,
     status_code=status.HTTP_200_OK,
     responses=generate_examples(UserNotFoundException, is_auth=True),
     response_model_exclude_none=True,
 )
 @inject
 async def get_user_profile(
-        interactor: FromDishka[GetUserProfileInteractor],
+        interactor: FromDishka[GetUserInteractor],
         user_id: UUID,
-        _: GetCurrentUserResponseDTO = Depends(get_current_user),
-) -> GetUserProfileResponseSchema:
+        _: JwtPayloadDTO = Depends(jwt_payload),
+) -> GetUserResponseSchema:
     dto = await interactor(user_id)
-    return GetUserProfileMapper.to_response_schema(dto)
+    return GetUserMapper.to_response_schema(dto)
 
 
 @router.patch(
     path="/me",
-    response_model=UpdateUserResponseSchema,
+    response_model=GetUserResponseSchema,
     status_code=status.HTTP_200_OK,
     responses=generate_examples(is_auth=True),
     response_model_exclude_none=True,
@@ -75,14 +74,14 @@ async def get_user_profile(
 @inject
 async def update_my_profile(
         interactor: FromDishka[UpdateUserInteractor],
-        _: GetCurrentUserResponseDTO = Depends(get_current_user),
         avatar: Optional[UploadFile] = File(default=None),
         username: Optional[str] = Form(default=None),
         password: Optional[str] = Form(default=None),
         repeat_password: Optional[str] = Form(default=None),
-        current_user: GetCurrentUserResponseDTO = Depends(get_current_user),
-) -> UpdateUserResponseSchema:
+        user: JwtPayloadDTO = Depends(jwt_payload),
+) -> GetUserResponseSchema:
     schema = UpdateUserRequestSchema(
+        user_id=user["user_id"],
         avatar=avatar,
         username=username,
         password=password,
@@ -91,9 +90,6 @@ async def update_my_profile(
 
     dto = await UpdateUserMapper.to_request_dto(schema)
 
-    result = await interactor(
-        data=dto,
-        user_id=current_user["id"]
-    )
+    result = await interactor(data=dto)
 
-    return UpdateUserMapper.to_response_schema(result)
+    return GetUserMapper.to_response_schema(result)

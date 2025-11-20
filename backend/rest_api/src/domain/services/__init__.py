@@ -3,11 +3,13 @@ from src.domain.services.wallet import WalletService
 from src.domain.services.transaction import TransactionService
 from src.domain.services.product import ProductService
 from src.domain.services.order import OrderService
+from src.domain.services.permissions import PermissionsService
 
 __all__ = [
     "UserService",
     "WalletService",
     "TransactionService",
     "ProductService",
-    "OrderService"
+    "OrderService",
+    "PermissionsService"
 ]

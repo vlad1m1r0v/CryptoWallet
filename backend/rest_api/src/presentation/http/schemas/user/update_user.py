@@ -1,13 +1,15 @@
 from typing import Optional
+from uuid import UUID
 
 from fastapi import UploadFile
 
-from pydantic import BaseModel, model_validator, EmailStr, HttpUrl
+from pydantic import BaseModel, model_validator
 
 from src.presentation.http.schemas.fields import UsernameStr, PasswordStr
 
 
 class UpdateUserRequestSchema(BaseModel):
+    user_id: UUID
     avatar: Optional[UploadFile] = None
     username: Optional[UsernameStr] = None
     password: Optional[PasswordStr] = None
@@ -19,9 +21,3 @@ class UpdateUserRequestSchema(BaseModel):
         if model.password != model.repeat_password:
             raise ValueError("Passwords do not match.")
         return model
-
-
-class UpdateUserResponseSchema(BaseModel):
-    username: UsernameStr
-    email: EmailStr
-    avatar_url: Optional[HttpUrl]

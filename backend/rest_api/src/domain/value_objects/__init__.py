@@ -43,6 +43,10 @@ from src.domain.value_objects.order import (
     OrderStatus
 )
 
+from src.domain.value_objects.permissions import (
+    HasChatAccess
+)
+
 __all__ = [
     "EntityId",
     "Timestamp",
@@ -67,5 +71,6 @@ __all__ = [
     "TransactionValue",
     "ProductName",
     "ProductPrice",
-    "OrderStatus"
+    "OrderStatus",
+    "HasChatAccess"
 ]

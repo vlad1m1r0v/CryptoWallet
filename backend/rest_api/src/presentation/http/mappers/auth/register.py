@@ -1,20 +1,13 @@
 from src.application.dtos.request import RegisterUserRequestDTO
 from src.application.dtos.response import RegisterUserResponseDTO
 
-from src.presentation.http.mappers.base import BaseMapper
 from src.presentation.http.schemas import (
     RegisterUserRequestSchema,
     RegisterUserResponseSchema
 )
 
 
-class RegisterUserMapper(
-    BaseMapper[
-        RegisterUserRequestDTO,
-        RegisterUserResponseDTO,
-        RegisterUserRequestSchema,
-        RegisterUserResponseSchema
-    ]):
+class RegisterUserMapper:
     @staticmethod
     def to_request_dto(schema: RegisterUserRequestSchema) -> RegisterUserRequestDTO:
         return RegisterUserRequestDTO(

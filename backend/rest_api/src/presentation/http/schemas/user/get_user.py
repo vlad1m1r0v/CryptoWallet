@@ -9,14 +9,19 @@ from src.presentation.http.schemas.fields import (
 )
 
 
-class GetUserProfileResponseWalletSchema(BaseModel):
+class GetUserResponsePermissionsSchema(BaseModel):
+    has_chat_access: bool
+
+
+class GetUserResponseWalletSchema(BaseModel):
     id: UUID
     address: AddressStr
 
 
-class GetUserProfileResponseSchema(BaseModel):
+class GetUserResponseSchema(BaseModel):
     id: UUID
     username: UsernameStr
     email: EmailStr
     avatar_url: Optional[str]
-    wallets: List[GetUserProfileResponseWalletSchema]
+    permissions: GetUserResponsePermissionsSchema
+    wallets: List[GetUserResponseWalletSchema]

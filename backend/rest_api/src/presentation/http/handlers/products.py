@@ -23,7 +23,7 @@ from src.presentation.http.schemas import (
     ProductResponseSchema
 )
 from src.presentation.http.mappers import ProductMapper
-from src.presentation.http.dependencies import get_current_user
+from src.presentation.http.dependencies import jwt_payload
 
 from src.presentation.http.openapi import generate_examples
 
@@ -43,7 +43,7 @@ router = APIRouter(prefix="/products", tags=["Products"])
 @inject
 async def create_product(
         interactor: FromDishka[CreateProductInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
         wallet_id: UUID = Form(),
         name: str = Form(),
         price: Decimal = Form(),
@@ -75,7 +75,7 @@ async def create_product(
 @inject
 async def get_products(
         interactor: FromDishka[GetProductsInteractor],
-        _: GetCurrentUserResponseDTO = Depends(get_current_user),
+        _: GetCurrentUserResponseDTO = Depends(jwt_payload),
 ) -> list[ProductResponseSchema]:
     dto = await interactor()
     return ProductMapper.to_response_schema_m2m(dto)

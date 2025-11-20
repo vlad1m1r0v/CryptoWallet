@@ -33,7 +33,7 @@ from src.presentation.http.mappers import (
     GetTransactionsMapper
 )
 
-from src.presentation.http.dependencies import get_current_user
+from src.presentation.http.dependencies import jwt_payload
 
 from src.presentation.http.openapi import generate_examples
 
@@ -53,7 +53,7 @@ router = APIRouter(prefix="/transactions", tags=["Transactions"])
 @inject
 async def create_transaction(
         interactor: FromDishka[PublishCreateTransactionInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
         data: PublishCreateTransactionRequestSchema = Body(),
 ) -> None:
     dto = PublishCreateTransactionMapper.to_request_dto(data)
@@ -76,7 +76,7 @@ async def create_transaction(
 @inject
 async def get_transactions(
         interactor: FromDishka[GetTransactionsInteractor],
-        user: GetCurrentUserResponseDTO = Depends(get_current_user),
+        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
         wallet_id: UUID = Query(),
         sort_by: TransactionSortFieldEnum = Query(),
         order: SortOrderEnum = Query(),

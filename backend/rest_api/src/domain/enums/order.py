@@ -1,9 +1,9 @@
-from enum import StrEnum
+from enum import StrEnum, auto
 
 
 class OrderStatusEnum(StrEnum):
-    NEW = "NEW"
-    FAILED = "FAILED"
-    DELIVERING = "DELIVERING"
-    RETURNED = "RETURNED"
-    COMPLETED = "COMPLETED"
+    NEW = auto()
+    FAILED = auto()
+    DELIVERING = auto()
+    RETURNED = auto()
+    COMPLETED = auto()

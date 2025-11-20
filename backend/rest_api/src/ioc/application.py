@@ -16,13 +16,14 @@ from src.application.ports.gateways import (
     AssetGateway,
     TransactionGateway,
     ProductGateway,
-    OrderGateway
+    OrderGateway,
+    PermissionsGateway
 )
+from src.application.ports.tasks import TaskRunner
 from src.application.interactors import (
     RegisterInteractor,
     LoginInteractor,
-    GetCurrentUserInteractor,
-    GetUserProfileInteractor,
+    GetUserInteractor,
     UpdateUserInteractor,
     PublishCreateWalletInteractor,
     PublishImportWalletInteractor,
@@ -53,8 +54,10 @@ from src.infrastructure.adapters.gateways import (
     SqlaWalletGateway,
     SqlaTransactionGateway,
     SqlaProductGateway,
-    SqlaOrderGateway
+    SqlaOrderGateway,
+    SqlaPermissionsGateway
 )
+from src.infrastructure.adapters.tasks import TaskIqTaskRunner
 
 
 class ApplicationProvider(Provider):
@@ -120,11 +123,20 @@ class ApplicationProvider(Provider):
         provides=OrderGateway
     )
 
+    permissions_gateway = provide(
+        source=SqlaPermissionsGateway,
+        provides=PermissionsGateway
+    )
+
+    task_runner = provide(
+        source=TaskIqTaskRunner,
+        provides=TaskRunner
+    )
+
     interactors = provide_all(
         RegisterInteractor,
         LoginInteractor,
-        GetCurrentUserInteractor,
-        GetUserProfileInteractor,
+        GetUserInteractor,
         UpdateUserInteractor,
         PublishCreateWalletInteractor,
         PublishImportWalletInteractor,
@@ -140,6 +152,5 @@ class ApplicationProvider(Provider):
         GetProductsInteractor,
         CreateOrderInteractor,
         UpdateOrderInteractor,
-        GetOrdersInteractor,
-
+        GetOrdersInteractor
     )

@@ -1,15 +1,10 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from src.domain.value_objects import (
-    PasswordHash,
-    RawPassword
-)
-
 
 class PasswordHasher(Protocol):
     @abstractmethod
-    def hash(self, raw_password: RawPassword) -> PasswordHash: ...
+    def hash(self, raw_password: str) -> bytes: ...
 
     @abstractmethod
-    def verify(self, *, raw_password: RawPassword, hashed_password: PasswordHash) -> bool: ...
+    def verify(self, *, raw_password: str, hashed_password: bytes) -> bool: ...

@@ -4,6 +4,7 @@ from src.infrastructure.adapters.gateways.sqla_wallet import SqlaWalletGateway
 from src.infrastructure.adapters.gateways.sqla_transaction import SqlaTransactionGateway
 from src.infrastructure.adapters.gateways.sqla_product import SqlaProductGateway
 from src.infrastructure.adapters.gateways.sqla_order import SqlaOrderGateway
+from src.infrastructure.adapters.gateways.sqla_permissions import SqlaPermissionsGateway
 
 __all__ = [
     'SqlaUserGateway',
@@ -11,5 +12,6 @@ __all__ = [
     'SqlaWalletGateway',
     'SqlaTransactionGateway',
     'SqlaProductGateway',
-    'SqlaOrderGateway'
+    'SqlaOrderGateway',
+    'SqlaPermissionsGateway'
 ]

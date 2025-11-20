@@ -1,9 +1,7 @@
-from src.presentation.http.mappers.user.get_current_user import GetCurrentUserMapper
 from src.presentation.http.mappers.user.update_user import UpdateUserMapper
-from src.presentation.http.mappers.user.get_user_profile import GetUserProfileMapper
+from src.presentation.http.mappers.user.get_user import GetUserMapper
 
 __all__ = [
-    'GetCurrentUserMapper',
     'UpdateUserMapper',
-    'GetUserProfileMapper'
+    'GetUserMapper'
 ]

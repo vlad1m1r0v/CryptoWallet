@@ -14,7 +14,9 @@ class TransactionResponseAssetDTO:
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class TransactionResponseWalletDTO:
+    user_id: UUID
     asset: TransactionResponseAssetDTO
+    address: str
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class TransactionResponseDTO:

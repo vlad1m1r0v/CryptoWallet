@@ -24,6 +24,8 @@ class UserMapper:
     def to_dto(model: UserM) -> UserResponseDTO:
         return UserResponseDTO(
             id=model.id,
+            is_active=model.is_active,
+            password_hash=model.password_hash,
             username=model.username,
             email=model.email,
             avatar_filename=model.avatar_filename,
@@ -37,4 +39,3 @@ class UserMapper:
                 has_chat_access=model.permissions.has_chat_access
             )
         )
-

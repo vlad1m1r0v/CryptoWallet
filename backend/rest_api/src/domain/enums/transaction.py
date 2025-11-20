@@ -1,7 +1,7 @@
-from enum import StrEnum
+from enum import StrEnum, auto
 
 
 class TransactionStatusEnum(StrEnum):
-    SUCCESSFUL = "SUCCESSFUL"
-    PENDING = "PENDING"
-    FAILED = "FAILED"
+    SUCCESSFUL = auto()
+    PENDING = auto()
+    FAILED = auto()

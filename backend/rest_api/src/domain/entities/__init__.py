@@ -4,6 +4,7 @@ from src.domain.entities.wallet import Wallet
 from src.domain.entities.transaction import Transaction
 from src.domain.entities.product import Product
 from src.domain.entities.order import Order
+from src.domain.entities.permissions import Permissions
 
 __all__ = [
     "User",
@@ -11,5 +12,6 @@ __all__ = [
     "Wallet",
     "Transaction",
     "Product",
-    "Order"
+    "Order",
+    "Permissions"
 ]

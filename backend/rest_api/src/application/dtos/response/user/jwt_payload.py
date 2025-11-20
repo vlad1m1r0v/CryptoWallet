@@ -3,4 +3,4 @@ from uuid import UUID
 
 
 class JwtPayloadDTO(TypedDict):
-    id: UUID
+    user_id: UUID

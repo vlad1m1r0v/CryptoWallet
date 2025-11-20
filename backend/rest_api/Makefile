@@ -1,5 +1,5 @@
 server:
-	uvicorn src.main:create_app --factory --host 0.0.0.0 --port 8000 --workers 1
+	uvicorn src.server:create_app --factory --host 0.0.0.0 --port 8000 --workers 1
 certificates:
 	@rm -rf certs
 	@mkdir -p certs

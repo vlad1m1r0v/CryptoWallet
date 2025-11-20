@@ -26,7 +26,8 @@ boto3 = ">=1.40.52,<2.0.0"
 cryptography = ">=46.0.3,<47.0.0"
 faststream = { version = ">=0.6.2,<0.7.0", extras = ["rabbit"] }
 slowapi = "^0.1.9"
-redis = "^7.0.1"
+redis = "^6.0.0"
+taskiq-redis = "^1.1.2"
 
 [tool.poetry.dev-dependencies]
 # додай сюди потрібні dev-залежності, наприклад:

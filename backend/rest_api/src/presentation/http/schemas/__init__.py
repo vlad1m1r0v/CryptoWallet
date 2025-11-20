@@ -6,12 +6,10 @@ from src.presentation.http.schemas.auth import (
     RegisterUserResponseSchema
 )
 from src.presentation.http.schemas.user import (
-    GetCurrentUserRequestSchema,
-    GetCurrentUserResponseSchema,
-    GetUserProfileResponseSchema,
-    GetUserProfileResponseWalletSchema,
-    UpdateUserRequestSchema,
-    UpdateUserResponseSchema
+    GetUserResponseSchema,
+    GetUserResponseWalletSchema,
+    GetUserResponsePermissionsSchema,
+    UpdateUserRequestSchema
 )
 from src.presentation.http.schemas.wallet import (
     ImportWalletRequestSchema,
@@ -47,12 +45,10 @@ __all__ = [
     'LoginUserResponseSchema',
     'RegisterUserRequestSchema',
     'RegisterUserResponseSchema',
-    'GetCurrentUserRequestSchema',
-    'GetCurrentUserResponseSchema',
-    'GetUserProfileResponseSchema',
-    'GetUserProfileResponseWalletSchema',
+    'GetUserResponseSchema',
+    'GetUserResponseWalletSchema',
+    'GetUserResponsePermissionsSchema',
     'UpdateUserRequestSchema',
-    'UpdateUserResponseSchema',
     'ImportWalletRequestSchema',
     'FreeETHRequestSchema',
     'WalletsListItemResponseAssetSchema',

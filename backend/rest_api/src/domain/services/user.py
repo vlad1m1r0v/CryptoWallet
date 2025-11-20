@@ -11,6 +11,7 @@ from src.domain.value_objects import (
     Username,
     Email,
     RawPassword,
+    PasswordHash,
     Filename
 )
 
@@ -33,7 +34,7 @@ class UserService:
             is_active: bool = True,
     ) -> User:
         user_id = self._id_generator()
-        password_hash = self._password_hasher.hash(raw_password)
+        password_hash = PasswordHash(self._password_hasher.hash(raw_password.value))
 
         return User(
             id_=user_id,
@@ -43,16 +44,3 @@ class UserService:
             password_hash=password_hash,
             is_active=is_active,
         )
-
-    def is_password_valid(self, user: User, raw_password: RawPassword) -> bool:
-        return self._password_hasher.verify(
-            raw_password=raw_password,
-            hashed_password=user.password_hash,
-        )
-
-    def change_password(
-            self,
-            user: User,
-            raw_password: RawPassword
-    ) -> None:
-        user.password_hash = self._password_hasher.hash(raw_password)

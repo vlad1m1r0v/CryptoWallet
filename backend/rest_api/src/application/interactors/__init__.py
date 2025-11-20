@@ -3,8 +3,7 @@ from src.application.interactors.auth import (
     LoginInteractor
 )
 from src.application.interactors.user import (
-    GetCurrentUserInteractor,
-    GetUserProfileInteractor,
+    GetUserInteractor,
     UpdateUserInteractor,
 )
 from src.application.interactors.wallet import (
@@ -36,8 +35,7 @@ from src.application.interactors.order import (
 __all__ = [
     'RegisterInteractor',
     'LoginInteractor',
-    'GetCurrentUserInteractor',
-    'GetUserProfileInteractor',
+    'GetUserInteractor',
     'UpdateUserInteractor',
     'PublishCreateWalletInteractor',
     'PublishImportWalletInteractor',

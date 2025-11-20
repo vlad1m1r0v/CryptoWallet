@@ -13,6 +13,8 @@ class UserResponsePermissionsDTO(TypedDict):
 
 class UserResponseDTO(TypedDict):
     id: UUID
+    is_active: bool
+    password_hash: bytes
     username: str
     email: str
     avatar_filename: Optional[str]

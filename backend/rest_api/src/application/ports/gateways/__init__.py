@@ -4,6 +4,7 @@ from src.application.ports.gateways.wallet import WalletGateway
 from src.application.ports.gateways.transaction import TransactionGateway
 from src.application.ports.gateways.product import ProductGateway
 from src.application.ports.gateways.order import OrderGateway
+from src.application.ports.gateways.permissions import PermissionsGateway
 
 __all__ = [
     'UserGateway',
@@ -11,5 +12,6 @@ __all__ = [
     'WalletGateway',
     'TransactionGateway',
     'ProductGateway',
-    'OrderGateway'
+    'OrderGateway',
+    'PermissionsGateway'
 ]

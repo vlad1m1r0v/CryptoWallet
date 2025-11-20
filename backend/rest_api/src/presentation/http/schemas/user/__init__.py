@@ -1,21 +1,13 @@
-from src.presentation.http.schemas.user.get_current_user import (
-    GetCurrentUserRequestSchema,
-    GetCurrentUserResponseSchema
+from src.presentation.http.schemas.user.get_user import (
+    GetUserResponseSchema,
+    GetUserResponseWalletSchema,
+    GetUserResponsePermissionsSchema
 )
-from src.presentation.http.schemas.user.get_user_profile import (
-    GetUserProfileResponseSchema,
-    GetUserProfileResponseWalletSchema
-)
-from src.presentation.http.schemas.user.update_user import (
-    UpdateUserRequestSchema,
-    UpdateUserResponseSchema
-)
+from src.presentation.http.schemas.user.update_user import UpdateUserRequestSchema
 
 __all__ = [
-    'GetCurrentUserRequestSchema',
-    'GetCurrentUserResponseSchema',
-    'GetUserProfileResponseSchema',
-    'GetUserProfileResponseWalletSchema',
-    'UpdateUserRequestSchema',
-    'UpdateUserResponseSchema'
+    'GetUserResponseSchema',
+    'GetUserResponseWalletSchema',
+    'GetUserResponsePermissionsSchema',
+    'UpdateUserRequestSchema'
 ]

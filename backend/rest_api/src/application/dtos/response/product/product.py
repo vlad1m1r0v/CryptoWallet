@@ -10,6 +10,7 @@ class ProductResponseAssetDTO(TypedDict):
 
 
 class ProductResponseWalletDTO(TypedDict):
+    user_id: UUID
     asset: ProductResponseAssetDTO
     address: str
 

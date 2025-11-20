@@ -1,9 +1,12 @@
 from uuid import UUID
+import logging
 
 from src.domain.value_objects import EntityId
 
 from src.application.ports.gateways import WalletGateway
-from src.application.dtos.response import WalletsListItemResponseDTO
+from src.application.dtos.response import WalletResponseDTO
+
+logger = logging.getLogger(__name__)
 
 
 class GetWalletsInteractor:
@@ -13,6 +16,7 @@ class GetWalletsInteractor:
     ) -> None:
         self._wallet_gateway = wallet_gateway
 
-    async def __call__(self, user_id: UUID) -> list[WalletsListItemResponseDTO]:
-        user_id = EntityId(user_id)
-        return await self._wallet_gateway.get_user_wallets(user_id)
+    async def __call__(self, user_id: UUID) -> list[WalletResponseDTO]:
+        logger.info("Getting list of wallets for user...")
+
+        return await self._wallet_gateway.list(user_id=EntityId(user_id).value)

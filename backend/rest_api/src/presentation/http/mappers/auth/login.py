@@ -5,16 +5,9 @@ from src.presentation.http.schemas import (
     LoginUserRequestSchema,
     LoginUserResponseSchema
 )
-from src.presentation.http.mappers.base import BaseMapper
 
 
-class LoginUserMapper(
-    BaseMapper[
-        LoginUserRequestDTO,
-        LoginUserResponseDTO,
-        LoginUserRequestSchema,
-        LoginUserResponseSchema
-    ]):
+class LoginUserMapper:
     @staticmethod
     def to_request_dto(schema: LoginUserRequestSchema) -> LoginUserRequestDTO:
         return LoginUserRequestDTO(

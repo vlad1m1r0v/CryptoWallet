@@ -5,8 +5,7 @@ from src.presentation.http.mappers.auth import (
 
 from src.presentation.http.mappers.user import (
     UpdateUserMapper,
-    GetUserProfileMapper,
-    GetCurrentUserMapper
+    GetUserMapper
 )
 
 from src.presentation.http.mappers.wallet import (
@@ -30,8 +29,7 @@ __all__ = [
     'LoginUserMapper',
     'RegisterUserMapper',
     'UpdateUserMapper',
-    'GetUserProfileMapper',
-    'GetCurrentUserMapper',
+    'GetUserMapper',
     'WalletsListMapper',
     'PublishCreateTransactionMapper',
     'GetTransactionsMapper',

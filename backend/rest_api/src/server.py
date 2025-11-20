@@ -34,7 +34,7 @@ from pydantic import ValidationError
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',  # ОНОВЛЕНИЙ РЯДОК
+    format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
     datefmt='%H:%M:%S'
 )
 
@@ -42,14 +42,14 @@ logging.basicConfig(
 def create_app() -> FastAPI:
     container = make_async_container(*get_providers(), context={Config: config})
 
-    broker = RabbitBroker(url=config.rabbit_mq.url)
-    broker.include_router(amqp_router)
-    faststream_integration.setup_dishka(container, broker=broker)
+    faststream_broker = RabbitBroker(url=config.rabbit_mq.url)
+    faststream_broker.include_router(amqp_router)
+    faststream_integration.setup_dishka(container=container, broker=faststream_broker)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-        async with broker:
-            await broker.start()
+        async with faststream_broker:
+            await faststream_broker.start()
             yield
 
     app = FastAPI(lifespan=lifespan)
