@@ -4,8 +4,8 @@ from typing import List
 from src.application.dtos.response import WalletsListItemResponseDTO
 
 from src.presentation.http.schemas import (
-    WalletsListItemResponseAssetSchema,
-    WalletsListItemResponseSchema
+    WalletResponseAssetSchema,
+    WalletResponseSchema
 )
 
 from src.presentation.http.mappers.base import BaseMapper
@@ -14,9 +14,9 @@ from src.presentation.http.mappers.base import BaseMapper
 class WalletsListMapper(
     BaseMapper[
         NoneType,
-        List[WalletsListItemResponseAssetSchema],
+        List[WalletResponseAssetSchema],
         NoneType,
-        List[WalletsListItemResponseSchema]
+        List[WalletResponseSchema]
     ]):
     @staticmethod
     def to_request_dto(schema: NoneType) -> NoneType:
@@ -25,13 +25,13 @@ class WalletsListMapper(
     @staticmethod
     def to_response_schema(
             dto: List[WalletsListItemResponseDTO]
-    ) -> List[WalletsListItemResponseSchema]:
+    ) -> List[WalletResponseSchema]:
         return [
-            WalletsListItemResponseSchema(
+            WalletResponseSchema(
                 id=wallet.id,
                 address=wallet.address,
                 balance=wallet.balance,
-                asset=WalletsListItemResponseAssetSchema(
+                asset=WalletResponseAssetSchema(
                     symbol=wallet.asset.symbol,
                     decimals=wallet.asset.decimals
                 )
