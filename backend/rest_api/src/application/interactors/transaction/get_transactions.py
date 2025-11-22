@@ -1,10 +1,13 @@
-from uuid import UUID
+import logging
 
 from src.domain.exceptions import (
     UserIsNotOwnerOfWalletException,
     WalletNotFoundException
 )
-from src.domain.value_objects import EntityId
+from src.domain.value_objects import (
+    EntityId,
+    Address
+)
 
 from src.application.ports.gateways import (
     WalletGateway,
@@ -15,8 +18,10 @@ from src.application.dtos.request import (
 )
 from src.application.dtos.response import (
     PaginatedResponseDTO,
-    TransactionsListItemResponseDTO
+    TransactionResponseDTO
 )
+
+logger = logging.getLogger(__name__)
 
 
 class GetTransactionsInteractor:
@@ -28,21 +33,27 @@ class GetTransactionsInteractor:
         self._wallet_gateway = wallet_gateway
         self._transaction_gateway = transaction_gateway
 
-    async def __call__(self, user_id: UUID, data: GetTransactionsRequestDTO) -> PaginatedResponseDTO[TransactionsListItemResponseDTO]:
+    async def __call__(self, data: GetTransactionsRequestDTO) -> PaginatedResponseDTO[TransactionResponseDTO]:
         wallet_id = EntityId(data.wallet_id)
-        user_id = EntityId(user_id)
+        user_id = EntityId(data.user_id)
 
-        walletE = await self._wallet_gateway.read_by_id(wallet_id)
+        wallet = await self._wallet_gateway.read(wallet_id=wallet_id.value)
 
-        if not walletE:
+        logging.info("Checking if wallet with given id exists...")
+
+        if not wallet:
             raise WalletNotFoundException()
 
-        if walletE.user_id != user_id:
-            raise UserIsNotOwnerOfWalletException(user_id=user_id, address=walletE.address)
+        logging.info("Checking if user is owner of wallet...")
 
-        return await self._transaction_gateway.get_transactions(
-            wallet_id=wallet_id,
-            sort_by=data.sort_by,
+        if wallet["user_id"] != user_id.value:
+            raise UserIsNotOwnerOfWalletException(user_id=user_id, address=Address(wallet["address"]))
+
+        logging.info("Getting list of transactions from database for wallet...")
+
+        return await self._transaction_gateway.list(
+            wallet_id=data.wallet_id,
+            sort=data.sort,
             order=data.order,
             page=data.page
         )

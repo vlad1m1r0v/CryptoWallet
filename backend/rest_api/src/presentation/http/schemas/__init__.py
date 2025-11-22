@@ -19,9 +19,9 @@ from src.presentation.http.schemas.wallet import (
 )
 from src.presentation.http.schemas.transaction import (
     GetTransactionsRequestSchema,
-    GetTransactionsListItemAssetSchema,
-    GetTransactionsListItemWalletSchema,
-    GetTransactionsListItemResponseSchema,
+    TransactionAssetSchema,
+    TransactionWalletSchema,
+    TransactionResponseSchema,
     PublishCreateTransactionRequestSchema
 )
 from src.presentation.http.schemas.product import (
@@ -54,9 +54,9 @@ __all__ = [
     'WalletResponseAssetSchema',
     'WalletResponseSchema',
     'GetTransactionsRequestSchema',
-    'GetTransactionsListItemAssetSchema',
-    'GetTransactionsListItemWalletSchema',
-    'GetTransactionsListItemResponseSchema',
+    'TransactionAssetSchema',
+    'TransactionWalletSchema',
+    'TransactionResponseSchema',
     'PublishCreateTransactionRequestSchema',
     'CreateProductRequestSchema',
     'ProductResponseAssetSchema',
