@@ -1,5 +1,5 @@
-from src.presentation.http.mappers.wallet.wallets_list import WalletsListMapper
+from src.presentation.http.mappers.wallet.wallet import WalletMapper
 
 __all__ = [
-    'WalletsListMapper'
+    'WalletMapper'
 ]

@@ -1,17 +1,17 @@
-from dataclasses import dataclass
+from typing import TypedDict
 from decimal import Decimal
 from uuid import UUID
 
 
-@dataclass(frozen=True, slots=True, kw_only=True)
-class WalletResponseAssetDTO:
+class WalletResponseAssetDTO(TypedDict):
     symbol: str
     decimals: int
 
 
-@dataclass(frozen=True, slots=True, kw_only=True)
-class WalletResponseDTO:
+class WalletResponseDTO(TypedDict):
     id: UUID
+    user_id: UUID
     address: str
     balance: Decimal
+    encrypted_private_key: bytes
     asset: WalletResponseAssetDTO

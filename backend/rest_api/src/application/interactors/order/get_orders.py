@@ -1,10 +1,12 @@
 from uuid import UUID
+import logging
 
 from src.domain.value_objects import EntityId
 
 from src.application.dtos.response import OrderResponseDTO
 from src.application.ports.gateways import OrderGateway
 
+logger = logging.getLogger(__name__)
 
 class GetOrdersInteractor:
     def __init__(self, order_gateway: OrderGateway):
@@ -12,4 +14,7 @@ class GetOrdersInteractor:
 
     async def __call__(self, user_id: UUID) -> list[OrderResponseDTO]:
         user_id = EntityId(user_id)
-        return await self._order_gateway.get_orders(user_id)
+
+        logger.info(f"Getting list of orders for user from database...")
+
+        return await self._order_gateway.list(user_id=user_id.value)

@@ -1,3 +1,5 @@
+from typing import overload
+
 from src.configs import config
 
 from src.application.dtos.request import CreateOrderRequestDTO
@@ -12,16 +14,8 @@ from src.presentation.http.schemas import (
     OrderResponseSchema
 )
 
-from src.presentation.http.mappers.base import BaseMapper
 
-
-class OrderMapper(
-    BaseMapper[
-        CreateOrderRequestDTO,
-        OrderResponseDTO,
-        CreateOrderRequestSchema,
-        OrderResponseSchema
-    ]):
+class OrderMapper:
     @staticmethod
     async def to_request_dto(schema: CreateOrderRequestSchema) -> CreateOrderRequestDTO:
         return CreateOrderRequestDTO(
@@ -30,35 +24,58 @@ class OrderMapper(
         )
 
     @staticmethod
-    def to_response_schema(
+    def __base_to_response_schema(
             dto: OrderResponseDTO
     ) -> OrderResponseSchema:
+        product_schema = OrderResponseProductSchema(
+            name=dto["product"]["name"],
+            price=dto["product"]["price"],
+            photo_url=f"{config.s3.base_file_url}/{dto['product']['photo_filename']}",
+            wallet=OrderResponseProductWalletSchema(
+                address=dto["product"]["wallet"]["address"],
+                asset=OrderResponseProductWalletAssetSchema(
+                    symbol=dto["product"]["wallet"]["asset"]["symbol"],
+                    decimals=dto["product"]["wallet"]["asset"]["decimals"]
+                )
+            )
+        )
+
+        payment_transaction_schema = OrderResponseTransactionSchema(
+            transaction_hash=dto["payment_transaction"]["transaction_hash"],
+        ) if dto.get("payment_transaction") else None
+
+        return_transaction_schema = OrderResponseTransactionSchema(
+            transaction_hash=dto["return_transaction"]["transaction_hash"],
+        ) if dto.get("return_transaction") else None
+
         return OrderResponseSchema(
             id=dto["id"],
             status=dto["status"],
             created_at=dto["created_at"],
-            product=OrderResponseProductSchema(
-                name=dto["product"]["name"],
-                price=dto["product"]["price"],
-                photo_url=f"{config.s3.base_file_url}/{dto['product']['photo_filename']}",
-                wallet=OrderResponseProductWalletSchema(
-                    address=dto["product"]["wallet"]["address"],
-                    asset=OrderResponseProductWalletAssetSchema(
-                        symbol=dto["product"]["wallet"]["asset"]["symbol"],
-                        decimals=dto["product"]["wallet"]["asset"]["decimals"]
-                    )
-                )
-            ),
-            payment_transaction=OrderResponseTransactionSchema(
-                transaction_hash=dto["payment_transaction"]["transaction_hash"],
-            ) if dto["payment_transaction"] else None,
-            return_transaction=OrderResponseTransactionSchema(
-                transaction_hash=dto["return_transaction"]["transaction_hash"],
-            ) if dto["return_transaction"] else None,
+            product=product_schema,
+            payment_transaction=payment_transaction_schema,
+            return_transaction=return_transaction_schema,
         )
 
-    @classmethod
-    def to_response_schema_m2m(
-            cls, dtos: list[OrderResponseDTO]
+    @overload
+    @staticmethod
+    def to_response_schema(
+            dto: OrderResponseDTO
+    ) -> OrderResponseSchema:
+        ...
+
+    @overload
+    @staticmethod
+    def to_response_schema(
+            dtos: list[OrderResponseDTO]
     ) -> list[OrderResponseSchema]:
-        return [cls.to_response_schema(dto) for dto in dtos]
+        ...
+
+    @staticmethod
+    def to_response_schema(
+            arg: OrderResponseDTO | list[OrderResponseDTO]
+    ) -> OrderResponseSchema | list[OrderResponseSchema]:
+        if isinstance(arg, (list, tuple)):
+            return [OrderMapper.__base_to_response_schema(dto) for dto in arg]
+        else:
+            return OrderMapper.__base_to_response_schema(arg)

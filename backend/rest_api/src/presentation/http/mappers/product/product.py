@@ -1,3 +1,5 @@
+from typing import overload, List
+
 from src.configs import config
 
 from src.application.dtos.request import CreateProductRequestDTO
@@ -10,16 +12,8 @@ from src.presentation.http.schemas import (
     ProductResponseSchema
 )
 
-from src.presentation.http.mappers.base import BaseMapper
 
-
-class ProductMapper(
-    BaseMapper[
-        CreateProductRequestDTO,
-        ProductResponseDTO,
-        CreateProductRequestSchema,
-        ProductResponseSchema
-    ]):
+class ProductMapper:
     @staticmethod
     async def to_request_dto(schema: CreateProductRequestSchema) -> CreateProductRequestDTO:
         return CreateProductRequestDTO(
@@ -30,7 +24,7 @@ class ProductMapper(
         )
 
     @staticmethod
-    def to_response_schema(
+    def __base_to_response_schema(
             dto: ProductResponseDTO
     ) -> ProductResponseSchema:
         return ProductResponseSchema(
@@ -48,8 +42,25 @@ class ProductMapper(
             )
         )
 
-    @classmethod
-    def to_response_schema_m2m(
-            cls, dtos: list[ProductResponseDTO]
+    @overload
+    @staticmethod
+    def to_response_schema(
+            dto: ProductResponseDTO
+    ) -> ProductResponseSchema:
+        ...
+
+    @overload
+    @staticmethod
+    def to_response_schema(
+            dtos: List[ProductResponseDTO]
     ) -> list[ProductResponseSchema]:
-        return [cls.to_response_schema(dto) for dto in dtos]
+        ...
+
+    @staticmethod
+    def to_response_schema(
+            arg: ProductResponseDTO | List[ProductResponseDTO]
+    ) -> ProductResponseSchema | list[ProductResponseSchema]:
+        if isinstance(arg, list):
+            return [ProductMapper.__base_to_response_schema(dto) for dto in arg]
+        else:
+            return ProductMapper.__base_to_response_schema(arg)

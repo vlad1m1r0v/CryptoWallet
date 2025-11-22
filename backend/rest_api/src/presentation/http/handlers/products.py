@@ -12,7 +12,7 @@ from src.domain.exceptions import (
     UserIsNotOwnerOfWalletException
 )
 
-from src.application.dtos.response import GetCurrentUserResponseDTO
+from src.application.dtos.response import JwtPayloadDTO
 from src.application.interactors import (
     CreateProductInteractor,
     GetProductsInteractor
@@ -43,7 +43,7 @@ router = APIRouter(prefix="/products", tags=["Products"])
 @inject
 async def create_product(
         interactor: FromDishka[CreateProductInteractor],
-        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
+        user: JwtPayloadDTO = Depends(jwt_payload),
         wallet_id: UUID = Form(),
         name: str = Form(),
         price: Decimal = Form(),
@@ -58,10 +58,7 @@ async def create_product(
 
     request_dto = await ProductMapper.to_request_dto(request_schema)
 
-    dto = await interactor(
-        user_id=user["id"],
-        data=request_dto
-    )
+    dto = await interactor(user_id=user["user_id"], data=request_dto)
 
     return ProductMapper.to_response_schema(dto)
 
@@ -75,7 +72,7 @@ async def create_product(
 @inject
 async def get_products(
         interactor: FromDishka[GetProductsInteractor],
-        _: GetCurrentUserResponseDTO = Depends(jwt_payload),
+        _: JwtPayloadDTO = Depends(jwt_payload),
 ) -> list[ProductResponseSchema]:
-    dto = await interactor()
-    return ProductMapper.to_response_schema_m2m(dto)
+    dtos = await interactor()
+    return ProductMapper.to_response_schema(dtos=dtos)

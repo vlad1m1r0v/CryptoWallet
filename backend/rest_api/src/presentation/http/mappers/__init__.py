@@ -9,7 +9,7 @@ from src.presentation.http.mappers.user import (
 )
 
 from src.presentation.http.mappers.wallet import (
-    WalletsListMapper
+    WalletMapper
 )
 
 from src.presentation.http.mappers.transaction import (
@@ -30,7 +30,7 @@ __all__ = [
     'RegisterUserMapper',
     'UpdateUserMapper',
     'GetUserMapper',
-    'WalletsListMapper',
+    'WalletMapper',
     'PublishCreateTransactionMapper',
     'GetTransactionsMapper',
     'ProductMapper',

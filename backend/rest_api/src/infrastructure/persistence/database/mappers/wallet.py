@@ -25,8 +25,10 @@ class WalletMapper:
     def __base_to_dto(model: WalletM) -> WalletResponseDTO:
         return WalletResponseDTO(
             id=model.id,
+            user_id=model.user_id,
             address=model.address,
             balance=model.balance,
+            encrypted_private_key=model.private_key,
             asset=WalletResponseAssetDTO(
                 symbol=model.asset.symbol,
                 decimals=model.asset.decimals

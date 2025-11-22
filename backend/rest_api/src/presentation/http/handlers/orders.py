@@ -10,7 +10,7 @@ from src.domain.exceptions import (
     ProductNotFoundException
 )
 
-from src.application.dtos.response import GetCurrentUserResponseDTO
+from src.application.dtos.response import JwtPayloadDTO
 from src.application.interactors import (
     CreateOrderInteractor,
     GetOrdersInteractor
@@ -42,17 +42,17 @@ router = APIRouter(prefix="/orders", tags=["Orders"])
 @inject
 async def create_order(
         interactor: FromDishka[CreateOrderInteractor],
-        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
+        user: JwtPayloadDTO = Depends(jwt_payload),
         schema: CreateOrderRequestSchema = Body()
 ) -> OrderResponseSchema:
     request_dto = await OrderMapper.to_request_dto(schema)
 
     dto = await interactor(
-        user_id=user["id"],
+        user_id=user["user_id"],
         data=request_dto
     )
 
-    return OrderMapper.to_response_schema(dto)
+    return OrderMapper.to_response_schema(dto=dto)
 
 
 @router.get(
@@ -64,7 +64,7 @@ async def create_order(
 @inject
 async def get_orders(
         interactor: FromDishka[GetOrdersInteractor],
-        user: GetCurrentUserResponseDTO = Depends(jwt_payload),
+        user: JwtPayloadDTO = Depends(jwt_payload),
 ) -> list[OrderResponseSchema]:
-    dto = await interactor(user_id=user["id"])
-    return OrderMapper.to_response_schema_m2m(dto)
+    dtos = await interactor(user_id=user["user_id"])
+    return OrderMapper.to_response_schema(dtos=dtos)

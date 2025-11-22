@@ -46,6 +46,7 @@ class SaveWalletEventDTO:
     wallet_id: UUID
     address: str
     balance: Decimal
+    asset_symbol: str
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -109,13 +110,13 @@ class CompleteTransactionEventDTO:
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class RequestFreeETHEventDTO:
-    user_id: str
+    user_id: UUID
     to_address: str
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class SaveProductEventDTO:
-    user_id: UUID
+    product_id: UUID
     name: str
     price: Decimal
     photo_filename: str
@@ -141,6 +142,6 @@ class PayOrderEventDTO:
 @dataclass(frozen=True, slots=True, kw_only=True)
 class UpdateOrderEventDTO:
     order_id: UUID
-    status: OrderStatusEnum
+    status: Optional[OrderStatusEnum] = None
     payment_transaction_hash: Optional[str] = None
     return_transaction_hash: Optional[str] = None

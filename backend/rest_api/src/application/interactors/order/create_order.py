@@ -1,16 +1,18 @@
 from uuid import UUID
+import logging
 
 from src.domain.exceptions import (
     UserIsNotOwnerOfWalletException,
     WalletNotFoundException,
     ProductNotFoundException
 )
-from src.domain.value_objects import EntityId
+from src.domain.value_objects import (
+    EntityId,
+    Address
+)
 from src.domain.services import OrderService
 from src.domain.ports import SecretEncryptor
 
-from src.application.dtos.request import CreateOrderRequestDTO
-from src.application.dtos.response import OrderResponseDTO
 from src.application.ports.gateways import (
     WalletGateway,
     ProductGateway,
@@ -18,6 +20,14 @@ from src.application.ports.gateways import (
 )
 from src.application.ports.transaction import TransactionManager
 from src.application.ports.events import EventPublisher
+from src.application.dtos.request import CreateOrderRequestDTO
+from src.application.dtos.response import OrderResponseDTO
+from src.application.dtos.events import (
+    CreateOrderEventDTO,
+    CreateTransactionEventDTO
+)
+
+logger = logging.getLogger(__name__)
 
 
 class CreateOrderInteractor:
@@ -44,18 +54,26 @@ class CreateOrderInteractor:
         wallet_id = EntityId(data.wallet_id)
         user_id = EntityId(user_id)
 
-        product = await self._product_gateway.read_by_id(product_id)
+        logger.info("Checking if product with given id exists...")
+
+        product = await self._product_gateway.read(product_id=product_id.value)
 
         if not product:
             raise ProductNotFoundException()
 
-        wallet = await self._wallet_gateway.read_by_id(wallet_id)
+        logger.info("Checking if wallet with given id exists...")
+
+        wallet = await self._wallet_gateway.read(wallet_id=wallet_id.value)
 
         if not wallet:
             raise WalletNotFoundException()
 
-        if wallet.user_id != user_id:
-            raise UserIsNotOwnerOfWalletException(user_id, wallet.address)
+        logger.info("Checking if user is the owner of wallet...")
+
+        if wallet["user_id"] != user_id.value:
+            raise UserIsNotOwnerOfWalletException(user_id, Address(wallet["address"]))
+
+        logger.info("Inserting new order record into database...")
 
         entity = self._order_service.create_order(
             wallet_id=wallet_id,
@@ -66,19 +84,27 @@ class CreateOrderInteractor:
 
         await self._transaction_manager.commit()
 
-        order = await self._order_gateway.get_order(order_id=entity.id_)
+        order = await self._order_gateway.read(order_id=entity.id_.value)
+
+        logger.info("Emitting event rest_api.create_transaction...")
 
         await self._event_publisher.create_transaction(
-            private_key=self._secret_encryptor.decrypt(wallet.encrypted_private_key).value,
-            to_address=order["product"]["wallet"]["address"],
-            amount=order["product"]["price"],
-            payment_order_id=order["id"]
+            CreateTransactionEventDTO(
+                private_key=self._secret_encryptor.decrypt(wallet["encrypted_private_key"]),
+                to_address=order["product"]["wallet"]["address"],
+                amount=order["product"]["price"],
+                payment_order_id=order["id"]
+            )
         )
 
+        logger.info("Emitting event rest_api.create_order...")
+
         await self._event_publisher.create_order(
-            order_id=order["id"],
-            status=order["status"],
-            created_at=order["created_at"]
+            CreateOrderEventDTO(
+                order_id=order["id"],
+                status=order["status"],
+                created_at=order["created_at"]
+            )
         )
 
         return order
