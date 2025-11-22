@@ -52,6 +52,7 @@ class OrderMapper:
             status=model.status,
             created_at=model.created_at,
             wallet=OrderResponseWalletDTO(
+                user_id=model.wallet.user_id,
                 address=model.wallet.address
             ),
             payment_transaction=OrderResponseTransactionDTO(

@@ -141,6 +141,7 @@ class PayOrderEventDTO:
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class UpdateOrderEventDTO:
+    user_id: UUID
     order_id: UUID
     status: Optional[OrderStatusEnum] = None
     payment_transaction_hash: Optional[str] = None

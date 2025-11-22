@@ -30,6 +30,7 @@ class OrderResponseTransactionDTO(TypedDict):
 
 
 class OrderResponseWalletDTO(TypedDict):
+    user_id: UUID
     address: str
 
 

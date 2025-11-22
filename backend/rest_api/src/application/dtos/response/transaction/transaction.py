@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from typing import TypedDict
 from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
@@ -6,20 +6,18 @@ from uuid import UUID
 from src.domain.enums import TransactionStatusEnum
 
 
-@dataclass(frozen=True, slots=True, kw_only=True)
-class TransactionResponseAssetDTO:
+class TransactionResponseAssetDTO(TypedDict):
     symbol: str
     decimals: int
 
 
-@dataclass(frozen=True, slots=True, kw_only=True)
-class TransactionResponseWalletDTO:
+class TransactionResponseWalletDTO(TypedDict):
     user_id: UUID
     asset: TransactionResponseAssetDTO
     address: str
 
-@dataclass(frozen=True, slots=True, kw_only=True)
-class TransactionResponseDTO:
+
+class TransactionResponseDTO(TypedDict):
     id: UUID
     transaction_hash: str
     from_address: str

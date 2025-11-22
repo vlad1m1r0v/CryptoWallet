@@ -34,7 +34,7 @@ class SqlaTransactionGateway(TransactionGateway):
         models: list[TransactionM] = TransactionMapper.to_model(transactions)
         self._session.add_all(models)
 
-    async def read(self, tx_hash: str) -> TransactionResponseDTO | None:
+    async def read(self, tx_hash: str) -> list[TransactionResponseDTO]:
         stmt = (
             select(TransactionM)
             .options(joinedload(TransactionM.wallet).joinedload(WalletM.asset))
@@ -42,12 +42,9 @@ class SqlaTransactionGateway(TransactionGateway):
         )
 
         result = await self._session.execute(stmt)
-        model = result.scalars().first()
+        models = result.scalars().all()
 
-        if not model:
-            return None
-
-        return TransactionMapper.to_dto(model)
+        return TransactionMapper.to_dto(models=models)
 
     async def update(
             self,

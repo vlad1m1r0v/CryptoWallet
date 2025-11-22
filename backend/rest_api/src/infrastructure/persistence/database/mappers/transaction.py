@@ -1,4 +1,4 @@
-from typing import Sequence, overload, Union
+from typing import Sequence, overload, Union, Optional
 
 from src.application.dtos.response import (
     PaginatedResponseDTO,
@@ -73,6 +73,13 @@ class TransactionMapper:
     @overload
     @staticmethod
     def to_dto(
+            models: Sequence[TransactionM]
+    ) -> list[TransactionResponseDTO]:
+        ...
+
+    @overload
+    @staticmethod
+    def to_dto(
             models: Sequence[TransactionM],
             page: int,
             total_pages: int
@@ -82,16 +89,20 @@ class TransactionMapper:
     @staticmethod
     def to_dto(
             arg: Union[TransactionM, Sequence[TransactionM]],
-            page: int = 0,
-            total_pages: int = 0
-    ) -> Union[TransactionResponseDTO, PaginatedResponseDTO[TransactionResponseDTO]]:
+            page: Optional[int] = None,
+            total_pages: Optional[int] = None
+    ) -> Union[
+        TransactionResponseDTO,
+        list[TransactionResponseDTO],
+        PaginatedResponseDTO[TransactionResponseDTO]
+    ]:
         if isinstance(arg, TransactionM):
             return TransactionMapper.__base_to_dto(arg)
+        elif any([page is None, total_pages is None]):
+            return [TransactionMapper.__base_to_dto(item) for item in arg]
         else:
-            items = [TransactionMapper.__base_to_dto(item) for item in arg]
-
             return PaginatedResponseDTO(
                 page=page,
                 total_pages=total_pages,
-                items=items
+                items=[TransactionMapper.__base_to_dto(item) for item in arg]
             )

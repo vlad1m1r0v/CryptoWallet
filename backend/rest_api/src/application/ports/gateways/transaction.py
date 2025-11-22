@@ -19,7 +19,7 @@ class TransactionGateway(Protocol):
         ...
 
     @abstractmethod
-    async def read(self, tx_hash: str) -> TransactionResponseDTO | None:
+    async def read(self, tx_hash: str) -> list[TransactionResponseDTO]:
         ...
 
     @abstractmethod
