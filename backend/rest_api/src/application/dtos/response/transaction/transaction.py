@@ -12,6 +12,7 @@ class TransactionResponseAssetDTO(TypedDict):
 
 
 class TransactionResponseWalletDTO(TypedDict):
+    id: UUID
     user_id: UUID
     asset: TransactionResponseAssetDTO
     address: str

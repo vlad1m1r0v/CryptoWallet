@@ -95,7 +95,7 @@ class CreatePendingTransactionInteractor:
         transactions = await self._transaction_gateway.read(tx_hash=data.hash)
 
         if len(transactions) > 0:
-            logger.info("Emitting event rest_api.create_pending_transaction...")
+            logger.info("Emitting event rest_api.create_pending_transaction (for payer)...")
 
             await self._event_publisher.save_pending_transaction(
                 SavePendingTransactionEventDTO(
@@ -113,7 +113,7 @@ class CreatePendingTransactionInteractor:
             )
 
         if len(transactions) > 1:
-            logger.info("Emitting event rest_api.create_pending_transaction...")
+            logger.info("Emitting event rest_api.create_pending_transaction (for receiver)...")
 
             await self._event_publisher.save_pending_transaction(
                 SavePendingTransactionEventDTO(
