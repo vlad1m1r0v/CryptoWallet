@@ -4,6 +4,7 @@ from src.domain.services.transaction import TransactionService
 from src.domain.services.product import ProductService
 from src.domain.services.order import OrderService
 from src.domain.services.permissions import PermissionsService
+from src.domain.services.asset import AssetService
 
 __all__ = [
     "UserService",
@@ -11,5 +12,6 @@ __all__ = [
     "TransactionService",
     "ProductService",
     "OrderService",
-    "PermissionsService"
+    "PermissionsService",
+    "AssetService"
 ]

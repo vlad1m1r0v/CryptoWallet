@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.domain.entities import Asset
 from src.domain.enums import AssetNetworkTypeEnum
 
 from src.application.dtos.response import AssetResponseDTO
@@ -23,3 +24,7 @@ class SqlaAssetGateway(AssetGateway):
             return None
 
         return AssetMapper.to_dto(asset_m)
+
+    def add(self, asset: Asset) -> None:
+        model = AssetMapper.to_model(asset)
+        self._session.add(model)

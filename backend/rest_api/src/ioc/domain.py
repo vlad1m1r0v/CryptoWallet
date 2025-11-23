@@ -12,7 +12,8 @@ from src.domain.services import (
     TransactionService,
     ProductService,
     OrderService,
-    PermissionsService
+    PermissionsService,
+    AssetService
 )
 
 from src.infrastructure.adapters.utils import (
@@ -37,6 +38,8 @@ class DomainProvider(Provider):
     order_service = provide(source=OrderService)
 
     permissions_service = provide(source=PermissionsService)
+
+    asset_service = provide(source=AssetService)
 
     password_hasher = provide(
         source=BcryptPasswordHasher,

@@ -1,5 +1,7 @@
 server:
 	uvicorn src.server:create_app --factory --host 0.0.0.0 --port 8000 --workers 1
+cli:
+	python -m src.presentation.cli
 certificates:
 	@rm -rf certs
 	@mkdir -p certs

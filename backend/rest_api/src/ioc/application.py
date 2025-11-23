@@ -39,7 +39,8 @@ from src.application.interactors import (
     GetProductsInteractor,
     CreateOrderInteractor,
     UpdateOrderInteractor,
-    GetOrdersInteractor
+    GetOrdersInteractor,
+    CreateAssetInteractor
 )
 
 from src.infrastructure.adapters.transaction import (
@@ -152,5 +153,6 @@ class ApplicationProvider(Provider):
         GetProductsInteractor,
         CreateOrderInteractor,
         UpdateOrderInteractor,
-        GetOrdersInteractor
+        GetOrdersInteractor,
+        CreateAssetInteractor
     )

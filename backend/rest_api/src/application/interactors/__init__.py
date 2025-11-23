@@ -32,6 +32,10 @@ from src.application.interactors.order import (
     GetOrdersInteractor
 )
 
+from src.application.interactors.asset import (
+    CreateAssetInteractor
+)
+
 __all__ = [
     'RegisterInteractor',
     'LoginInteractor',
@@ -51,5 +55,6 @@ __all__ = [
     'GetProductsInteractor',
     'CreateOrderInteractor',
     'UpdateOrderInteractor',
-    'GetOrdersInteractor'
+    'GetOrdersInteractor',
+    'CreateAssetInteractor'
 ]
