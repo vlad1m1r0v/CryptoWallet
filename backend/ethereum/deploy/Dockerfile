@@ -14,4 +14,4 @@ RUN poetry install --no-root --no-interaction --no-ansi
 
 COPY . .
 
-ENTRYPOINT ["/bin/bash", "-c", "poetry run make run_broker"]
+ENTRYPOINT ["/bin/bash", "-c", "poetry run make faststream"]

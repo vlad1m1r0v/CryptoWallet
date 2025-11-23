@@ -1,5 +1,9 @@
 server:
 	uvicorn src.server:create_app --factory --host 0.0.0.0 --port 8000 --workers 1
+worker:
+	taskiq worker src.broker:broker
+scheduler:
+	taskiq scheduler src.infrastructure.adapters.tasks.taskiq_broker:scheduler
 cli:
 	python -m src.presentation.cli
 certificates:

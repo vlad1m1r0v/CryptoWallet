@@ -9,6 +9,7 @@ from dishka.integrations.taskiq import (
 )
 
 from src.application.dtos.events import GiveChatAccessEventDTO
+from src.application.ports.transaction import TransactionManager
 from src.application.ports.gateways import PermissionsGateway
 from src.application.ports.events import EventPublisher
 
@@ -26,9 +27,11 @@ scheduler = TaskiqScheduler(broker, sources=[redis_source])
 async def give_chat_permission_to_user(
         user_id: UUID,
         gateway: FromDishka[PermissionsGateway],
-        event_publisher: EventPublisher
+        transaction_manager: FromDishka[TransactionManager],
+        event_publisher: FromDishka[EventPublisher]
 ) -> None:
     await gateway.update(user_id=user_id)
+    await transaction_manager.commit()
     await event_publisher.give_chat_access_to_user(
         GiveChatAccessEventDTO(user_id=user_id)
     )

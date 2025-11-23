@@ -73,7 +73,7 @@ class RegisterInteractor:
 
         logging.info("Checking if user with given email already exists...")
 
-        if await self._user_gateway.read(email=email.value):
+        if await self._user_gateway.read(email.value):
             raise EmailAlreadyExistsException(email=email)
 
         logging.info("Creating new user...")

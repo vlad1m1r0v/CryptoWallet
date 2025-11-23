@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TypedDict
+from typing import TypedDict, NotRequired
 
 from uuid import UUID
 
@@ -37,7 +37,7 @@ async def create_order_handler(
 
 class UpdateOrderDict(TypedDict):
     id: UUID
-    status: OrderStatusEnum
+    status: NotRequired[OrderStatusEnum]
 
 
 @amqp_router.subscriber("rest_api.update_order")
@@ -46,11 +46,14 @@ async def update_order_handler(
         data: UpdateOrderDict,
         repository: FromDishka[OrderRepositoryPort]
 ) -> None:
+    if not data.get("status"):
+        return
+
     await repository.update_order(order_id=data["id"], status=data["status"])
 
 
 class PayOrderDict(TypedDict):
-    id: UUID
+    order_id: UUID
 
 
 @amqp_router.subscriber("rest_api.pay_order")
@@ -65,10 +68,10 @@ async def pay_order_handler(
     if is_successful:
         await broker.publish(
             queue="ibay.deliver_order",
-            message={"order_id": data["id"]}
+            message={"order_id": data["order_id"]}
         )
     else:
         await broker.publish(
             queue="ibay.fail_order",
-            message={"order_id": data["id"]}
+            message={"order_id": data["order_id"]}
         )

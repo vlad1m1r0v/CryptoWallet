@@ -1,2 +1,2 @@
-run_broker:
+faststream:
 	faststream run src.main:app
