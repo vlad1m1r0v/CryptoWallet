@@ -75,7 +75,7 @@ class OrderMapper:
     def to_response_schema(
             arg: OrderResponseDTO | list[OrderResponseDTO]
     ) -> OrderResponseSchema | list[OrderResponseSchema]:
-        if isinstance(arg, (list, tuple)):
+        if isinstance(arg, list):
             return [OrderMapper.__base_to_response_schema(dto) for dto in arg]
         else:
             return OrderMapper.__base_to_response_schema(arg)

@@ -1,9 +1,7 @@
 from abc import abstractmethod
 from typing import (
     Protocol,
-    Optional,
-    overload,
-    Union
+    Optional
 )
 from uuid import UUID
 
@@ -18,18 +16,13 @@ class OrderGateway(Protocol):
     def add(self, order: Order) -> None:
         ...
 
-    @overload
     @abstractmethod
-    async def read(self, order_id: UUID) -> OrderResponseDTO | None:
-        ...
-
-    @overload
-    @abstractmethod
-    async def read(self, tx_hash: str) -> OrderResponseDTO | None:
-        ...
-
-    @abstractmethod
-    async def read(self, arg: Union[str, UUID]) -> OrderResponseDTO | None:
+    async def read(
+            self,
+            *,
+            order_id: Optional[UUID] = None,
+            tx_hash: Optional[str] = None
+    ) -> OrderResponseDTO | None:
         ...
 
     @abstractmethod

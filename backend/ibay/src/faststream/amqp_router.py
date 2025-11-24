@@ -21,7 +21,7 @@ amqp_router = RabbitRouter()
 
 
 class CreateOrderDict(TypedDict):
-    id: UUID
+    order_id: UUID
     status: OrderStatusEnum
     created_at: datetime
 
@@ -32,11 +32,15 @@ async def create_order_handler(
         data: CreateOrderDict,
         repository: FromDishka[OrderRepositoryPort]
 ) -> None:
-    await repository.add_order(OrderDTO(**data))
+    await repository.add_order(OrderDTO(
+        id=data["order_id"],
+        status=data["status"],
+        created_at=data["created_at"])
+    )
 
 
 class UpdateOrderDict(TypedDict):
-    id: UUID
+    order_id: UUID
     status: NotRequired[OrderStatusEnum]
 
 
@@ -49,7 +53,10 @@ async def update_order_handler(
     if not data.get("status"):
         return
 
-    await repository.update_order(order_id=data["id"], status=data["status"])
+    await repository.update_order(
+        order_id=data["order_id"],
+        status=data["status"]
+    )
 
 
 class PayOrderDict(TypedDict):

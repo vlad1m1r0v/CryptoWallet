@@ -137,7 +137,7 @@ class CreatePendingTransactionInteractor:
 
             await self._order_gateway.update(
                 order_id=data.payment_order_id,
-                payment_transaction_id=transactions[0].id_.value
+                payment_transaction_id=transactions[0]["id"]
             )
 
             await self._flusher.flush()
@@ -158,7 +158,7 @@ class CreatePendingTransactionInteractor:
 
             await self._order_gateway.update(
                 order_id=data.return_order_id,
-                return_transaction_id=transactions[0].id_.value
+                return_transaction_id=transactions[0]["id"]
             )
 
             await self._flusher.flush()

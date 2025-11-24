@@ -1,4 +1,4 @@
-from typing import Sequence, Optional, Any, Union
+from typing import Sequence, Optional, Any
 from uuid import UUID
 
 from sqlalchemy import select, update, and_, or_, Select
@@ -84,20 +84,28 @@ class SqlaOrderGateway(OrderGateway):
         stmt = stmt.where(and_(wallet_alias.user_id == user_id))
         result = await self._session.execute(stmt)
         models: Sequence[OrderM] = result.scalars().all()
-        return OrderMapper.to_dto(models)
+        return OrderMapper.to_dto(models=models)
 
-    async def read(self, arg: Union[UUID, str]) -> OrderResponseDTO | None:
+    async def read(
+            self,
+            order_id: Optional[UUID] = None,
+            tx_hash: Optional[str] = None
+    ) -> OrderResponseDTO | None:
         stmt, _, payment_transaction_alias, return_transaction_alias = self.__base_select()
 
-        if isinstance(arg, str):
+        if tx_hash:
             stmt = stmt.where(
                 or_(
-                    payment_transaction_alias.transaction_hash == arg,
-                    return_transaction_alias.transaction_hash == arg
+                    payment_transaction_alias.transaction_hash == tx_hash,
+                    return_transaction_alias.transaction_hash == tx_hash
                 )
             )
+
+        elif order_id:
+            stmt = stmt.where(OrderM.id == order_id)
+
         else:
-            stmt = stmt.where(OrderM.id == arg)
+            return None
 
         result = await self._session.execute(stmt)
         model: OrderM = result.scalar_one_or_none()
@@ -105,7 +113,7 @@ class SqlaOrderGateway(OrderGateway):
         if not model:
             return None
 
-        return OrderMapper.to_dto(model)
+        return OrderMapper.to_dto(model=model)
 
     def add(self, order: Order) -> None:
         model = OrderMapper.to_model(order)

@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import select, update, Select
@@ -51,18 +51,25 @@ class SqlaUserGateway(UserGateway):
 
         await self._session.execute(stmt)
 
-    async def read(self, arg: Union[UUID, str]) -> UserResponseDTO | None:
+    async def read(
+            self,
+            user_id: Optional[UUID] = None,
+            email: Optional[str] = None
+    ) -> UserResponseDTO | None:
         stmt: Select = (select(UserM)
         .options(
             joinedload(UserM.permissions),
             selectinload(UserM.wallets))
         )
 
-        if isinstance(arg, UUID):
-            stmt = stmt.where(UserM.id == arg)
+        if user_id:
+            stmt = stmt.where(UserM.id == user_id)
+
+        elif email:
+            stmt = stmt.where(UserM.email == email)
 
         else:
-            stmt = stmt.where(UserM.email == arg)
+            return None
 
         result = await self._session.execute(stmt)
         model: UserM | None = result.scalar_one_or_none()

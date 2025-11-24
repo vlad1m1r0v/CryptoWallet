@@ -9,6 +9,7 @@ from src.domain.value_objects import (
     EntityId,
     Address,
     RawPrivateKey,
+    EncryptedPrivateKey,
     Balance,
     Timestamp
 )
@@ -33,7 +34,7 @@ class WalletService:
             created_at: Timestamp,
     ) -> Wallet:
         wallet_id = self._id_generator()
-        encrypted_private_key = self._secret_encryptor.encrypt(raw_private_key)
+        encrypted_private_key = EncryptedPrivateKey(self._secret_encryptor.encrypt(raw_private_key.value))
 
         return Wallet(
             id_=wallet_id,

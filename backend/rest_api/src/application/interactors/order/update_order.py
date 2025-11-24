@@ -45,13 +45,13 @@ class UpdateOrderInteractor:
         )
         await self._transaction_manager.commit()
 
+        order = await self._order_gateway.read(order_id=order_id.value)
+
         if status.value in [
             OrderStatusEnum.FAILED,
             OrderStatusEnum.RETURNED
         ]:
             logger.info(f"Order status is {status.value}. Returning money to customer...")
-
-            order = await self._order_gateway.read(order_id=order_id.value)
 
             await self._event_publisher.create_transaction(
                 CreateTransactionEventDTO(
@@ -68,7 +68,8 @@ class UpdateOrderInteractor:
 
         await self._event_publisher.update_order(
             UpdateOrderEventDTO(
-                order_id=order_id.value,
-                status=status.value
+                user_id=order["wallet"]["user_id"],
+                order_id=order["id"],
+                status=order["status"]
             )
         )

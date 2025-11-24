@@ -75,4 +75,4 @@ async def get_products(
         _: JwtPayloadDTO = Depends(jwt_payload),
 ) -> list[ProductResponseSchema]:
     dtos = await interactor()
-    return ProductMapper.to_response_schema(dtos=dtos)
+    return ProductMapper.to_response_schema(dtos)

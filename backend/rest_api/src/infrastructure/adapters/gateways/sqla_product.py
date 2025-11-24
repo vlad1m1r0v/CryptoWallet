@@ -40,7 +40,7 @@ class SqlaProductGateway(ProductGateway):
         if not model:
             return None
 
-        return ProductMapper.to_dto(model)
+        return ProductMapper.to_dto(model=model)
 
     async def list(self) -> list[ProductResponseDTO]:
         stmt = (
@@ -54,6 +54,6 @@ class SqlaProductGateway(ProductGateway):
 
         result = await self._session.execute(stmt)
         models: Sequence[ProductM] = result.scalars().all()
-        return ProductMapper.to_dto(models)
+        return ProductMapper.to_dto(models=models)
 
 

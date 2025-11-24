@@ -1,4 +1,8 @@
-from typing import Sequence, overload, Union, Optional
+from typing import (
+    Sequence,
+    Optional,
+    Union
+)
 
 from src.application.dtos.response import (
     PaginatedResponseDTO,
@@ -27,22 +31,16 @@ class TransactionMapper:
             created_at=entity.created_at.value if entity.created_at else None,
         )
 
-    @overload
     @staticmethod
-    def to_model(entity: TransactionE) -> TransactionM:
-        ...
-
-    @overload
-    @staticmethod
-    def to_model(entities: list[TransactionE]) -> list[TransactionM]:
-        ...
-
-    @staticmethod
-    def to_model(arg: Union[TransactionE, list[TransactionE]]) -> Union[TransactionM | list[TransactionM]]:
-        if isinstance(arg, TransactionE):
-            return TransactionMapper.__base_to_model(arg)
+    def to_model(
+            *,
+            entity: Optional[TransactionE] = None,
+            entities: Optional[Sequence[TransactionE]] = None,
+    ) -> Union[TransactionM | list[TransactionM]]:
+        if entity:
+            return TransactionMapper.__base_to_model(entity)
         else:
-            return [TransactionMapper.__base_to_model(item) for item in arg]
+            return [TransactionMapper.__base_to_model(entity) for entity in entities]
 
     @staticmethod
     def __base_to_dto(model: TransactionM) -> TransactionResponseDTO:
@@ -66,30 +64,11 @@ class TransactionMapper:
             )
         )
 
-    @overload
-    @staticmethod
-    def to_dto(model: TransactionM) -> TransactionResponseDTO:
-        ...
-
-    @overload
     @staticmethod
     def to_dto(
-            models: Sequence[TransactionM]
-    ) -> list[TransactionResponseDTO]:
-        ...
-
-    @overload
-    @staticmethod
-    def to_dto(
-            models: Sequence[TransactionM],
-            page: int,
-            total_pages: int
-    ) -> PaginatedResponseDTO[TransactionResponseDTO]:
-        ...
-
-    @staticmethod
-    def to_dto(
-            arg: Union[TransactionM, Sequence[TransactionM]],
+            *,
+            model: Optional[TransactionM] = None,
+            models: Optional[Sequence[TransactionM]] = None,
             page: Optional[int] = None,
             total_pages: Optional[int] = None
     ) -> Union[
@@ -97,13 +76,14 @@ class TransactionMapper:
         list[TransactionResponseDTO],
         PaginatedResponseDTO[TransactionResponseDTO]
     ]:
-        if isinstance(arg, TransactionM):
-            return TransactionMapper.__base_to_dto(arg)
-        elif any([page is None, total_pages is None]):
-            return [TransactionMapper.__base_to_dto(item) for item in arg]
-        else:
+        if model:
+            return TransactionMapper.__base_to_dto(model)
+
+        elif all([models, page, total_pages]):
             return PaginatedResponseDTO(
                 page=page,
                 total_pages=total_pages,
-                items=[TransactionMapper.__base_to_dto(item) for item in arg]
+                items=[TransactionMapper.__base_to_dto(model) for model in models]
             )
+
+        return [TransactionMapper.__base_to_dto(model) for model in models]

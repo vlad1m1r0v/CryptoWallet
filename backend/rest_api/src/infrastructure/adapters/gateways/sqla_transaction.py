@@ -31,7 +31,7 @@ class SqlaTransactionGateway(TransactionGateway):
         self._session = session
 
     def add(self, transactions: List[Transaction]) -> None:
-        models: list[TransactionM] = TransactionMapper.to_model(transactions)
+        models: list[TransactionM] = TransactionMapper.to_model(entities=transactions)
         self._session.add_all(models)
 
     async def read(self, tx_hash: str) -> list[TransactionResponseDTO]:
@@ -105,5 +105,5 @@ class SqlaTransactionGateway(TransactionGateway):
         return TransactionMapper.to_dto(
             models=models,
             page=page,
-            total_pages=total_pages,
+            total_pages=total_pages
         )

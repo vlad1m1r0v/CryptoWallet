@@ -1,4 +1,4 @@
-from typing import Sequence, overload
+from typing import Sequence, Optional
 
 from src.domain.value_objects import (
     EntityId,
@@ -78,19 +78,13 @@ class OrderMapper:
             )
         )
 
-    @overload
     @staticmethod
-    def to_dto(model: OrderM) -> OrderResponseDTO:
-        ...
-
-    @overload
-    @staticmethod
-    def to_dto(models: Sequence[OrderM]) -> list[OrderResponseDTO]:
-        ...
-
-    @staticmethod
-    def to_dto(arg: OrderM | Sequence[OrderM]) -> OrderResponseDTO | list[OrderResponseDTO]:
-        if isinstance(arg, OrderM):
-            return OrderMapper.__base_to_dto(arg)
+    def to_dto(
+            *,
+            model: Optional[OrderM] = None,
+            models: Optional[Sequence[OrderM]] = None
+    ) -> OrderResponseDTO | list[OrderResponseDTO]:
+        if model:
+            return OrderMapper.__base_to_dto(model)
         else:
-            return [OrderMapper.__base_to_dto(arg) for arg in arg]
+            return [OrderMapper.__base_to_dto(model) for model in models]

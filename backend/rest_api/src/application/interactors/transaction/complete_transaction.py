@@ -98,7 +98,7 @@ class CompleteTransactionInteractor:
 
                 await self._flusher.flush()
 
-                wallet = await self._wallet_gateway.read(address=transactions[0]["wallet"]["id"])
+                wallet = await self._wallet_gateway.read(wallet_id=transactions[0]["wallet"]["id"])
 
                 logger.info("Emitting event rest_api.update_wallet (for payer)...")
 
@@ -133,14 +133,14 @@ class CompleteTransactionInteractor:
             if transactions[1]["transaction_status"] == TransactionStatusEnum.SUCCESSFUL:
                 logger.info("Updating receiver wallet balance in database...")
 
-                await self._wallet_gateway.decrement_balance(
+                await self._wallet_gateway.increment_balance(
                     wallet_id=transactions[1]["wallet"]["id"],
-                    amount=transactions[1]["transaction_fee"] + transactions[1]["value"]
+                    amount=transactions[1]["value"]
                 )
 
                 await self._flusher.flush()
 
-                wallet = await self._wallet_gateway.read(address=transactions[1]["wallet"]["id"])
+                wallet = await self._wallet_gateway.read(wallet_id=transactions[1]["wallet"]["id"])
 
                 logger.info("Emitting event rest_api.update_wallet (for receiver)...")
 

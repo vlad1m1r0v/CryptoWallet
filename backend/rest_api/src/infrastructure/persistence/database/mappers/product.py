@@ -1,4 +1,4 @@
-from typing import Sequence, overload
+from typing import Sequence, Optional
 
 from src.domain.entities.product import Product as ProductE
 
@@ -41,19 +41,13 @@ class ProductMapper:
             )
         )
 
-    @overload
     @staticmethod
-    def to_dto(model: ProductM) -> ProductResponseDTO:
-        ...
-
-    @overload
-    @staticmethod
-    def to_dto(models: Sequence[ProductM]) -> list[ProductResponseDTO]:
-        ...
-
-    @staticmethod
-    def to_dto(arg: ProductM | Sequence[ProductM]) -> ProductResponseDTO | list[ProductResponseDTO]:
-        if isinstance(arg, ProductM):
-            return ProductMapper.__base_to_dto(arg)
+    def to_dto(
+            *,
+            model: Optional[ProductM] = None,
+            models: Optional[Sequence[ProductM]] = None
+    ) -> ProductResponseDTO | list[ProductResponseDTO]:
+        if model:
+            return ProductMapper.__base_to_dto(model)
         else:
-            return [ProductMapper.__base_to_dto(arg) for arg in arg]
+            return [ProductMapper.__base_to_dto(model) for model in models]

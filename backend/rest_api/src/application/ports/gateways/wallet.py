@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Protocol, overload, Union
+from typing import Protocol, Optional
 from uuid import UUID
 from decimal import Decimal
 
@@ -13,18 +13,13 @@ class WalletGateway(Protocol):
     def add(self, wallet: Wallet) -> None:
         ...
 
-    @overload
     @abstractmethod
-    async def read(self, address: str) -> WalletResponseDTO | None:
-        ...
-
-    @overload
-    @abstractmethod
-    async def read(self, wallet_id: UUID) -> WalletResponseDTO | None:
-        ...
-
-    @abstractmethod
-    async def read(self, arg: Union[UUID | str]) -> WalletResponseDTO | None:
+    async def read(
+            self,
+            *,
+            address: Optional[str] = None,
+            wallet_id: Optional[UUID] = None
+    ) -> WalletResponseDTO | None:
         ...
 
     @abstractmethod

@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Protocol, Optional, overload, Union
+from typing import Protocol, Optional, Union
 from uuid import UUID
 
 from src.domain.entities import User
@@ -22,16 +22,11 @@ class UserGateway(Protocol):
     ) -> None:
         ...
 
-    @overload
     @abstractmethod
-    async def read(self, user_id: UUID) -> UserResponseDTO | None:
-        ...
-
-    @overload
-    @abstractmethod
-    async def read(self, email: str) -> UserResponseDTO | None:
-        ...
-
-    @abstractmethod
-    async def read(self, arg: Union[UUID, str]) -> UserResponseDTO | None:
+    async def read(
+            self,
+            *,
+            user_id: Optional[UUID] = None,
+            email: Optional[str] = None
+    ) -> UserResponseDTO | None:
         ...

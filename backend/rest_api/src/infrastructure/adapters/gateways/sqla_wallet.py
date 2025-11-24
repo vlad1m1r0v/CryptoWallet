@@ -1,4 +1,4 @@
-from typing import Union, Sequence
+from typing import Optional, Sequence
 from uuid import UUID
 from decimal import Decimal
 
@@ -23,14 +23,21 @@ class SqlaWalletGateway(WalletGateway):
         wallet_m = WalletMapper.to_model(wallet)
         self._session.add(wallet_m)
 
-    async def read(self, arg: Union[str, UUID]) -> WalletResponseDTO | None:
+    async def read(
+            self,
+            address: Optional[str] = None,
+            wallet_id: Optional[UUID] = None
+    ) -> WalletResponseDTO | None:
         stmt: Select = select(WalletM).options(joinedload(WalletM.asset))
 
-        if isinstance(arg, UUID):
-            stmt = stmt.where(WalletM.id == arg)
+        if wallet_id:
+            stmt = stmt.where(WalletM.id == wallet_id)
+
+        elif address:
+            stmt = stmt.where(WalletM.address == address)
 
         else:
-            stmt = select(WalletM).where(WalletM.address == arg)
+            return None
 
         result = await self._session.execute(stmt)
         model: WalletM = result.scalar_one_or_none()
@@ -38,13 +45,13 @@ class SqlaWalletGateway(WalletGateway):
         if not model:
             return None
 
-        return WalletMapper.to_dto(model)
+        return WalletMapper.to_dto(model=model)
 
     async def decrement_balance(self, wallet_id: UUID, amount: Decimal) -> None:
         stmt = (
             update(WalletM)
             .where(WalletM.id == wallet_id)
-            .values(balance=WalletM.balance - amount.value)
+            .values(balance=WalletM.balance - amount)
         )
 
         await self._session.execute(stmt)
@@ -53,7 +60,7 @@ class SqlaWalletGateway(WalletGateway):
         stmt = (
             update(WalletM)
             .where(WalletM.id == wallet_id)
-            .values(balance=WalletM.balance + amount.value)
+            .values(balance=WalletM.balance + amount)
         )
 
         await self._session.execute(stmt)
@@ -66,4 +73,4 @@ class SqlaWalletGateway(WalletGateway):
         )
         result = await self._session.execute(stmt)
         models: Sequence[WalletM] = result.scalars().all()
-        return WalletMapper.to_dto(models)
+        return WalletMapper.to_dto(models=models)

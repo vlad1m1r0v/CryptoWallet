@@ -52,7 +52,7 @@ async def create_order(
         data=request_dto
     )
 
-    return OrderMapper.to_response_schema(dto=dto)
+    return OrderMapper.to_response_schema(dto)
 
 
 @router.get(
@@ -67,4 +67,4 @@ async def get_orders(
         user: JwtPayloadDTO = Depends(jwt_payload),
 ) -> list[OrderResponseSchema]:
     dtos = await interactor(user_id=user["user_id"])
-    return OrderMapper.to_response_schema(dtos=dtos)
+    return OrderMapper.to_response_schema(dtos)

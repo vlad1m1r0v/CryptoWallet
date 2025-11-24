@@ -1,4 +1,7 @@
-from typing import Sequence, overload
+from typing import (
+    Sequence,
+    Optional
+)
 
 from src.domain.entities import Wallet as WalletE
 from src.application.dtos.response import (
@@ -35,19 +38,14 @@ class WalletMapper:
             )
         )
 
-    @overload
-    @staticmethod
-    def to_dto(model: WalletM) -> WalletResponseDTO:
-        ...
-
-    @overload
-    @staticmethod
-    def to_dto(models: Sequence[WalletM]) -> list[WalletResponseDTO]:
-        ...
 
     @staticmethod
-    def to_dto(arg: WalletM | Sequence[WalletM]) -> WalletResponseDTO | list[WalletResponseDTO]:
-        if isinstance(arg, WalletM):
-            return WalletMapper.__base_to_dto(arg)
+    def to_dto(
+            *,
+            model: Optional[WalletM] = None,
+            models: Optional[Sequence[WalletM]] = None
+    ) -> WalletResponseDTO | list[WalletResponseDTO]:
+        if model:
+            return WalletMapper.__base_to_dto(model)
         else:
-            return [WalletMapper.__base_to_dto(arg) for arg in arg]
+            return [WalletMapper.__base_to_dto(model) for model in models]
