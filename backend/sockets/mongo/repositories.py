@@ -1,4 +1,5 @@
 from typing import NewType
+from uuid import UUID
 
 from abc import ABC, abstractmethod
 
@@ -20,6 +21,10 @@ class UserRepository(ABC):
 
     @abstractmethod
     async def update(self, dto: UpdateUserDTO) -> None:
+        ...
+
+    @abstractmethod
+    async def delete_avatar(self, user_id: UUID) -> None:
         ...
 
 
@@ -50,3 +55,9 @@ class MongoUserRepository(UserRepository):
                 {"_id": str(dto.user_id)},
                 {"$set": update_data}
             )
+
+    async def delete_avatar(self, user_id: UUID) -> None:
+        await self._collection.update_one(
+            {"_id": str(user_id)},
+            {"$set": {"avatar_filename": None}}
+        )

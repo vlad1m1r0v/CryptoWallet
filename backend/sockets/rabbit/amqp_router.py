@@ -47,3 +47,16 @@ async def update_user_handler(
         repository: FromDishka[UserRepository]
 ) -> None:
     await repository.update(UpdateUserDTO(**data))
+
+
+class DeleteAvatarDict(TypedDict):
+    user_id: UUID
+
+
+@amqp_router.subscriber("rest_api.delete_avatar")
+@inject
+async def delete_avatar_handler(
+        data: DeleteAvatarDict,
+        repository: FromDishka[UserRepository]
+) -> None:
+    await repository.delete_avatar(user_id=data["user_id"])

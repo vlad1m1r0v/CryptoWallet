@@ -22,6 +22,15 @@ class SqlaUserGateway(UserGateway):
         model = UserMapper.to_model(user)
         self._session.add(model)
 
+    async def delete_avatar(self, user_id: UUID) -> None:
+        stmt = (
+            update(UserM)
+            .where(UserM.id == user_id)
+            .values(avatar_filename=None)
+        )
+
+        await self._session.execute(stmt)
+
     async def update(
             self,
             user_id: UUID,

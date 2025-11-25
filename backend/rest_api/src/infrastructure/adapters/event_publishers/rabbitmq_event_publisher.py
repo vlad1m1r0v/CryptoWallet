@@ -8,6 +8,7 @@ from src.application.dtos.events import (
     SaveUserEventDTO,
     GiveChatAccessEventDTO,
     UpdateUserEventDTO,
+    DeleteAvatarEventDTO,
     CreateWalletEventDTO,
     SaveWalletEventDTO,
     UpdateWalletEventDTO,
@@ -47,6 +48,12 @@ class RabbitMQEventPublisher(EventPublisher):
         await self._broker.publish(
             routing_key="rest_api.update_user",
             message=asdict(dto, dict_factory=exclude_none_factory)
+        )
+
+    async def delete_avatar(self, dto: DeleteAvatarEventDTO) -> None:
+        await self._broker.publish(
+            routing_key="rest_api.delete_avatar",
+            message=asdict(dto)
         )
 
     async def create_eth_wallet(self, dto: CreateWalletEventDTO) -> None:

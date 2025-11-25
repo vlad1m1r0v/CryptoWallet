@@ -5,6 +5,7 @@ from src.application.dtos.events import (
     SaveUserEventDTO,
     GiveChatAccessEventDTO,
     UpdateUserEventDTO,
+    DeleteAvatarEventDTO,
     CreateWalletEventDTO,
     SaveWalletEventDTO,
     UpdateWalletEventDTO,
@@ -31,6 +32,10 @@ class EventPublisher(Protocol):
 
     @abstractmethod
     async def update_user(self, dto: UpdateUserEventDTO) -> None:
+        ...
+
+    @abstractmethod
+    async def delete_avatar(self, dto: DeleteAvatarEventDTO) -> None:
         ...
 
     @abstractmethod

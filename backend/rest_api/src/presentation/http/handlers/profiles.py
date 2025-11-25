@@ -12,7 +12,8 @@ from src.domain.exceptions import UserNotFoundException
 from src.application.dtos.response import JwtPayloadDTO
 from src.application.interactors import (
     GetUserInteractor,
-    UpdateUserInteractor
+    UpdateUserInteractor,
+    DeleteAvatarInteractor,
 )
 
 from src.presentation.http.dependencies import jwt_payload
@@ -92,4 +93,20 @@ async def update_my_profile(
 
     result = await interactor(data=dto)
 
+    return GetUserMapper.to_response_schema(result)
+
+
+@router.delete(
+    path="/me/avatar",
+    response_model=GetUserResponseSchema,
+    status_code=status.HTTP_200_OK,
+    responses=generate_examples(is_auth=True),
+    response_model_exclude_none=True,
+)
+@inject
+async def delete_my_avatar(
+        interactor: FromDishka[DeleteAvatarInteractor],
+        user: JwtPayloadDTO = Depends(jwt_payload)
+) -> GetUserResponseSchema:
+    result = await interactor(user_id=user["user_id"])
     return GetUserMapper.to_response_schema(result)

@@ -30,6 +30,11 @@ class UpdateUserEventDTO:
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
+class DeleteAvatarEventDTO:
+    user_id: UUID
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class CreateWalletEventDTO:
     user_id: UUID
 

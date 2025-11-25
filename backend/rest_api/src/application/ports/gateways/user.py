@@ -13,6 +13,10 @@ class UserGateway(Protocol):
         ...
 
     @abstractmethod
+    async def delete_avatar(self, user_id: UUID) -> None:
+        ...
+
+    @abstractmethod
     async def update(
             self,
             user_id: UUID,
