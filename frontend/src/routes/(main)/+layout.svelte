@@ -9,6 +9,8 @@
 
     import {menu, MenuState} from "$lib/stores/menu.ts";
 
+    import ProfileService from "$lib/services/profile.ts";
+
 
     let {children} = $props();
     // Responsive appbar
@@ -55,6 +57,7 @@
     });
 
     onMount(async () => {
+        await ProfileService.getProfile();
     })
 </script>
 <svelte:head>
