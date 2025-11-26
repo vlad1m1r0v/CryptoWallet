@@ -1,13 +1,10 @@
 <script lang="ts">
-    import ToastContainer from "$lib/components/ToastContainer.svelte";
-
     let {children} = $props();
 </script>
 
 <svelte:head>
     <title>Authentication</title>
 </svelte:head>
-
 <div class="content-overlay"></div>
 <div class="content-wrapper">
     <div class="content-header row">
@@ -25,5 +22,4 @@
             </div>
         </div>
     </div>
-    <ToastContainer/>
 </div>

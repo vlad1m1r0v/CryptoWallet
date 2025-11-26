@@ -1,7 +1,7 @@
 import {writable} from "svelte/store";
 
 
-export enum State {
+export enum MenuState {
     SMALL_SCREEN_HIDE,
     SMALL_SCREEN_OVERLAY,
     LARGE_SCREEN_STATIC,
@@ -11,9 +11,9 @@ export enum State {
 
 
 interface Menu {
-    state: State
+    state: MenuState
 }
 
-export const menu = writable<Menu>({state: State.LARGE_SCREEN_STATIC});
+export const menu = writable<Menu>({state: MenuState.LARGE_SCREEN_STATIC});
 
 

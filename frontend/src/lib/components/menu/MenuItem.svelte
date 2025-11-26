@@ -3,8 +3,8 @@
 
     import {get} from "svelte/store";
 
-    import {menu, State} from '$lib/stores/menu';
-    import type MenuItemProps from "$lib/types/MenuItemProps.ts";
+    import {menu, MenuState} from '$lib/stores/menu.ts';
+    import type MenuItemProps from "$lib/components/menu/types.ts";
 
 
     let {
@@ -19,8 +19,8 @@
     const onClick = () => {
         const current = get(menu);
 
-        if (current.state === State.SMALL_SCREEN_OVERLAY) {
-            menu.set({state: State.SMALL_SCREEN_HIDE})
+        if (current.state === MenuState.SMALL_SCREEN_OVERLAY) {
+            menu.set({state: MenuState.SMALL_SCREEN_HIDE})
         }
     }
 

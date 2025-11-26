@@ -1,4 +1,9 @@
 <script lang="ts">
+    import {Toaster} from "svelte-sonner";
+    import {Jumper} from 'svelte-loading-spinners';
+
+    import {loader} from "$lib/stores/loader.ts";
+
     let {children} = $props();
 </script>
 
@@ -27,12 +32,24 @@
     <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/bordered-layout.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/semi-dark-layout.css">
 
-    <!-- BEGIN: Page CSS-->
+    <!--BEGIN: Loading overlay CSS-->
+    <link rel="stylesheet" type="text/css" href="/custom/css/loading-overlay.css">
+    <!--END: Loading overlay CSS-->
+
+    <!--BEGIN: Page CSS-->
     <!--For auth pages-->
     <link rel="stylesheet" type="text/css" href="/vuexy/css/plugins/forms/form-validation.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/pages/page-auth.css">
     <!--For main pages-->
     <link rel="stylesheet" type="text/css" href="/vuexy/css/core/menu/menu-types/vertical-menu.css">
-    <!-- END: Page CSS-->
+    <!--END: Page CSS-->
 </svelte:head>
+<Toaster/>
+{#if $loader.isLoading}
+    <div class="loader-overlay">
+        <div class="loader-center">
+            <Jumper size="60" color="#7367F0" unit="px" duration="1s"/>
+        </div>
+    </div>
+{/if}
 {@render children?.()}

@@ -4,39 +4,21 @@
     import {reporter} from '@felte/reporter-svelte';
     import {z} from 'zod';
 
-    import ApiClient from "$lib/api.ts";
-
     import Vuexy from '$lib/components/icons/Vuexy.svelte';
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/;
-    const schema = z.object({
-        username: z.string()
-            .transform((val) => val.trim())
-            .pipe(
-                z.string()
-                    .min(5, 'Username must be at least 5 characters')
-                    .max(32, 'Username must be at most 32 characters')
-            ),
-        email: z.string().email('Invalid email address'),
-        password: z
-            .string()
-            .min(8, 'Password must be at least 8 characters')
-            .max(20, 'Password must be at most 20 characters')
-            .regex(passwordRegex, 'Password must include lowercase, uppercase, digit and symbol'),
-        repeat_password: z.string()
-    }).refine((data) => data.password === data.repeat_password, {
-        path: ['repeat_password'],
-        message: 'Passwords do not match'
-    });
+    import AuthService from "$lib/services/auth.ts";
 
-    type FormData = z.infer<typeof schema>;
+    import {registerSchema} from "$lib/schemas/register.ts";
+
+
+    type FormData = z.infer<typeof registerSchema>;
 
     const {form, errors, touched, isSubmitting, isValid} = createForm<FormData>({
         onSubmit: async (values) => {
-            await ApiClient.register(values)
+            await AuthService.register(values)
         },
         extend: [
-            validator({schema}),
+            validator({schema: registerSchema}),
             reporter()
         ]
     });

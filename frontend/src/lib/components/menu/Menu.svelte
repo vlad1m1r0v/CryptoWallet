@@ -1,7 +1,7 @@
 <script lang="ts">
     import {get} from "svelte/store";
 
-    import type MenuItemProps from "$lib/types/MenuItemProps.ts";
+    import type MenuItemProps from "$lib/components/menu/types.ts";
 
     import Vuexy from "$lib/components/icons/Vuexy.svelte";
     import CloseMenu from "$lib/components/icons/CloseMenu.svelte";
@@ -12,62 +12,62 @@
     import CollapsedMenu from "$lib/components/icons/CollapsedMenu.svelte";
     import ExpandedMenu from "$lib/components/icons/ExpandedMenu.svelte";
 
-    import MenuItem from "$lib/components/MenuItem.svelte";
+    import MenuItem from "$lib/components/menu/MenuItem.svelte";
 
-    import {menu, State} from "$lib/stores/menu.ts";
+    import {menu, MenuState} from "$lib/stores/menu.ts";
 
     const onMouseEnter = () => {
         const current = get(menu);
-        if (current.state === State.LARGE_SCREEN_COLLAPSED) {
-            menu.set({state: State.LARGE_SCREEN_COLLAPSED_EXPANDED});
+        if (current.state === MenuState.LARGE_SCREEN_COLLAPSED) {
+            menu.set({state: MenuState.LARGE_SCREEN_COLLAPSED_EXPANDED});
         }
     };
 
     const onMouseLeave = () => {
         const current = get(menu);
-        if (current.state === State.LARGE_SCREEN_COLLAPSED_EXPANDED) {
-            menu.set({state: State.LARGE_SCREEN_COLLAPSED});
+        if (current.state === MenuState.LARGE_SCREEN_COLLAPSED_EXPANDED) {
+            menu.set({state: MenuState.LARGE_SCREEN_COLLAPSED});
         }
     };
 
     const onToggleIconClick = () => {
         const current = get(menu);
 
-        if (current.state === State.SMALL_SCREEN_OVERLAY) {
-            menu.set({state: State.SMALL_SCREEN_HIDE});
+        if (current.state === MenuState.SMALL_SCREEN_OVERLAY) {
+            menu.set({state: MenuState.SMALL_SCREEN_HIDE});
         }
 
-        if (current.state === State.LARGE_SCREEN_STATIC) {
-            menu.set({state: State.LARGE_SCREEN_COLLAPSED_EXPANDED});
+        if (current.state === MenuState.LARGE_SCREEN_STATIC) {
+            menu.set({state: MenuState.LARGE_SCREEN_COLLAPSED_EXPANDED});
         }
 
-        if ([State.LARGE_SCREEN_COLLAPSED, State.LARGE_SCREEN_COLLAPSED_EXPANDED].includes(current.state)) {
-            menu.set({state: State.LARGE_SCREEN_STATIC});
+        if ([MenuState.LARGE_SCREEN_COLLAPSED, MenuState.LARGE_SCREEN_COLLAPSED_EXPANDED].includes(current.state)) {
+            menu.set({state: MenuState.LARGE_SCREEN_STATIC});
         }
     }
 
     const menuItems: MenuItemProps[] = [
         {
             Icon: Profile,
-            checkIsActive: (currentUrl) => currentUrl.pathname.startsWith('/profiles/'),
+            checkIsActive: (currentUrl: URL) => currentUrl.pathname.startsWith('/profiles/'),
             title: "Profile",
             href: "/profiles/me"
         },
         {
             Icon: Wallets,
-            checkIsActive: (currentUrl) => currentUrl.pathname === "/wallets",
+            checkIsActive: (currentUrl: URL) => currentUrl.pathname === "/wallets",
             title: "Wallets",
             href: "/wallets"
         },
         {
             Icon: Store,
-            checkIsActive: (currentUrl) => currentUrl.pathname === "/ibay",
+            checkIsActive: (currentUrl: URL) => currentUrl.pathname === "/ibay",
             title: "iBay",
             href: "/ibay"
         },
         {
             Icon: Chat,
-            checkIsActive: (currentUrl) => currentUrl.pathname === "/chat",
+            checkIsActive: (currentUrl: URL) => currentUrl.pathname === "/chat",
             title: "Chat",
             href: "/chat"
         }
@@ -75,7 +75,7 @@
 </script>
 <div
         class="main-menu menu-fixed menu-light menu-accordion menu-shadow"
-        class:expanded={$menu.state === State.LARGE_SCREEN_COLLAPSED_EXPANDED}
+        class:expanded={$menu.state === MenuState.LARGE_SCREEN_COLLAPSED_EXPANDED}
         on:mouseenter={onMouseEnter}
         on:mouseleave={onMouseLeave}
 >
@@ -99,9 +99,9 @@
                         on:click|preventDefault={onToggleIconClick}
                 >
                     <CloseMenu/>
-                    {#if $menu.state === State.LARGE_SCREEN_STATIC}
+                    {#if $menu.state === MenuState.LARGE_SCREEN_STATIC}
                         <ExpandedMenu/>
-                    {:else if [State.LARGE_SCREEN_COLLAPSED, State.LARGE_SCREEN_COLLAPSED_EXPANDED].includes($menu.state)}
+                    {:else if [MenuState.LARGE_SCREEN_COLLAPSED, MenuState.LARGE_SCREEN_COLLAPSED_EXPANDED].includes($menu.state)}
                         <CollapsedMenu/>
                     {/if}
                 </a>

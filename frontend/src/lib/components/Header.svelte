@@ -4,15 +4,15 @@
     import Logout from "$lib/components/icons/Logout.svelte";
     import Menu from "$lib/components/icons/Menu.svelte";
 
-    import ApiClient from "$lib/api.ts";
+    import AuthService from "$lib/services/auth.ts";
 
-    import {menu, State} from "$lib/stores/menu.ts";
+    import {menu, MenuState} from "$lib/stores/menu.ts";
     import {user} from "$lib/stores/user.ts";
 
     let isDropdownMenuOpen = $state(false);
 
     const onLogoutClick = async () => {
-        await ApiClient.logout()
+        await AuthService.logout()
     }
 </script>
 
@@ -24,7 +24,7 @@
                 <li class="nav-item">
                     <a
                             class="nav-link menu-toggle"
-                            on:click={() => {menu.set({state: State.SMALL_SCREEN_OVERLAY})}}
+                            on:click={() => {menu.set({state: MenuState.SMALL_SCREEN_OVERLAY})}}
                     >
                         <Menu/>
                     </a>
@@ -45,12 +45,12 @@
                    aria-expanded="false"
                 >
                     <div class="user-nav d-flex">
-                        <span class="font-weight-bolder">{$user.username}</span>
+                        <span class="font-weight-bolder">{$user?.username}</span>
                     </div>
                     <span class="avatar">
                         <img
                                 class="round"
-                                src={$user.avatar_url ?? "/vuexy/images/portrait/small/avatar-s-11.jpg"}
+                                src={$user?.avatar_url ?? "/vuexy/images/portrait/small/avatar-s-11.jpg"}
                                 alt="avatar"
                                 height="40"
                                 width="40"
