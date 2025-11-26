@@ -1,7 +1,7 @@
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, computed_field
 
 from src.presentation.http.schemas.fields import (
     UsernameStr,
@@ -23,5 +23,12 @@ class GetUserResponseSchema(BaseModel):
     username: UsernameStr
     email: EmailStr
     avatar_url: Optional[str]
+    total_messages: int
     permissions: GetUserResponsePermissionsSchema
     wallets: List[GetUserResponseWalletSchema]
+
+    @computed_field
+    @property
+    def total_wallets(self) -> int:
+        return len(self.wallets)
+

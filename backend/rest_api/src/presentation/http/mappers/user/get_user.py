@@ -16,6 +16,7 @@ class GetUserMapper:
             id=dto["id"],
             username=dto["username"],
             email=dto["email"],
+            total_messages=dto["total_messages"],
             avatar_url=f"{config.s3.base_file_url}/{dto['avatar_filename']}" if dto["avatar_filename"] else None,
             permissions=GetUserResponsePermissionsSchema(
                 has_chat_access=dto["permissions"]["has_chat_access"]

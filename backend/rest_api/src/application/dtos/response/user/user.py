@@ -18,5 +18,6 @@ class UserResponseDTO(TypedDict):
     username: str
     email: str
     avatar_filename: Optional[str]
+    total_messages: int
     permissions: UserResponsePermissionsDTO
     wallets: List[UserResponseWalletDTO]

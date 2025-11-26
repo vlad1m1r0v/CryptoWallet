@@ -29,6 +29,7 @@ class UserMapper:
             username=model.username,
             email=model.email,
             avatar_filename=model.avatar_filename,
+            total_messages=model.total_messages,
             wallets=[
                 UserResponseWalletDTO(
                     id=wallet.id,
