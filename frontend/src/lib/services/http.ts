@@ -40,6 +40,11 @@ export default class HttpService {
             headers,
         });
 
+        if (response.status === 204) {
+            loader.set({isLoading: false});
+            return;
+        }
+
         const json = await response.json();
 
         loader.set({isLoading: false});

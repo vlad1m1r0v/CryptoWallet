@@ -82,12 +82,10 @@ async def save_wallet_handler(
     user_room = f"user:{data['user_id']}"
 
     payload = {
-        "wallet_id": str(data["wallet_id"]),
+        "id": str(data["wallet_id"]),
         "address": data["address"],
         "balance": float(data["balance"]),
         "asset_symbol": data["asset_symbol"]
     }
 
-    logging.info(payload)
-
-    await sio.emit("save_wallet", payload)
+    await sio.emit("save_wallet", payload, user_room)

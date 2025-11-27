@@ -2,13 +2,16 @@
     import {createForm} from 'felte';
     import {validator} from '@felte/validator-zod';
     import {reporter} from '@felte/reporter-svelte';
+
     import {z} from 'zod';
 
     import ProfileService from "$lib/services/profile.ts";
+    import WalletService from "$lib/services/wallets.ts";
 
     import {user} from "$lib/stores/user.ts";
 
     import {profileSchema} from "$lib/schemas/profile.ts";
+
 
     type FormData = z.infer<typeof profileSchema>;
 
@@ -154,6 +157,71 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Statistics Header-->
+<div class="content-header row">
+    <div class="content-header-left col-md-9 col-12 mb-2">
+        <h2 class="float-left mb-0">Statistics</h2>
+    </div>
+</div>
+<!--Statistics Card-->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4>
+                    <span class="font-weight-bolder">Messages in chat:</span>
+                    <span class="font-weight-light">{$user?.total_messages}</span>
+                </h4>
+                <h4>
+                    <span class="font-weight-bolder">Wallets:</span>
+                    <span class="font-weight-light">{$user?.total_wallets}</span>
+                </h4>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Wallets Management Header-->
+<div class="content-header row">
+    <div class="content-header-left col-md-9 col-12 mb-2">
+        <h2 class="float-left mb-0">Wallets Management</h2>
+    </div>
+</div>
+<!--Wallets Management Card-->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {#each $user?.wallets as wallet (wallet.id)}
+                    <!--Wallet-->
+                    <div class="row mb-2">
+                        <div class="d-inline-block text-truncate">
+                            <img width="50" src="/vuexy/images/ethereum.png" alt="ethereum logo">
+                            <span class="text-center font-weight-lighter">
+                                {wallet.address}
+                             </span>
+                        </div>
+                    </div>
+                {/each}
+                <!--Import / Create Wallet Buttons-->
+                <div class="d-flex flex-column d-md-inline-block">
+                    <button
+                            type="button"
+                            class="mb-1 mb-md-0 btn btn-primary waves-effect waves-float waves-light"
+                    >
+                        Import ETH Wallet
+                    </button>
+                    <button
+                            type="button"
+                            class="btn btn-primary waves-effect waves-float waves-light"
+                            onclick={async () => await WalletService.createWallet()}
+                    >
+                        Create ETH Wallet
+                    </button>
+                </div>
             </div>
         </div>
     </div>

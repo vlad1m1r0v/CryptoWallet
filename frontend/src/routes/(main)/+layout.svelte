@@ -8,11 +8,15 @@
     import Footer from "$lib/components/Footer.svelte";
 
     import {menu, MenuState} from "$lib/stores/menu.ts";
+    import {socket} from "$lib/stores/socket";
+
+    import {createSocket, bindSocketHandlers} from "$lib/socket.ts";
 
     import ProfileService from "$lib/services/profile.ts";
 
 
     let {children} = $props();
+
     // Responsive appbar
     const BASE_MENU_CLASSES = "vertical-layout navbar-floating footer-static pace-done"
 
@@ -58,7 +62,20 @@
 
     onMount(async () => {
         await ProfileService.getProfile();
-    })
+    });
+
+    onMount(() => {
+        const ioSocket = createSocket();
+        socket.set(ioSocket);
+
+        bindSocketHandlers(ioSocket);
+        ioSocket.connect();
+
+        return () => {
+            ioSocket.disconnect();
+            socket.set(null);
+        };
+    });
 </script>
 <svelte:head>
     <title>CryptoWallet</title>
