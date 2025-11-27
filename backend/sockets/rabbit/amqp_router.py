@@ -1,4 +1,5 @@
 from typing import TypedDict, NotRequired
+from decimal import Decimal
 
 from uuid import UUID
 
@@ -16,9 +17,12 @@ from mongo.dtos import (
 
 from mongo.repositories import UserRepository
 
+from ws.app import sio
+
 logger = logging.getLogger(__name__)
 
 amqp_router = RabbitRouter()
+
 
 class SaveUserDict(TypedDict):
     user_id: UUID
@@ -60,3 +64,30 @@ async def delete_avatar_handler(
         repository: FromDishka[UserRepository]
 ) -> None:
     await repository.delete_avatar(user_id=data["user_id"])
+
+
+class SaveWalletDict(TypedDict):
+    user_id: UUID
+    wallet_id: UUID
+    address: str
+    balance: Decimal
+    asset_symbol: str
+
+
+@amqp_router.subscriber("rest_api.save_wallet")
+@inject
+async def save_wallet_handler(
+        data: SaveWalletDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+
+    payload = {
+        "wallet_id": str(data["wallet_id"]),
+        "address": data["address"],
+        "balance": float(data["balance"]),
+        "asset_symbol": data["asset_symbol"]
+    }
+
+    logging.info(payload)
+
+    await sio.emit("save_wallet", payload)
