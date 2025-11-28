@@ -1,10 +1,20 @@
 import HttpService from "$lib/services/http.ts";
-import type {WalletResponse} from "$lib/types/api.ts";
+
 import {wallets} from "$lib/stores/wallets.ts";
+
+import type {ImportWalletRequest, WalletResponse} from "$lib/types/api.ts";
 
 export default class WalletService {
     static async createWallet(): Promise<void> {
         await HttpService.request<null>('/wallets', {method: 'POST'}, true);
+    }
+
+    static async importWallet(data: ImportWalletRequest): Promise<void> {
+        await HttpService.request<null>(
+            '/wallets/import',
+            {method: 'POST', body: JSON.stringify(data)},
+            true
+        );
     }
 
     static async getWallets(): Promise<void> {
@@ -16,5 +26,4 @@ export default class WalletService {
 
         if (response) wallets.set(response);
     }
-
 }

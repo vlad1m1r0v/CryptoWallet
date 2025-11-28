@@ -41,3 +41,7 @@ export interface WalletResponse {
     balance: string;
     asset_symbol: string;
 }
+
+export interface ImportWalletRequest {
+    private_key: string;
+}

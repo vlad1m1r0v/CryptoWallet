@@ -26,7 +26,6 @@
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
-    <link rel="stylesheet" href="/vuexy/css/core.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/bootstrap-extended.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/colors.css">
