@@ -1,6 +1,8 @@
 <script lang="ts">
     import {get} from "svelte/store";
 
+    import {outsideClick} from "$lib/actions/outsideClick.ts";
+
     import type MenuItemProps from "$lib/components/menu/types.ts";
 
     import Vuexy from "$lib/components/icons/Vuexy.svelte";
@@ -46,6 +48,14 @@
         }
     }
 
+    const onOutsideClick = () => {
+        const current = get(menu);
+
+        if (current.state === MenuState.SMALL_SCREEN_OVERLAY) {
+            menu.set({state: MenuState.SMALL_SCREEN_HIDE});
+        }
+    };
+
     const menuItems: MenuItemProps[] = [
         {
             Icon: Profile,
@@ -78,6 +88,8 @@
         class:expanded={$menu.state === MenuState.LARGE_SCREEN_COLLAPSED_EXPANDED}
         on:mouseenter={onMouseEnter}
         on:mouseleave={onMouseLeave}
+        use:outsideClick={{ignore: ".bookmark-wrapper"}}
+        on:outsideclick={onOutsideClick}
 >
     <div class="navbar-header expanded">
         <ul class="nav navbar-nav flex-row">

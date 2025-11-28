@@ -5,6 +5,10 @@
 
     import {z} from 'zod';
 
+    import {modals} from 'svelte-modals'
+
+    import ImportWalletModal from '$lib/components/modals/ImportWalletModal.svelte';
+
     import ProfileService from "$lib/services/profile.ts";
     import WalletService from "$lib/services/wallets.ts";
 
@@ -211,6 +215,7 @@
                     <button
                             type="button"
                             class="mb-1 mb-md-0 btn btn-primary waves-effect waves-float waves-light"
+                            onclick={() => modals.open(ImportWalletModal)}
                     >
                         Import ETH Wallet
                     </button>

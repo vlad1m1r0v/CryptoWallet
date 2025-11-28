@@ -2,6 +2,8 @@
     import {Toaster} from "svelte-sonner";
     import {Jumper} from 'svelte-loading-spinners';
 
+    import {Modals} from 'svelte-modals'
+
     import {loader} from "$lib/stores/loader.ts";
 
     let {children} = $props();
@@ -24,6 +26,7 @@
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" href="/vuexy/css/core.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/bootstrap-extended.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/colors.css">
@@ -45,6 +48,11 @@
     <!--END: Page CSS-->
 </svelte:head>
 <Toaster/>
+<Modals>
+    {#snippet backdrop({close})}
+        <div class="loader-overlay" onclick={() => close()}></div>
+    {/snippet}
+</Modals>
 {#if $loader.isLoading}
     <div class="loader-overlay">
         <div class="loader-center">

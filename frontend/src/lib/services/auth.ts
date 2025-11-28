@@ -35,8 +35,9 @@ export default class AuthService {
 
         if (response) {
             TokenService.saveToken(response["access_token"], Boolean(data.remember_me));
-            toast.success("User logged in successfully.");
             await goto("/profiles/me");
+
+            toast.success("User logged in successfully.");
         }
     }
 
@@ -44,5 +45,7 @@ export default class AuthService {
         TokenService.clearToken();
         user.set(null);
         await goto('/login');
+
+        toast.success("User logged out successfully.");
     }
 }
