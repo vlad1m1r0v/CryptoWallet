@@ -8,11 +8,11 @@ export function outsideClick(node: HTMLElement, options?: { ignore?: string }) {
         node.dispatchEvent(new CustomEvent('outsideclick'));
     }
 
-    document.addEventListener('click', handleClick);
+    document.addEventListener('pointerdown', handleClick);
 
     return {
         destroy() {
-            document.removeEventListener('click', handleClick);
+            document.removeEventListener('pointerdown', handleClick);
         }
     };
 }

@@ -1,4 +1,12 @@
 <script lang="ts">
+    const {
+        isOpen,
+        close,
+    }: {
+        isOpen: boolean,
+        close: () => {},
+    } = $props();
+
     import {fade, scale} from "svelte/transition";
 
     import {createForm} from "felte";
@@ -7,17 +15,11 @@
 
     import {z} from "zod";
 
+    import {outsideClick} from "$lib/actions/outsideClick.ts";
+
     import WalletService from "$lib/services/wallets.ts";
 
     import {importWalletSchema} from "$lib/schemas/importWallet.ts";
-
-    const {
-        isOpen,
-        close,
-    }: {
-        isOpen: boolean,
-        close: () => {},
-    } = $props();
 
     type FormData = z.infer<typeof importWalletSchema>;
 
@@ -36,12 +38,15 @@
     <div
             class="modal d-block text-left modal-primary"
             transition:fade|global={{duration: 200}}
-            style="z-index: 3000; display: block"
-            aria-modal="true"
+            style="z-index: 3000"
     >
         <div class="modal-dialog modal-dialog-centered" role="document"
              transition:scale|global="{{ start: 0.8, duration: 200 }}">
-            <div class="modal-content">
+            <div
+                    class="modal-content"
+                    use:outsideClick
+                    on:outsideclick={close}
+            >
                 <div class="modal-header">
                     <h5 class="modal-title" id="myModalLabel160">Import ETH wallet</h5>
                     <button
@@ -49,7 +54,7 @@
                             class="close"
                             data-dismiss="modal"
                             aria-label="Close"
-                            onclick={close}
+                            on:click={close}
                     >
                         <span aria-hidden="true">×</span>
                     </button>
@@ -74,9 +79,10 @@
                         <button
                                 type="button"
                                 disabled={$isSubmitting || !$isValid}
+                                id="import-eth-wallet__button"
                                 class="btn btn-primary waves-effect waves-float waves-light mr-1"
                                 data-dismiss="modal"
-                                onclick={handleSubmit}
+                                on:click={handleSubmit}
                         >
                             Submit
                         </button>
@@ -84,7 +90,7 @@
                                 type="button"
                                 class="btn btn-flat-primary waves-effect waves-float waves-light"
                                 data-dismiss="modal"
-                                onclick={close}
+                                on:click={close}
                         >
                             Cancel
                         </button>
