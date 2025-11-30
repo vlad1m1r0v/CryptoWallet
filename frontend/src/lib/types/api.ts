@@ -38,10 +38,53 @@ export interface UserResponse {
 export interface WalletResponse {
     id: string;
     address: string;
-    balance: string;
+    balance: number;
     asset_symbol: string;
 }
 
 export interface ImportWalletRequest {
     private_key: string;
 }
+
+export interface CreateTransactionRequest {
+    from_address: string;
+    to_address: string;
+    amount: number;
+}
+
+export interface FreeETHRequest {
+    wallet_id: string;
+}
+
+export interface UpdateWalletResponse {
+    id: string;
+    balance: number;
+}
+
+export enum TransactionStatusEnum {
+    SUCCESSFUL = "successful",
+    PENDING = "pending",
+    FAILED = "failed",
+}
+
+export interface SavePendingTransactionResponse {
+    id: string;
+    transaction_hash: string;
+    from_address: string;
+    to_address: string;
+    value: number;
+    transaction_fee: number;
+    transaction_status: TransactionStatusEnum;
+    asset_symbol: string;
+}
+
+export enum TransactionTypeEnum {
+    INCOME = "income",
+    EXPENSE = "expense"
+}
+
+export type CompleteTransactionResponse = SavePendingTransactionResponse & {
+    created_at: string;
+    transaction_type?: TransactionTypeEnum;
+    wallet_address?: string;
+};

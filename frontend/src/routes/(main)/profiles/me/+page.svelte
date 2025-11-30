@@ -203,7 +203,7 @@
                     <!--Wallet-->
                     <div class="row mb-2">
                         <div class="d-inline-block text-truncate">
-                            <img width="50" src="/vuexy/images/ethereum.png" alt="ethereum logo">
+                            <img width="50" src="/custom/images/ethereum.png" alt="ethereum logo">
                             <span class="text-center font-weight-lighter">
                                 {wallet.address}
                              </span>

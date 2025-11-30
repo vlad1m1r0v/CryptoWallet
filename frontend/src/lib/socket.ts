@@ -8,7 +8,13 @@ import TokenService from "$lib/services/token.ts";
 import {user} from "$lib/stores/user.ts";
 import {wallets} from "$lib/stores/wallets.ts";
 
-import type {WalletResponse} from "$lib/types/api.ts";
+import TransactionToast from "$lib/components/toasts/TransactionToast.svelte";
+
+import {
+    type CompleteTransactionResponse,
+    type UpdateWalletResponse,
+    type WalletResponse
+} from "$lib/types/api.ts";
 
 export function createSocket(): Socket {
     return io("ws://localhost:9000", {
@@ -41,5 +47,28 @@ export function bindSocketHandlers(socket: Socket) {
         } : u);
 
         wallets.update(w => w ? [...w, data] : w);
+    });
+
+    socket.on("update_wallet", (data: UpdateWalletResponse) => {
+        wallets.update(w => w ? (
+            w.map(wallet => wallet.id === data.id ? {
+                ...wallet,
+                balance: data.balance
+            } : wallet)
+        ) : w)
+    });
+
+    socket.on("complete_transaction", (data: CompleteTransactionResponse) => {
+        toast(TransactionToast,
+            {
+                componentProps: {
+                    value: data.value,
+                    transactionFee: data.transaction_fee,
+                    transactionType: data.transaction_type!,
+                    walletAddress: data.wallet_address!,
+                    transactionHash: data.transaction_hash,
+                    assetSymbol: data.asset_symbol
+                }
+            })
     })
 }

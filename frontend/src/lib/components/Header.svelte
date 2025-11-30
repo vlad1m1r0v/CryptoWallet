@@ -62,7 +62,7 @@
                         class:show={isDropdownMenuOpen}
                         aria-labelledby="dropdown-user"
                 >
-                    <a class="dropdown-item" href=" ">
+                    <a class="dropdown-item" href="/profiles/me">
                         <Profile/>
                         Profile
                     </a>

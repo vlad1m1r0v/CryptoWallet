@@ -1,8 +1,3 @@
-from typing import TypedDict, NotRequired
-from decimal import Decimal
-
-from uuid import UUID
-
 import logging
 
 from dishka import FromDishka
@@ -19,14 +14,20 @@ from mongo.repositories import UserRepository
 
 from ws.app import sio
 
+from rabbit.dicts import (
+    SaveUserDict,
+    UpdateUserDict,
+    DeleteAvatarDict,
+    SaveWalletDict,
+    UpdateWalletDict,
+    SavePendingTransactionDict,
+    CompleteTransactionDict,
+    RequestETHDict
+)
+
 logger = logging.getLogger(__name__)
 
 amqp_router = RabbitRouter()
-
-
-class SaveUserDict(TypedDict):
-    user_id: UUID
-    username: str
 
 
 @amqp_router.subscriber("rest_api.save_user")
@@ -38,12 +39,6 @@ async def save_user_handler(
     await repository.create(CreateUserDTO(**data))
 
 
-class UpdateUserDict(TypedDict):
-    user_id: UUID
-    username: NotRequired[str]
-    avatar_filename: NotRequired[str]
-
-
 @amqp_router.subscriber("rest_api.update_user")
 @inject
 async def update_user_handler(
@@ -53,10 +48,6 @@ async def update_user_handler(
     await repository.update(UpdateUserDTO(**data))
 
 
-class DeleteAvatarDict(TypedDict):
-    user_id: UUID
-
-
 @amqp_router.subscriber("rest_api.delete_avatar")
 @inject
 async def delete_avatar_handler(
@@ -64,14 +55,6 @@ async def delete_avatar_handler(
         repository: FromDishka[UserRepository]
 ) -> None:
     await repository.delete_avatar(user_id=data["user_id"])
-
-
-class SaveWalletDict(TypedDict):
-    user_id: UUID
-    wallet_id: UUID
-    address: str
-    balance: Decimal
-    asset_symbol: str
 
 
 @amqp_router.subscriber("rest_api.save_wallet")
@@ -89,3 +72,74 @@ async def save_wallet_handler(
     }
 
     await sio.emit("save_wallet", payload, user_room)
+
+
+@amqp_router.subscriber("rest_api.update_wallet")
+@inject
+async def update_wallet_handler(
+        data: UpdateWalletDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+
+    payload = {
+        "id": str(data["wallet_id"]),
+        "balance": float(data["balance"])
+    }
+
+    await sio.emit("update_wallet", payload, user_room)
+
+
+@amqp_router.subscriber("rest_api.save_pending_transaction")
+@inject
+async def save_pending_transaction_handler(
+        data: SavePendingTransactionDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+
+    payload = {
+        "id": str(data["transaction_id"]),
+        "transaction_hash": data["transaction_hash"],
+        "from_address": data["from_address"],
+        "to_address": data["to_address"],
+        "value": float(data["value"]),
+        "transaction_fee": float(data["transaction_fee"]),
+        "transaction_status": data["transaction_status"],
+        "asset_symbol": data["asset_symbol"],
+    }
+
+    await sio.emit("save_pending_transaction", payload, user_room)
+
+
+@amqp_router.subscriber("rest_api.complete_transaction")
+@inject
+async def complete_transaction_handler(
+        data: CompleteTransactionDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+
+    payload = {
+        "id": str(data["transaction_id"]),
+        "wallet_address": data["wallet_address"],
+        "transaction_hash": data["transaction_hash"],
+        "from_address": data["from_address"],
+        "to_address": data["to_address"],
+        "value": float(data["value"]),
+        "transaction_fee": float(data["transaction_fee"]),
+        "transaction_status": data["transaction_status"],
+        "asset_symbol": data["asset_symbol"],
+        "transaction_type": data["transaction_type"],
+        "created_at": data["created_at"].isoformat(),
+    }
+
+    logger.info(f"Complete transaction: {payload}")
+
+    await sio.emit("complete_transaction", payload, user_room)
+
+
+@amqp_router.subscriber("rest_api.request_free_eth")
+@inject
+async def request_free_eth_handler(
+        data: RequestETHDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+    await sio.emit("request_free_eth", {}, user_room)
