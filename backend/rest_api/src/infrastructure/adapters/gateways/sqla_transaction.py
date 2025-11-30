@@ -44,6 +44,11 @@ class SqlaTransactionGateway(TransactionGateway):
         result = await self._session.execute(stmt)
         models = result.scalars().all()
 
+        models = sorted(
+            models,
+            key=lambda m: 1 if m.to_address == m.wallet.address else 0
+        )
+
         return TransactionMapper.to_dto(models=models)
 
     async def update(
