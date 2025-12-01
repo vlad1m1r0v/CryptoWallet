@@ -5,14 +5,14 @@
         value,
         transactionFee,
         transactionType,
-        walletAddress,
+        address,
         transactionHash,
         assetSymbol
     }: {
         value: number,
         transactionFee: number,
         transactionType: TransactionTypeEnum,
-        walletAddress: string,
+        address: string,
         transactionHash: string,
         assetSymbol: string
     } = $props();
@@ -22,7 +22,7 @@
         value,
         transactionFee,
         transactionType,
-        walletAddress,
+        address,
         transactionHash,
         assetSymbol
     });
@@ -30,12 +30,12 @@
 <div>
     {#if transactionType === TransactionTypeEnum.INCOME}
         <span>
-            {value} {assetSymbol} received to the wallet {walletAddress}
+            {value} {assetSymbol} received to the wallet {address}
         </span>
     {/if}
     {#if transactionType === TransactionTypeEnum.EXPENSE}
         <span>
-            {value + transactionFee} {assetSymbol} taken from wallet {walletAddress}
+            {value + transactionFee} {assetSymbol} taken from wallet {address}
         </span>
     {/if}
     <a href={`https://sepolia.etherscan.io/tx/${transactionHash}`}>

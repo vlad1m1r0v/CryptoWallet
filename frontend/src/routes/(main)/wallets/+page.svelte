@@ -74,6 +74,7 @@
     import {wallets} from "$lib/stores/wallets.ts";
 
     import SendTransactionModal from "$lib/components/modals/SendTransactionModal.svelte";
+    import TransactionsDatagridModal from "$lib/components/modals/TransactionsDatagridModal.svelte";
 
     onMount(async () => {
         await WalletService.getWallets();
@@ -113,6 +114,7 @@
                         <button
                                 type="button"
                                 class="btn btn-sm btn-primary"
+                                onclick={() => modals.open(TransactionsDatagridModal, {walletAddress: wallet.address, walletId: wallet.id})}
                         >
                             Watch transactions
                         </button>

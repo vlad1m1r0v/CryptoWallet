@@ -1,3 +1,5 @@
+import {PUBLIC_SOCKET_URL} from '$env/static/public';
+
 import {io, Socket} from "socket.io-client";
 
 import {toast} from "svelte-sonner";
@@ -11,13 +13,13 @@ import {wallets} from "$lib/stores/wallets.ts";
 import TransactionToast from "$lib/components/toasts/TransactionToast.svelte";
 
 import {
-    type CompleteTransactionResponse,
+    type TransactionResponse,
     type UpdateWalletResponse,
     type WalletResponse
 } from "$lib/types/api.ts";
 
 export function createSocket(): Socket {
-    return io("ws://localhost:9000", {
+    return io(PUBLIC_SOCKET_URL, {
         transports: ["websocket"],
         auth: {token: TokenService.getToken()},
         autoConnect: false
@@ -58,14 +60,14 @@ export function bindSocketHandlers(socket: Socket) {
         ) : w)
     });
 
-    socket.on("complete_transaction", (data: CompleteTransactionResponse) => {
+    socket.on("complete_transaction", (data: TransactionResponse) => {
         toast(TransactionToast,
             {
                 componentProps: {
                     value: data.value,
                     transactionFee: data.transaction_fee,
                     transactionType: data.transaction_type!,
-                    walletAddress: data.wallet_address!,
+                    address: data.wallet_address!,
                     transactionHash: data.transaction_hash,
                     assetSymbol: data.asset_symbol
                 }

@@ -7,7 +7,6 @@ import type {
     FreeETHRequest,
     WalletResponse
 } from "$lib/types/api.ts";
-import {toast} from "svelte-sonner";
 
 export default class WalletService {
     static async createWallet(): Promise<void> {
@@ -38,7 +37,5 @@ export default class WalletService {
             {method: 'POST', body: JSON.stringify(data)},
             true
         );
-
-        toast.info("You have successfully send request for retrieving free ETH.")
     }
 }

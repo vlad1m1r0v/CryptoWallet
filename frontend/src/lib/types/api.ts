@@ -67,7 +67,12 @@ export enum TransactionStatusEnum {
     FAILED = "failed",
 }
 
-export interface SavePendingTransactionResponse {
+export enum TransactionTypeEnum {
+    INCOME = "income",
+    EXPENSE = "expense"
+}
+
+export interface TransactionResponse {
     id: string;
     transaction_hash: string;
     from_address: string;
@@ -76,15 +81,13 @@ export interface SavePendingTransactionResponse {
     transaction_fee: number;
     transaction_status: TransactionStatusEnum;
     asset_symbol: string;
-}
-
-export enum TransactionTypeEnum {
-    INCOME = "income",
-    EXPENSE = "expense"
-}
-
-export type CompleteTransactionResponse = SavePendingTransactionResponse & {
-    created_at: string;
+    created_at?: string;
     transaction_type?: TransactionTypeEnum;
     wallet_address?: string;
-};
+}
+
+export interface PaginatedResponse<T> {
+    items: T[];
+    page: number;
+    total_pages: number;
+}
