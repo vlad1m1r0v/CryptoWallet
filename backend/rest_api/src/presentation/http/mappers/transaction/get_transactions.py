@@ -18,6 +18,7 @@ class GetTransactionsMapper:
     def to_request_dto(schema: GetTransactionsRequestSchema) -> GetTransactionsRequestDTO:
         return GetTransactionsRequestDTO(
             page=schema.page,
+            per_page=schema.per_page,
             user_id=schema.user_id,
             wallet_id=schema.wallet_id,
             sort=schema.sort,
@@ -30,7 +31,9 @@ class GetTransactionsMapper:
     ) -> PaginatedResponseSchema[TransactionResponseSchema]:
         return PaginatedResponseSchema[TransactionResponseSchema](
             page=dto["page"],
+            per_page=dto["per_page"],
             total_pages=dto["total_pages"],
+            total_records=dto["total_records"],
             items=[
                 TransactionResponseSchema(
                     id=item["id"],

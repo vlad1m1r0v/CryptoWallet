@@ -18,7 +18,6 @@ from src.application.dtos.response import (
     TransactionResponseDTO
 )
 
-from src.infrastructure.consts import RECORDS_PER_PAGE
 from src.infrastructure.persistence.database.models import (
     Wallet as WalletM,
     Transaction as TransactionM
@@ -71,7 +70,8 @@ class SqlaTransactionGateway(TransactionGateway):
             wallet_id: UUID,
             sort: Optional[TransactionSortField] = "created_at",
             order: Optional[SortOrderEnum] = SortOrderEnum.ASC,
-            page: Optional[int] = 1
+            page: Optional[int] = 1,
+            per_page: Optional[int] = 20
     ) -> PaginatedResponseDTO[TransactionResponseDTO]:
         sort_field_map = {
             "created_at": TransactionM.created_at,
@@ -93,8 +93,8 @@ class SqlaTransactionGateway(TransactionGateway):
 
         result = await self._session.execute(
             stmt
-            .limit(RECORDS_PER_PAGE)
-            .offset(RECORDS_PER_PAGE * (page - 1))
+            .limit(per_page)
+            .offset(per_page * (page - 1))
         )
         models = result.scalars().unique().all()
 
@@ -105,10 +105,12 @@ class SqlaTransactionGateway(TransactionGateway):
         )
 
         total_records = (await self._session.execute(count_stmt)).scalar_one()
-        total_pages = (total_records + RECORDS_PER_PAGE - 1) // RECORDS_PER_PAGE
+        total_pages = (total_records + per_page - 1) // per_page
 
         return TransactionMapper.to_dto(
             models=models,
             page=page,
-            total_pages=total_pages
+            per_page=per_page,
+            total_pages=total_pages,
+            total_records=total_records
         )

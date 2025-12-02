@@ -70,7 +70,9 @@ class TransactionMapper:
             model: Optional[TransactionM] = None,
             models: Optional[Sequence[TransactionM]] = None,
             page: Optional[int] = None,
-            total_pages: Optional[int] = None
+            per_page: Optional[int] = None,
+            total_pages: Optional[int] = None,
+            total_records: Optional[int] = None,
     ) -> Union[
         TransactionResponseDTO,
         list[TransactionResponseDTO],
@@ -82,7 +84,9 @@ class TransactionMapper:
         elif all([models, page, total_pages]):
             return PaginatedResponseDTO(
                 page=page,
+                per_page=per_page,
                 total_pages=total_pages,
+                total_records=total_records,
                 items=[TransactionMapper.__base_to_dto(model) for model in models]
             )
 

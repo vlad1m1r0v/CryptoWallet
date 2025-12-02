@@ -79,9 +79,11 @@ async def get_transactions(
         sort: TransactionSortField = Query(),
         order: SortOrderEnum = Query(),
         page: int = Query(default=1),
+        per_page: int = Query(default=20),
 ) -> PaginatedResponseSchema[TransactionResponseSchema]:
     schema = GetTransactionsRequestSchema(
         page=page,
+        per_page=per_page,
         user_id=user["user_id"],
         wallet_id=wallet_id,
         sort=sort,

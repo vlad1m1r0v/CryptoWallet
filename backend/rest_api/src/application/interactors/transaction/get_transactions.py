@@ -55,5 +55,6 @@ class GetTransactionsInteractor:
             wallet_id=data.wallet_id,
             sort=data.sort,
             order=data.order,
-            page=data.page
+            page=data.page,
+            per_page=data.per_page
         )

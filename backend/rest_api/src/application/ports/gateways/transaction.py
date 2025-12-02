@@ -37,6 +37,7 @@ class TransactionGateway(Protocol):
             wallet_id: UUID,
             sort: Optional[TransactionSortField] = "created_at",
             order: Optional[SortOrderEnum] = SortOrderEnum.ASC,
-            page: Optional[int] = 1
+            page: Optional[int] = 1,
+            per_page: Optional[int] = 20
     ) -> PaginatedResponseDTO[TransactionResponseDTO]:
         ...

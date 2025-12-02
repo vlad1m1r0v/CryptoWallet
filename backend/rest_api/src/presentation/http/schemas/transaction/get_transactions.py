@@ -18,6 +18,7 @@ from src.presentation.http.schemas.fields import (
 
 class GetTransactionsRequestSchema(BaseModel):
     page: Optional[int] = 1
+    per_page: Optional[int] = 20
     user_id: UUID
     wallet_id: UUID
     sort: TransactionSortField
@@ -41,7 +42,7 @@ class TransactionResponseSchema(BaseModel):
     value: Decimal
     transaction_fee: Decimal
     transaction_status: TransactionStatusEnum
-    created_at: datetime
+    created_at: Optional[datetime] = None
     wallet: TransactionWalletSchema = Field(exclude=True)
 
     def model_post_init(self, __context=None):
