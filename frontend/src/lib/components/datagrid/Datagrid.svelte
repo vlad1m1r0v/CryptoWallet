@@ -39,7 +39,16 @@
     import type {ColumnHeaderProps} from "$lib/components/datagrid/types.ts";
 
     onMount(async () => {
-        datagrid.update((dg) => ({...dg, queryParams: {...dg.queryParams, wallet_id: walletId}}));
+        datagrid.update((dg) => ({...dg,
+            queryParams: {
+                ...dg.queryParams,
+                page: 1,
+                per_page: 20,
+                sort: "created_at",
+                order: "desc",
+                wallet_id: walletId
+            }
+        }));
 
         await TransactionService.getTransactions();
     })

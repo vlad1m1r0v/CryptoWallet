@@ -83,6 +83,7 @@ class CompleteTransactionInteractor:
                             10 ** transactions[0]["wallet"]["asset"]["decimals"]),
                     transaction_status=transactions[0]["transaction_status"],
                     asset_symbol=transactions[0]["wallet"]["asset"]["symbol"],
+                    wallet_id=transactions[0]["wallet"]["id"],
                     wallet_address=transactions[0]["wallet"]["address"],
                     created_at=transactions[0]["created_at"]
                 )
@@ -125,6 +126,7 @@ class CompleteTransactionInteractor:
                             10 ** transactions[1]["wallet"]["asset"]["decimals"]),
                     transaction_status=transactions[1]["transaction_status"],
                     asset_symbol=transactions[1]["wallet"]["asset"]["symbol"],
+                    wallet_id=transactions[1]["wallet"]["id"],
                     wallet_address=transactions[1]["wallet"]["address"],
                     created_at=transactions[1]["created_at"]
                 )

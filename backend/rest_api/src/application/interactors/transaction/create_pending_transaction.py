@@ -108,6 +108,8 @@ class CreatePendingTransactionInteractor:
                     transaction_fee=transactions[0]["transaction_fee"] / (
                             10 ** transactions[0]["wallet"]["asset"]["decimals"]),
                     transaction_status=transactions[0]["transaction_status"],
+                    wallet_id=transactions[0]["wallet"]["id"],
+                    wallet_address=transactions[0]["wallet"]["address"],
                     asset_symbol=transactions[0]["wallet"]["asset"]["symbol"]
                 )
             )
@@ -126,6 +128,8 @@ class CreatePendingTransactionInteractor:
                     transaction_fee=transactions[1]["transaction_fee"] / (
                             10 ** transactions[1]["wallet"]["asset"]["decimals"]),
                     transaction_status=transactions[1]["transaction_status"],
+                    wallet_id=transactions[1]["wallet"]["id"],
+                    wallet_address=transactions[1]["wallet"]["address"],
                     asset_symbol=transactions[1]["wallet"]["asset"]["symbol"]
                 )
             )

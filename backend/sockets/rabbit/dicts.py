@@ -49,6 +49,8 @@ class SavePendingTransactionDict(TypedDict):
     value: Decimal
     transaction_fee: Decimal
     transaction_status: TransactionStatusEnum
+    wallet_id: UUID
+    wallet_address: str
     asset_symbol: str
 
 
@@ -67,6 +69,7 @@ class CompleteTransactionDict(TypedDict):
     value: Decimal
     transaction_fee: Decimal
     transaction_status: TransactionStatusEnum
+    wallet_id: UUID
     wallet_address: str
     asset_symbol: str
     transaction_type: TransactionTypeEnum

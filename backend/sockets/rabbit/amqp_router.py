@@ -98,6 +98,8 @@ async def save_pending_transaction_handler(
 
     payload = {
         "id": str(data["transaction_id"]),
+        "wallet_id": str(data["wallet_id"]),
+        "wallet_address": data["wallet_address"],
         "transaction_hash": data["transaction_hash"],
         "from_address": data["from_address"],
         "to_address": data["to_address"],
@@ -119,6 +121,7 @@ async def complete_transaction_handler(
 
     payload = {
         "id": str(data["transaction_id"]),
+        "wallet_id": str(data["wallet_id"]),
         "wallet_address": data["wallet_address"],
         "transaction_hash": data["transaction_hash"],
         "from_address": data["from_address"],

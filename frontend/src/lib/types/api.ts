@@ -74,6 +74,8 @@ export enum TransactionTypeEnum {
 
 export interface TransactionResponse {
     id: string;
+    wallet_id: string;
+    wallet_address: string;
     transaction_hash: string;
     from_address: string;
     to_address: string;
@@ -83,7 +85,6 @@ export interface TransactionResponse {
     asset_symbol: string;
     created_at?: string;
     transaction_type?: TransactionTypeEnum;
-    wallet_address?: string;
 }
 
 export interface PaginatedResponse<T> {

@@ -25,7 +25,7 @@
     <!--Value-->
     <td>{row.value} {row.asset_symbol}</td>
     <!--Created at-->
-    <td>{row.created_at}</td>
+    <td>{row.created_at ?? ''}</td>
     <!--Fee-->
     <td>{row.transaction_fee} {row.asset_symbol}</td>
     <!--Status-->

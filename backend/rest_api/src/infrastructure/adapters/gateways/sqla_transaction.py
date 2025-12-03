@@ -76,7 +76,7 @@ class SqlaTransactionGateway(TransactionGateway):
         sort_field_map = {
             "created_at": TransactionM.created_at,
             "transaction_fee": TransactionM.transaction_fee,
-            "status": TransactionM.transaction_status
+            "transaction_status": TransactionM.transaction_status
         }
         sort_column = sort_field_map.get(str(sort))
 

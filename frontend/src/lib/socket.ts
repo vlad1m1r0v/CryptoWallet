@@ -1,11 +1,13 @@
 import {PUBLIC_SOCKET_URL} from '$env/static/public';
 
+import {get} from "svelte/store";
+
 import {io, Socket} from "socket.io-client";
 
 import {toast} from "svelte-sonner";
 
-
 import TokenService from "$lib/services/token.ts";
+import TransactionService from "$lib/services/transactions.ts";
 
 import {user} from "$lib/stores/user.ts";
 import {wallets} from "$lib/stores/wallets.ts";
@@ -17,6 +19,7 @@ import {
     type UpdateWalletResponse,
     type WalletResponse
 } from "$lib/types/api.ts";
+import {datagrid} from "$lib/stores/datagrid.ts";
 
 export function createSocket(): Socket {
     return io(PUBLIC_SOCKET_URL, {
@@ -72,5 +75,26 @@ export function bindSocketHandlers(socket: Socket) {
                     assetSymbol: data.asset_symbol
                 }
             })
-    })
+    });
+
+    const onTransaction = async (data: TransactionResponse) => {
+        const store = get(datagrid);
+
+        console.log("called");
+
+        if (store.queryParams.wallet_id === data.wallet_id) {
+            datagrid.update((dg) => (
+                    {
+                        ...dg,
+                        queryParams: {...dg.queryParams, page: 1, per_page: 20, sort: "created_at", order: "desc"}
+                    }
+                )
+            )
+
+            await TransactionService.getTransactions()
+        }
+    };
+
+    socket.on("complete_transaction", async (data: TransactionResponse) => await onTransaction(data));
+    socket.on("save_pending_transaction", async (data: TransactionResponse) => await onTransaction(data));
 }

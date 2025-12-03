@@ -4,7 +4,7 @@ from uuid import UUID
 
 from src.application.enums import SortOrderEnum
 
-TransactionSortField = Literal["created_at", "status", "transaction_fee"]
+TransactionSortField = Literal["created_at", "transaction_status", "transaction_fee"]
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class GetTransactionsRequestDTO:

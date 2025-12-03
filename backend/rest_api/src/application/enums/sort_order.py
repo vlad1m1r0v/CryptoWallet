@@ -1,6 +1,6 @@
-from enum import StrEnum
+from enum import StrEnum, auto
 
 
 class SortOrderEnum(StrEnum):
-    ASC = "ASC"
-    DESC = "DESC"
+    ASC = auto()
+    DESC = auto()

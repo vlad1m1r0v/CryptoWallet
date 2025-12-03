@@ -80,6 +80,8 @@ class SavePendingTransactionEventDTO:
     value: Decimal
     transaction_fee: Decimal
     transaction_status: TransactionStatusEnum
+    wallet_id: UUID
+    wallet_address: str
     asset_symbol: str
 
 
@@ -98,6 +100,7 @@ class CompleteTransactionEventDTO:
     value: Decimal
     transaction_fee: Decimal
     transaction_status: TransactionStatusEnum
+    wallet_id: UUID
     wallet_address: str
     transaction_type: TransactionTypeEnum = field(init=False)
     asset_symbol: str
