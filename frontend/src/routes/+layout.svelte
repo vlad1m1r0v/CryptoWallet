@@ -33,6 +33,11 @@
     <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/dark-layout.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/bordered-layout.css">
     <link rel="stylesheet" type="text/css" href="/vuexy/css/themes/semi-dark-layout.css">
+    <!-- END: Theme CSS-->
+
+    <!-- BEGIN: Feather Icons CSS-->
+    <link rel="stylesheet" href="/vuexy/vendors/css/feather-icons/feather-icons.min.css">
+    <!-- END: Feather Icons CSS-->
 
     <!--BEGIN: Loading overlay CSS-->
     <link rel="stylesheet" type="text/css" href="/custom/css/loading-overlay.css">

@@ -91,5 +91,5 @@ export interface PaginatedResponse<T> {
     page: number;
     per_page: number;
     total_pages: number;
-    total_record: number;
+    total_records: number;
 }
