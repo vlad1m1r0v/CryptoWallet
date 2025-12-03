@@ -80,8 +80,6 @@ export function bindSocketHandlers(socket: Socket) {
     const onTransaction = async (data: TransactionResponse) => {
         const store = get(datagrid);
 
-        console.log("called");
-
         if (store.queryParams.wallet_id === data.wallet_id) {
             datagrid.update((dg) => (
                     {
