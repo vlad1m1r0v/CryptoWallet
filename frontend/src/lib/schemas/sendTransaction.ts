@@ -3,11 +3,12 @@ import {z} from "zod";
 export const sendTransactionSchema = z.object({
     to_address: z
         .string()
-        .trim()
-        .length(42, "Address must be exactly 42 characters long")
-        .refine((v) => v.startsWith("0x"), {
-            message: "Address must start with '0x'",
-        }),
+        .transform((v) => v.replace(/\s+/g, "")).pipe(
+            z
+                .string()
+                .length(42, "Address must be exactly 42 characters long")
+                .refine((v) => v.startsWith("0x"), {message: "Address must start with '0x'"})
+        ),
 
     amount: z
         .number({

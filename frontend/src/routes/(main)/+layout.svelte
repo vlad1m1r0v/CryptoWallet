@@ -61,7 +61,7 @@
     });
 
     onMount(async () => {
-        await ProfileService.getProfile();
+        await ProfileService.getMyProfile();
     });
 
     onMount(() => {

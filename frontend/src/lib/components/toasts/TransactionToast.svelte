@@ -1,6 +1,8 @@
 <script lang="ts">
     import {TransactionTypeEnum} from "$lib/types/api.ts";
 
+    import Info from "$lib/components/icons/Info.svelte";
+
     const {
         value,
         transactionFee,
@@ -16,18 +18,9 @@
         transactionHash: string,
         assetSymbol: string
     } = $props();
-
-
-    console.log({
-        value,
-        transactionFee,
-        transactionType,
-        address,
-        transactionHash,
-        assetSymbol
-    });
 </script>
 <div>
+    <Info/>
     {#if transactionType === TransactionTypeEnum.INCOME}
         <span>
             {value} {assetSymbol} received to the wallet {address}
