@@ -1,4 +1,8 @@
-from faststream.rabbit import RabbitBroker
+from faststream.rabbit import (
+    RabbitBroker,
+    RabbitExchange,
+    ExchangeType
+)
 
 from typing import Any
 from dataclasses import asdict
@@ -99,8 +103,11 @@ class RabbitMQEventPublisher(EventPublisher):
         )
 
     async def request_free_eth(self, dto: RequestFreeETHEventDTO) -> None:
+        exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
+
         await self._broker.publish(
             routing_key="rest_api.request_free_eth",
+            exchange=exchange,
             message=asdict(dto)
         )
 

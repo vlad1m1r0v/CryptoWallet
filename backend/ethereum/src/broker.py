@@ -9,7 +9,12 @@ import logging
 from dishka import FromDishka
 from dishka.integrations.faststream import inject
 
-from faststream.rabbit import RabbitRouter
+from faststream.rabbit import (
+    RabbitRouter,
+    RabbitQueue,
+    RabbitExchange,
+    ExchangeType
+)
 
 from src.ports import EthereumServicePort
 from src.schemas import (
@@ -20,6 +25,8 @@ from src.schemas import (
 logger = logging.getLogger("ethereum_broker")
 
 amqp_router = RabbitRouter()
+
+exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
 
 
 class CreateWalletData(TypedDict):
@@ -85,7 +92,12 @@ class SendFreeETHData(TypedDict):
     to_address: str
 
 
-@amqp_router.subscriber("rest_api.request_free_eth")
+@amqp_router.subscriber(
+    queue=RabbitQueue(
+        name="ethereum",
+        routing_key="rest_api.request_free_eth"),
+    exchange=exchange
+)
 @amqp_router.publisher("ethereum.create_pending_transaction")
 @inject
 async def send_free_eth_handler(

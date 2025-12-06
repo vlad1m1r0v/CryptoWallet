@@ -3,7 +3,12 @@ import logging
 from dishka import FromDishka
 from dishka.integrations.faststream import inject
 
-from faststream.rabbit import RabbitRouter
+from faststream.rabbit import (
+    RabbitRouter,
+    RabbitQueue,
+    RabbitExchange,
+    ExchangeType
+)
 
 from mongo.dtos import (
     CreateUserDTO,
@@ -28,6 +33,8 @@ from rabbit.dicts import (
 logger = logging.getLogger(__name__)
 
 amqp_router = RabbitRouter()
+
+exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
 
 
 @amqp_router.subscriber("rest_api.save_user")
@@ -134,12 +141,16 @@ async def complete_transaction_handler(
         "created_at": data["created_at"].isoformat(),
     }
 
-    logger.info(f"Complete transaction: {payload}")
-
     await sio.emit("complete_transaction", payload, user_room)
 
 
-@amqp_router.subscriber("rest_api.request_free_eth")
+@amqp_router.subscriber(
+    queue=RabbitQueue(
+        name="sockets",
+        routing_key="rest_api.request_free_eth",
+    ),
+    exchange=exchange
+)
 @inject
 async def request_free_eth_handler(
         data: RequestETHDict,
