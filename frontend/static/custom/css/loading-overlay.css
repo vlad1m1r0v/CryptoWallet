@@ -1,4 +1,4 @@
-.loader-overlay {
+.loader__overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.2);
@@ -9,7 +9,7 @@
     justify-content: center;
 }
 
-.loader-center {
+.loader__center {
     display: flex;
     justify-content: center;
     align-items: center;

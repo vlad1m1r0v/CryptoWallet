@@ -54,12 +54,12 @@
 <Toaster/>
 <Modals>
     {#snippet backdrop({close})}
-        <div class="loader-overlay" onclick={() => close()}></div>
+        <div class="loader__overlay" onclick={() => close()}></div>
     {/snippet}
 </Modals>
 {#if $loader.isLoading}
-    <div class="loader-overlay">
-        <div class="loader-center">
+    <div class="loader__overlay">
+        <div class="loader__center">
             <Jumper size="60" color="#7367F0" unit="px" duration="1s"/>
         </div>
     </div>

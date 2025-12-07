@@ -94,3 +94,13 @@ export interface PaginatedResponse<T> {
     total_pages: number;
     total_records: number;
 }
+
+export interface ProductResponse {
+  id: string;
+  name: string;
+  price: number;
+  photo_url: string;
+  created_at: string;
+  asset_symbol: string;
+  wallet_address: string;
+}

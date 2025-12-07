@@ -95,4 +95,8 @@ export function bindSocketHandlers(socket: Socket) {
 
     socket.on("complete_transaction", async (data: TransactionResponse) => await onTransaction(data));
     socket.on("save_pending_transaction", async (data: TransactionResponse) => await onTransaction(data));
+
+    socket.on("request_free_eth", () => {
+        toast.success("You have successfully send request for receiving free ETH.")
+    })
 }
