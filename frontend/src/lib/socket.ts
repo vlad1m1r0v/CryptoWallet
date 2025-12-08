@@ -11,13 +11,15 @@ import TransactionService from "$lib/services/transactions.ts";
 
 import {user} from "$lib/stores/user.ts";
 import {wallets} from "$lib/stores/wallets.ts";
+import {products} from "$lib/stores/products.ts";
 
 import TransactionToast from "$lib/components/toasts/TransactionToast.svelte";
 
 import {
     type TransactionResponse,
     type UpdateWalletResponse,
-    type WalletResponse
+    type WalletResponse,
+    type ProductResponse
 } from "$lib/types/api.ts";
 import {datagrid} from "$lib/stores/datagrid.ts";
 
@@ -48,7 +50,7 @@ export function bindSocketHandlers(socket: Socket) {
         user.update(u => u ? {
             ...u,
             total_wallets: u.total_wallets + 1,
-            wallets: [...u.wallets, {id: data.id, address: data.address}]
+            wallets: [{id: data.id, address: data.address}, ...u.wallets]
         } : u);
 
         wallets.update(w => w ? [...w, data] : w);
@@ -98,5 +100,9 @@ export function bindSocketHandlers(socket: Socket) {
 
     socket.on("request_free_eth", () => {
         toast.success("You have successfully send request for receiving free ETH.")
+    })
+
+    socket.on("save_product", (product: ProductResponse) => {
+        products.update((list) => [product, ...(list ?? [])]);
     })
 }

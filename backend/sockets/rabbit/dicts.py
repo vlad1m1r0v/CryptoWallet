@@ -81,6 +81,15 @@ class RequestETHDict(TypedDict):
     to_address: str
 
 
+class SaveProductDict(TypedDict):
+    product_id: UUID
+    name: str
+    price: Decimal
+    photo_url: str
+    asset_symbol: str
+    wallet_address: str
+    created_at: datetime
+
 __all__ = [
     "SaveUserDict",
     "UpdateUserDict",

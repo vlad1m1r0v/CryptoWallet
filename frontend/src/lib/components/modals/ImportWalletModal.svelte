@@ -60,18 +60,21 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form use:form class="mt-2" novalidate>
-                        <input
-                                name="private_key"
-                                type="password"
-                                class="form-control"
-                                class:is-valid={!$errors.private_key && $touched.private_key}
-                                class:is-invalid={$errors.private_key && $touched.private_key}
-                                placeholder="Enter private key..."
-                        />
-                        {#if $touched.private_key && $errors.private_key}
-                            <div class="invalid-feedback">{$errors.private_key[0]}</div>
-                        {/if}
+                    <form use:form novalidate>
+                        <div class="form-group">
+                            <label for="private_key" class="form-label">Private key</label>
+                            <input
+                                    name="private_key"
+                                    type="password"
+                                    class="form-control"
+                                    class:is-valid={!$errors.private_key && $touched.private_key}
+                                    class:is-invalid={$errors.private_key && $touched.private_key}
+                                    placeholder="Enter private key..."
+                            />
+                            {#if $touched.private_key && $errors.private_key}
+                                <div class="invalid-feedback">{$errors.private_key[0]}</div>
+                            {/if}
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -79,7 +82,6 @@
                         <button
                                 type="button"
                                 disabled={$isSubmitting || !$isValid}
-                                id="import-eth-wallet__button"
                                 class="btn btn-primary waves-effect waves-float waves-light mr-1"
                                 data-dismiss="modal"
                                 on:click={handleSubmit}

@@ -5,6 +5,8 @@ from decimal import Decimal
 from typing import Optional
 from enum import StrEnum, auto
 
+from src.configs import config
+
 from src.domain.enums import (
     OrderStatusEnum,
     TransactionStatusEnum
@@ -128,9 +130,17 @@ class SaveProductEventDTO:
     name: str
     price: Decimal
     photo_filename: str
+    photo_url: str = field(init=False)
     asset_symbol: str
     wallet_address: str
     created_at: datetime
+
+    def __post_init__(self):
+        object.__setattr__(
+            self,
+            "photo_url",
+            f"{config.s3.base_file_url}/{self.photo_filename}" if {self.photo_filename} else None
+        )
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

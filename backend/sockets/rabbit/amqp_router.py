@@ -27,7 +27,8 @@ from rabbit.dicts import (
     UpdateWalletDict,
     SavePendingTransactionDict,
     CompleteTransactionDict,
-    RequestETHDict
+    RequestETHDict,
+    SaveProductDict
 )
 
 logger = logging.getLogger(__name__)
@@ -157,3 +158,21 @@ async def request_free_eth_handler(
 ) -> None:
     user_room = f"user:{data['user_id']}"
     await sio.emit("request_free_eth", {}, user_room)
+
+
+@amqp_router.subscriber("rest_api.save_product")
+@inject
+async def save_product_handler(
+        data: SaveProductDict
+) -> None:
+    payload = {
+        "product_id": str(data["product_id"]),
+        "name": data["name"],
+        "price": float(data["price"]),
+        "photo_url": data["photo_url"],
+        "asset_symbol": data["asset_symbol"],
+        "wallet_address": data["wallet_address"],
+        "created_at": str(data["created_at"])
+    }
+
+    await sio.emit("save_product", payload)

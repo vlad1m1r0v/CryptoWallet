@@ -102,7 +102,6 @@
                         <button
                                 type="button"
                                 disabled={$isSubmitting || !$isValid}
-                                id="import-eth-wallet__button"
                                 class="btn btn-primary waves-effect waves-float waves-light mr-1"
                                 data-dismiss="modal"
                                 on:click={handleSubmit}

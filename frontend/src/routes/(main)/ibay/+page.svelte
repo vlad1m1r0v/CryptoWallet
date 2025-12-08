@@ -20,6 +20,10 @@
 <script lang="ts">
     import {onMount} from "svelte";
 
+    import {modals} from "svelte-modals";
+
+    import CreateProductModal from "$lib/components/modals/CreateProductModal.svelte";
+
     import ProductService from "$lib/services/products.ts";
 
     import {products} from "$lib/stores/products.ts";
@@ -34,7 +38,12 @@
         <h2 class="mb-0">Products</h2>
     </div>
     <div class="col-md-6 col-6 mb-2 text-right">
-        <button class="btn btn-primary">Add product</button>
+        <button
+                class="btn btn-primary"
+                onclick={() => modals.open(CreateProductModal)}
+        >
+            Add product
+        </button>
     </div>
 </div>
 <!--Products-->
