@@ -28,7 +28,9 @@ from rabbit.dicts import (
     SavePendingTransactionDict,
     CompleteTransactionDict,
     RequestETHDict,
-    SaveProductDict
+    SaveProductDict,
+    PayOrderDict,
+    UpdateOrderDict
 )
 
 logger = logging.getLogger(__name__)
@@ -176,3 +178,53 @@ async def save_product_handler(
     }
 
     await sio.emit("save_product", payload)
+
+
+@amqp_router.subscriber(
+    queue=RabbitQueue(
+        name="sockets",
+        routing_key="rest_api.pay_order",
+    ),
+    exchange=exchange
+)
+@inject
+async def pay_order_handler(
+        data: PayOrderDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+
+    payload = {
+        "order_id": str(data["order_id"]),
+        "transaction_hash": data["transaction_hash"]
+    }
+
+    await sio.emit("pay_order", payload, user_room)
+
+
+@amqp_router.subscriber(
+    queue=RabbitQueue(
+        name="sockets",
+        routing_key="rest_api.update_order",
+    ),
+    exchange=exchange
+)
+@inject
+async def update_order_handler(
+        data: UpdateOrderDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+
+    payload = {
+        "order_id": str(data["order_id"])
+    }
+
+    if status := data.get("status", None):
+        payload["status"] = status
+
+    if payment_transaction_hash := data.get("payment_transaction_hash", None):
+        payload["payment_transaction_hash"] = payment_transaction_hash
+        
+    if return_transaction_hash := data.get("return_transaction_hash", None):
+        payload["return_transaction_hash"] = return_transaction_hash
+
+    await sio.emit("pay_order", payload, user_room)

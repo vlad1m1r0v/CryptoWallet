@@ -8,7 +8,13 @@ import logging
 from dishka import FromDishka
 from dishka.integrations.faststream import inject
 
-from faststream.rabbit import RabbitRouter, RabbitBroker
+from faststream.rabbit import (
+    RabbitRouter,
+    RabbitBroker,
+    RabbitQueue,
+    RabbitExchange,
+    ExchangeType
+)
 
 from src.db.dtos import OrderDTO
 from src.db.repositories import OrderRepositoryPort
@@ -18,6 +24,8 @@ from src.enums import OrderStatusEnum
 logger = logging.getLogger(__name__)
 
 amqp_router = RabbitRouter()
+
+exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
 
 
 class CreateOrderDict(TypedDict):
@@ -44,7 +52,12 @@ class UpdateOrderDict(TypedDict):
     status: NotRequired[OrderStatusEnum]
 
 
-@amqp_router.subscriber("rest_api.update_order")
+@amqp_router.subscriber(
+    queue=RabbitQueue(
+        name="ibay",
+        routing_key="rest_api.update_order"),
+    exchange=exchange
+)
 @inject
 async def update_order_handler(
         data: UpdateOrderDict,
@@ -63,7 +76,12 @@ class PayOrderDict(TypedDict):
     order_id: UUID
 
 
-@amqp_router.subscriber("rest_api.pay_order")
+@amqp_router.subscriber(
+    queue=RabbitQueue(
+        name="ibay",
+        routing_key="rest_api.pay_order"),
+    exchange=exchange
+)
 @inject
 async def pay_order_handler(
         data: PayOrderDict,

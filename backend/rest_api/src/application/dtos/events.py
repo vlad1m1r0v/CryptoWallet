@@ -139,7 +139,7 @@ class SaveProductEventDTO:
         object.__setattr__(
             self,
             "photo_url",
-            f"{config.s3.base_file_url}/{self.photo_filename}" if {self.photo_filename} else None
+            f"{config.s3.base_file_url}/{self.photo_filename}"
         )
 
 

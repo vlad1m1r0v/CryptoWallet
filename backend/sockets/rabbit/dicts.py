@@ -90,6 +90,29 @@ class SaveProductDict(TypedDict):
     wallet_address: str
     created_at: datetime
 
+
+class PayOrderDict(TypedDict):
+    user_id: UUID
+    order_id: UUID
+    transaction_hash: str
+
+
+class OrderStatusEnum(StrEnum):
+    NEW = auto()
+    FAILED = auto()
+    DELIVERING = auto()
+    RETURNED = auto()
+    COMPLETED = auto()
+
+
+class UpdateOrderDict(TypedDict):
+    user_id: UUID
+    order_id: UUID
+    status: NotRequired[OrderStatusEnum]
+    payment_transaction_hash: NotRequired[str]
+    return_transaction_hash: NotRequired[str]
+
+
 __all__ = [
     "SaveUserDict",
     "UpdateUserDict",
@@ -98,5 +121,8 @@ __all__ = [
     "UpdateWalletDict",
     "SavePendingTransactionDict",
     "CompleteTransactionDict",
-    "RequestETHDict"
+    "RequestETHDict",
+    "SaveProductDict",
+    "PayOrderDict",
+    "UpdateOrderDict"
 ]

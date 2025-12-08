@@ -2,9 +2,13 @@
     const {
         isOpen,
         close,
+        productName,
+        productId
     }: {
         isOpen: boolean,
         close: () => {},
+        productName: string,
+        productId: string
     } = $props();
 
     import {fade, scale} from "svelte/transition";
@@ -15,25 +19,24 @@
 
     import {z} from "zod";
 
-    import {createProductSchema} from "$lib/schemas/createProduct.ts";
+    import {createOrderSchema} from "$lib/schemas/createOrder.ts";
 
     import {outsideClick} from "$lib/actions/outsideClick.ts";
 
-    import ProductService from "$lib/services/products.ts";
+    import OrderService from "$lib/services/orders.ts";
     import WalletService from "$lib/services/wallets.ts";
 
     import {wallets} from "$lib/stores/wallets.ts";
 
-    type FormData = z.infer<typeof createProductSchema>;
+    type FormData = z.infer<typeof createOrderSchema>;
 
     const {form, errors, touched, isSubmitting, isValid, handleSubmit} = createForm<FormData>({
-        onSubmit: async (values, {form}) => {
-            const formData = new FormData(form);
-            await ProductService.createProduct(formData);
+        onSubmit: async (values) => {
+            await OrderService.createOrder({...values, product_id: productId});
             close();
         },
         extend: [
-            validator({schema: createProductSchema}),
+            validator({schema: createOrderSchema}),
             reporter()
         ]
     });
@@ -52,7 +55,7 @@
                     on:outsideclick={close}
             >
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel160">Create product</h5>
+                    <h5 class="modal-title" id="myModalLabel160">Ordering of product {productName}</h5>
                     <button
                             type="button"
                             class="close"
@@ -64,52 +67,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form use:form novalidate>
-                        <!--Name-->
-                        <div class="form-group">
-                            <label for="name" class="form-label">Name</label>
-                            <input
-                                    name="name"
-                                    type="text"
-                                    class="form-control"
-                                    class:is-valid={!$errors.name && $touched.name}
-                                    class:is-invalid={$errors.name && $touched.name}
-                                    placeholder="Enter name..."
-                            />
-                            {#if $touched.name && $errors.name}
-                                <div class="invalid-feedback">{$errors.name[0]}</div>
-                            {/if}
-                        </div>
-                        <!--Price-->
-                        <div class="form-group">
-                            <label for="price" class="form-label">Price</label>
-                            <input
-                                    name="price"
-                                    type="number"
-                                    step="0.0001"
-                                    class="form-control"
-                                    class:is-valid={!$errors.price && $touched.price}
-                                    class:is-invalid={$errors.price && $touched.price}
-                                    placeholder="Enter price..."
-                            />
-                            {#if $touched.price && $errors.price}
-                                <div class="invalid-feedback">{$errors.price[0]}</div>
-                            {/if}
-                        </div>
-                        <!--Photo-->
-                        <div class="form-group">
-                            <label for="photo" class="form-label">Photo</label>
-                            <input
-                                    name="photo"
-                                    type="file"
-                                    class="form-control"
-                                    class:is-valid={!$errors.photo && $touched.photo}
-                                    class:is-invalid={$errors.photo && $touched.photo}
-                            />
-                            {#if $touched.photo && $errors.photo}
-                                <div class="invalid-feedback">{$errors.photo[0]}</div>
-                            {/if}
-                        </div>
+                    <form use:form>
                         <!--Wallet-->
                         <div class="form-group">
                             <label for="wallet_id" class="form-label">Wallet</label>

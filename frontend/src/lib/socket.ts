@@ -5,6 +5,7 @@ import {get} from "svelte/store";
 import {io, Socket} from "socket.io-client";
 
 import {toast} from "svelte-sonner";
+import {modals} from "svelte-modals";
 
 import TokenService from "$lib/services/token.ts";
 import TransactionService from "$lib/services/transactions.ts";
@@ -12,14 +13,18 @@ import TransactionService from "$lib/services/transactions.ts";
 import {user} from "$lib/stores/user.ts";
 import {wallets} from "$lib/stores/wallets.ts";
 import {products} from "$lib/stores/products.ts";
+import {orders} from "$lib/stores/orders.ts";
 
 import TransactionToast from "$lib/components/toasts/TransactionToast.svelte";
+import PaymentSucceed from "$lib/components/modals/PaymentSucceed.svelte";
 
 import {
     type TransactionResponse,
     type UpdateWalletResponse,
     type WalletResponse,
-    type ProductResponse
+    type ProductResponse,
+    type PayOrderResponse,
+    type UpdateOrderResponse,
 } from "$lib/types/api.ts";
 import {datagrid} from "$lib/stores/datagrid.ts";
 
@@ -104,5 +109,18 @@ export function bindSocketHandlers(socket: Socket) {
 
     socket.on("save_product", (product: ProductResponse) => {
         products.update((list) => [product, ...(list ?? [])]);
+    })
+
+    socket.on("pay_order", async (data: PayOrderResponse) => {
+        await modals.open(PaymentSucceed, {transactionHash: data.transaction_hash})
+    })
+
+    socket.on("update_order", async (data: UpdateOrderResponse) => {
+        orders.update(o => o ? (
+            o.map(o => o.id === o.id ? {
+                ...o,
+                ...data
+            } : o)
+        ) : o)
     })
 }

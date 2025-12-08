@@ -120,7 +120,7 @@ class EthereumServiceAdapter(EthereumServicePort):
     ) -> TransactionSchema:
         account = Account.from_key(private_key)
         from_address = account.address
-        nonce = self._w3.eth.get_transaction_count(from_address)
+        nonce = self._w3.eth.get_transaction_count(from_address, "pending")
         gas_price = self._w3.to_wei(gas_price_gwei, "gwei")
 
         tx = {

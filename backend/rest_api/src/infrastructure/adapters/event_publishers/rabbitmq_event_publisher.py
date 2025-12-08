@@ -124,13 +124,19 @@ class RabbitMQEventPublisher(EventPublisher):
         )
 
     async def pay_order(self, dto: PayOrderEventDTO) -> None:
+        exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
+
         await self._broker.publish(
             routing_key="rest_api.pay_order",
+            exchange=exchange,
             message=asdict(dto)
         )
 
     async def update_order(self, dto: UpdateOrderEventDTO) -> None:
+        exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
+
         await self._broker.publish(
             routing_key="rest_api.update_order",
+            exchange=exchange,
             message=asdict(dto, dict_factory=exclude_none_factory)
         )

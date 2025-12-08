@@ -166,6 +166,12 @@ class CompleteTransactionInteractor:
                 if data.transaction_status == TransactionStatusEnum.SUCCESSFUL:
                     logger.info("Emitting event rest_api.pay_order...")
 
+                    logger.info(PayOrderEventDTO(
+                        user_id=order["wallet"]["user_id"],
+                        order_id=order["id"],
+                        transaction_hash=order["payment_transaction"]["transaction_hash"]
+                    ))
+
                     await self._event_publisher.pay_order(
                         PayOrderEventDTO(
                             user_id=order["wallet"]["user_id"],

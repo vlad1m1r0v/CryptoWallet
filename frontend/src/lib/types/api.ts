@@ -96,11 +96,48 @@ export interface PaginatedResponse<T> {
 }
 
 export interface ProductResponse {
-  id: string;
-  name: string;
-  price: number;
-  photo_url: string;
-  created_at: string;
-  asset_symbol: string;
-  wallet_address: string;
+    id: string;
+    name: string;
+    price: number;
+    photo_url: string;
+    created_at: string;
+    asset_symbol: string;
+    wallet_address: string;
+}
+
+export enum OrderStatusEnum {
+    NEW = "new",
+    FAILED = "failed",
+    DELIVERING = "delivering",
+    RETURNED = "returned",
+    COMPLETED = "completed"
+}
+
+export interface OrderResponse {
+    id: string;
+    product_name: string;
+    product_price: number;
+    product_photo_url: string;
+    asset_symbol: string;
+    payment_transaction_hash?: string;
+    return_transaction_hash?: string;
+    status: OrderStatusEnum;
+    created_at: string;
+}
+
+export interface CreateOrderRequest {
+    wallet_id: string;
+    product_id: string;
+}
+
+export interface PayOrderResponse {
+    order_id: string;
+    transaction_hash: string;
+}
+
+export interface UpdateOrderResponse {
+    order_id: string;
+    status?: OrderStatusEnum;
+    payment_transaction_hash?: string;
+    return_transaction_hash?: string;
 }
