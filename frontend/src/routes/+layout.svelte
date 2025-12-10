@@ -49,6 +49,9 @@
     <link rel="stylesheet" type="text/css" href="/vuexy/css/pages/page-auth.css">
     <!--For main pages-->
     <link rel="stylesheet" type="text/css" href="/vuexy/css/core/menu/menu-types/vertical-menu.css">
+    <!--For chat-->
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/pages/app-chat.css">
+    <link rel="stylesheet" type="text/css" href="/vuexy/css/pages/app-chat-list.css">
     <!--END: Page CSS-->
 </svelte:head>
 <Toaster/>
