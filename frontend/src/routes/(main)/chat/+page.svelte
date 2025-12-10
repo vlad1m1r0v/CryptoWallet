@@ -39,8 +39,21 @@
 
     #sidebar {
         grid-area: sidebar;
-        overflow-y: auto;
+        display: grid;
+        grid-template-rows: 60px 1fr;
+        grid-template-areas: "header" "users";
         border-right: 1px solid #ebe9f1;
+        min-height: 0;
+    }
+
+    #sidebar #header {
+        grid-area: header;
+    }
+
+    #sidebar #users {
+        grid-area: users;
+        overflow-y: auto;
+        min-height: 0;
     }
 
     .user {
@@ -182,7 +195,7 @@
                 </h4>
             </button>
             <div id="panel" style:max-height={isAccordionOpen ? '500px' : '0'}>
-                <div id="sidebar-mobile">
+                <div>
                     <div class="user">
                     <span class="avatar">
                         <img
@@ -371,19 +384,11 @@
             <div
                     id="sidebar"
                     class:d-none={isChatContainerSmall}>
-                <h4 class="text-primary pt-2 pl-1 pb-1 mb-0">Users</h4>
-                <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                <div id="header">
+                    <h4 class="text-primary pt-2 pl-1 pb-1 mb-0">Users</h4>
                 </div>
-                <div class="user">
+                <div id="users">
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -392,9 +397,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -403,9 +408,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -414,9 +419,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -425,9 +430,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -436,9 +441,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -447,9 +452,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -458,9 +463,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -469,9 +474,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -480,9 +485,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -491,9 +496,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -502,9 +507,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -513,9 +518,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -524,9 +529,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -535,9 +540,9 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                </div>
-                <div class="user">
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
                     <span class="avatar">
                         <img
                                 src="/vuexy/images/portrait/small/avatar-s-3.jpg"
@@ -546,7 +551,19 @@
                                 alt="avatar">
                         <span class="avatar-status-online"></span>
                     </span>
-                    <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
+                    <div class="user">
+                    <span class="avatar">
+                        <img
+                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
+                                height="42"
+                                width="42"
+                                alt="avatar">
+                        <span class="avatar-status-online"></span>
+                    </span>
+                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
+                    </div>
                 </div>
             </div>
             <div id="chat">
