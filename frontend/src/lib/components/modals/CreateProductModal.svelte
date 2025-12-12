@@ -6,7 +6,7 @@
         isOpen: boolean,
         close: () => {},
     } = $props();
-
+    import {onMount} from "svelte";
     import {fade, scale} from "svelte/transition";
 
     import {createForm} from "felte";
@@ -24,9 +24,13 @@
 
     import {wallets} from "$lib/stores/wallets.ts";
 
+    onMount(async () => {
+        await WalletService.getWallets();
+    })
+
     type FormData = z.infer<typeof createProductSchema>;
 
-    const {form, errors, touched, isSubmitting, isValid, handleSubmit} = createForm<FormData>({
+    const {form, setData, errors, touched, isSubmitting, isValid, handleSubmit} = createForm<FormData>({
         onSubmit: async (values, {form}) => {
             const formData = new FormData(form);
             await ProductService.createProduct(formData);
@@ -37,6 +41,10 @@
             reporter()
         ]
     });
+
+    wallets.subscribe((state) => {
+        if (state) setData("wallet_id", state[0].id)
+    })
 </script>
 {#if isOpen}
     <div
@@ -116,7 +124,6 @@
                             <select
                                     class="form-control"
                                     name="wallet_id"
-                                    on:focus={async () => {await WalletService.getWallets()}}
                             >
                                 {#each $wallets as wallet (wallet.id)}
                                     <option value={wallet.id}>
