@@ -227,4 +227,4 @@ async def update_order_handler(
     if return_transaction_hash := data.get("return_transaction_hash", None):
         payload["return_transaction_hash"] = return_transaction_hash
 
-    await sio.emit("pay_order", payload, user_room)
+    await sio.emit("update_order", payload, user_room)

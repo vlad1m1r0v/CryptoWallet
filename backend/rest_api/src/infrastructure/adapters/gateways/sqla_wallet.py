@@ -70,6 +70,7 @@ class SqlaWalletGateway(WalletGateway):
             select(WalletM)
             .options(joinedload(WalletM.asset))
             .where(WalletM.user_id == user_id)
+            .order_by(WalletM.created_at.desc())
         )
         result = await self._session.execute(stmt)
         models: Sequence[WalletM] = result.scalars().all()

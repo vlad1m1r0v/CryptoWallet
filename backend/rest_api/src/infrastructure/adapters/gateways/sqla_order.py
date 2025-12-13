@@ -81,7 +81,10 @@ class SqlaOrderGateway(OrderGateway):
 
     async def list(self, user_id: UUID) -> list[OrderResponseDTO]:
         stmt, wallet_alias, _, _ = self.__base_select()
-        stmt = stmt.where(and_(wallet_alias.user_id == user_id))
+        stmt = (stmt
+                .where(and_(wallet_alias.user_id == user_id))
+                .order_by(OrderM.created_at.desc())
+                )
         result = await self._session.execute(stmt)
         models: Sequence[OrderM] = result.scalars().all()
         return OrderMapper.to_dto(models=models)
