@@ -40,6 +40,8 @@ async def create_order_handler(
         data: CreateOrderDict,
         repository: FromDishka[OrderRepositoryPort]
 ) -> None:
+    logger.info("Order creation...")
+
     await repository.add_order(OrderDTO(
         id=data["order_id"],
         status=data["status"],
@@ -54,8 +56,9 @@ class UpdateOrderDict(TypedDict):
 
 @amqp_router.subscriber(
     queue=RabbitQueue(
-        name="ibay",
-        routing_key="rest_api.update_order"),
+        name="ibay.order.update",
+        routing_key="rest_api.update_order"
+    ),
     exchange=exchange
 )
 @inject
@@ -63,6 +66,8 @@ async def update_order_handler(
         data: UpdateOrderDict,
         repository: FromDishka[OrderRepositoryPort]
 ) -> None:
+    logger.info("Order update...")
+
     if not data.get("status"):
         return
 
@@ -78,8 +83,9 @@ class PayOrderDict(TypedDict):
 
 @amqp_router.subscriber(
     queue=RabbitQueue(
-        name="ibay",
-        routing_key="rest_api.pay_order"),
+        name="ibay.order.pay",
+        routing_key="rest_api.pay_order"
+    ),
     exchange=exchange
 )
 @inject
@@ -88,15 +94,17 @@ async def pay_order_handler(
         request_service: FromDishka[RequestServicePort],
         broker: FromDishka[RabbitBroker]
 ) -> None:
+    logger.info("Order payment...")
+
     is_successful = await request_service.run_10_000_google_requests()
 
     if is_successful:
         await broker.publish(
-            queue="ibay.deliver_order",
+            routing_key="ibay.deliver_order",
             message={"order_id": data["order_id"]}
         )
     else:
         await broker.publish(
-            queue="ibay.fail_order",
+            routing_key="ibay.fail_order",
             message={"order_id": data["order_id"]}
         )

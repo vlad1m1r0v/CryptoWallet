@@ -3,7 +3,9 @@ import abc
 import random
 import logging
 
-from faststream.rabbit import RabbitBroker
+from faststream.rabbit import (
+    RabbitBroker
+)
 
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 
@@ -44,12 +46,12 @@ class TaskRunner(TaskRunnerInterface):
 
                     if is_successful:
                         await self._broker.publish(
-                            queue="ibay.complete_order",
+                            routing_key="ibay.complete_order",
                             message={"order_id": order.id}
                         )
                     else:
                         await self._broker.publish(
-                            queue="ibay.return_order",
+                            routing_key="ibay.return_order",
                             message={"order_id": order.id}
                         )
 

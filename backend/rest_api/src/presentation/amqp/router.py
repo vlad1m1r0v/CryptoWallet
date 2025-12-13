@@ -1,7 +1,9 @@
 from dishka import FromDishka
 from dishka.integrations.faststream import inject
 
-from faststream.rabbit import RabbitRouter
+from faststream.rabbit import (
+    RabbitRouter
+)
 
 from src.domain.enums import OrderStatusEnum
 
@@ -29,7 +31,6 @@ from src.presentation.amqp.mappers import (
 )
 
 amqp_router = RabbitRouter()
-
 
 @amqp_router.subscriber("ethereum.create_eth_wallet")
 @inject

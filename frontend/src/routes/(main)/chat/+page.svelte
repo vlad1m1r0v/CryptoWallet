@@ -156,15 +156,49 @@
     }
 </style>
 <script lang="ts">
+    import {PUBLIC_CHAT_URL} from "$env/static/public";
+
     import {onMount} from "svelte";
+
+    import {io, type Socket} from "socket.io-client";
 
     import ChevronUp from "$lib/components/icons/ChevronUp.svelte";
     import ChevronDown from "$lib/components/icons/ChevronDown.svelte";
+    import TokenService from "$lib/services/token.ts";
+
+    interface ConnectedUser {
+        id: string;
+        username: string;
+        avatar_url?: string;
+    }
 
     let containerElement: HTMLDivElement;
 
     let isAccordionOpen = $state<boolean>(false);
     let isChatContainerSmall = $state<boolean>(false);
+
+    let socket = $state<Socket>();
+    let connectedUsers = $state<ConnectedUser[]>([]);
+
+    onMount(() => {
+        console.log(PUBLIC_CHAT_URL);
+
+        socket = io(PUBLIC_CHAT_URL, {
+            transports: ["websocket"],
+            auth: {token: TokenService.getToken()},
+            autoConnect: false
+        });
+
+        socket?.on("list_users", (data) => console.log(data));
+        socket?.on("join_chat", (data) => console.log(data));
+        socket?.on("leave_chat", (data) => console.log(data));
+
+        socket?.connect();
+
+        return () => {
+            socket?.disconnect();
+        }
+    });
 
     onMount(() => {
         const ro = new ResizeObserver(entries => {
@@ -207,172 +241,6 @@
                     </span>
                         <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
                     </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <!-- etc -->
                 </div>
             </div>
         </div>
@@ -399,355 +267,10 @@
                     </span>
                         <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
                     </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
                 </div>
             </div>
             <div id="chat">
                 <div id="messages">
-                    <!--Someone-->
-                    <div class="message message_left">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-7.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>I will purchase it for sure. 👍</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Mine-->
-                    <div class="message">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-11.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>Thanks, from ThemeForest.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Someone-->
-                    <div class="message message_left">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-7.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>I will purchase it for sure. 👍</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Mine-->
-                    <div class="message">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-11.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>Thanks, from ThemeForest.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Someone-->
-                    <div class="message message_left">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-7.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>I will purchase it for sure. 👍</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Mine-->
-                    <div class="message">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-11.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>Thanks, from ThemeForest.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Someone-->
-                    <div class="message message_left">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-7.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>I will purchase it for sure. 👍</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Mine-->
-                    <div class="message">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-11.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>Thanks, from ThemeForest.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Someone-->
-                    <div class="message message_left">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-7.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>I will purchase it for sure. 👍</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Mine-->
-                    <div class="message">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-11.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>Thanks, from ThemeForest.</p>
-                            </div>
-                        </div>
-                    </div>
                     <!--Someone-->
                     <div class="message message_left">
                         <div class="message__avatar">

@@ -94,7 +94,7 @@ class SendFreeETHData(TypedDict):
 
 @amqp_router.subscriber(
     queue=RabbitQueue(
-        name="ethereum",
+        name="ethereum.ethereum.request",
         routing_key="rest_api.request_free_eth"),
     exchange=exchange
 )

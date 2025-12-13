@@ -149,7 +149,7 @@ async def complete_transaction_handler(
 
 @amqp_router.subscriber(
     queue=RabbitQueue(
-        name="sockets",
+        name="sockets.ethereum.request",
         routing_key="rest_api.request_free_eth",
     ),
     exchange=exchange
@@ -182,7 +182,7 @@ async def save_product_handler(
 
 @amqp_router.subscriber(
     queue=RabbitQueue(
-        name="sockets",
+        name="sockets.order.pay",
         routing_key="rest_api.pay_order",
     ),
     exchange=exchange
@@ -203,7 +203,7 @@ async def pay_order_handler(
 
 @amqp_router.subscriber(
     queue=RabbitQueue(
-        name="sockets",
+        name="sockets.order.update",
         routing_key="rest_api.update_order",
     ),
     exchange=exchange

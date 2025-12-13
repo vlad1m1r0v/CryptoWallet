@@ -32,6 +32,9 @@ def exclude_none_factory(data: list[tuple[str, Any]]) -> dict:
     return {k: v for k, v in data if v is not None}
 
 
+exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
+
+
 class RabbitMQEventPublisher(EventPublisher):
     def __init__(self, broker: RabbitBroker):
         self._broker = broker
@@ -103,8 +106,6 @@ class RabbitMQEventPublisher(EventPublisher):
         )
 
     async def request_free_eth(self, dto: RequestFreeETHEventDTO) -> None:
-        exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
-
         await self._broker.publish(
             routing_key="rest_api.request_free_eth",
             exchange=exchange,
@@ -124,8 +125,6 @@ class RabbitMQEventPublisher(EventPublisher):
         )
 
     async def pay_order(self, dto: PayOrderEventDTO) -> None:
-        exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
-
         await self._broker.publish(
             routing_key="rest_api.pay_order",
             exchange=exchange,
@@ -133,8 +132,6 @@ class RabbitMQEventPublisher(EventPublisher):
         )
 
     async def update_order(self, dto: UpdateOrderEventDTO) -> None:
-        exchange = RabbitExchange("exchange", auto_delete=True, type=ExchangeType.DIRECT)
-
         await self._broker.publish(
             routing_key="rest_api.update_order",
             exchange=exchange,
