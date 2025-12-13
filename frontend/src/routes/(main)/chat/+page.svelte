@@ -64,7 +64,6 @@
     }
 
     .user:hover {
-        cursor: pointer;
         background: #F8F8F8;
     }
 
@@ -181,17 +180,23 @@
     let connectedUsers = $state<ConnectedUser[]>([]);
 
     onMount(() => {
-        console.log(PUBLIC_CHAT_URL);
-
         socket = io(PUBLIC_CHAT_URL, {
             transports: ["websocket"],
             auth: {token: TokenService.getToken()},
             autoConnect: false
         });
 
-        socket?.on("list_users", (data) => console.log(data));
-        socket?.on("join_chat", (data) => console.log(data));
-        socket?.on("leave_chat", (data) => console.log(data));
+        socket?.on("list_users", (users: ConnectedUser[]) => {
+            connectedUsers = users;
+        });
+
+        socket?.on("join_chat", (user: ConnectedUser) => {
+            connectedUsers = [...connectedUsers, user];
+        });
+
+        socket?.on("leave_chat", (data: { user_id: string }) => {
+            connectedUsers = connectedUsers.filter(u => u.id !== data.user_id);
+        });
 
         socket?.connect();
 
@@ -229,19 +234,31 @@
                 </h4>
             </button>
             <div id="panel" style:max-height={isAccordionOpen ? '500px' : '0'}>
-                <div>
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
-                </div>
+                {#each connectedUsers as user (user.id)}
+                    <a href={`profiles/${user.id}`}>
+                        <div class="user">
+                            <span class="avatar">
+                                {#if user.avatar_url}
+                                    <img
+                                            src={user.avatar_url}
+                                            height="42"
+                                            width="42"
+                                            alt="avatar"
+                                    >
+                                    {:else}
+                                        <img
+                                                src="/vuexy/images/portrait/small/avatar-s-11.jpg"
+                                                height="42"
+                                                width="42"
+                                                alt="avatar"
+                                        >
+                                    {/if}
+                                <span class="avatar-status-online"></span>
+                            </span>
+                            <h5 class="ml-1 mb-0">{user.username}</h5>
+                        </div>
+                    </a>
+                {/each}
             </div>
         </div>
         <div
@@ -256,17 +273,31 @@
                     <h4 class="text-primary pt-2 pl-1 pb-1 mb-0">Users</h4>
                 </div>
                 <div id="users">
-                    <div class="user">
-                    <span class="avatar">
-                        <img
-                                src="/vuexy/images/portrait/small/avatar-s-3.jpg"
-                                height="42"
-                                width="42"
-                                alt="avatar">
-                        <span class="avatar-status-online"></span>
-                    </span>
-                        <h5 class="ml-1 mb-0">Teresa Lisbon</h5>
-                    </div>
+                    {#each connectedUsers as user (user.id)}
+                        <a href={`profiles/${user.id}`}>
+                            <div class="user">
+                            <span class="avatar">
+                                {#if user.avatar_url}
+                                    <img
+                                            src={user.avatar_url}
+                                            height="42"
+                                            width="42"
+                                            alt="avatar"
+                                    >
+                                    {:else}
+                                        <img
+                                                src="/vuexy/images/portrait/small/avatar-s-11.jpg"
+                                                height="42"
+                                                width="42"
+                                                alt="avatar"
+                                        >
+                                    {/if}
+                                <span class="avatar-status-online"></span>
+                            </span>
+                                <h5 class="ml-1 mb-0">{user.username}</h5>
+                            </div>
+                        </a>
+                    {/each}
                 </div>
             </div>
             <div id="chat">
