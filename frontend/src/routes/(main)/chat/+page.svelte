@@ -71,7 +71,7 @@
         grid-area: chat;
         min-height: 0;
         display: grid;
-        grid-template-rows: 1fr 65px;
+        grid-template-rows: 1fr auto;
         grid-template-areas:
                 "messages"
                 "input";
@@ -131,12 +131,16 @@
         background-color: white;
     }
 
+    .message__content .message__image img {
+        width: 100%;
+        margin-top: 0.5rem;
+        border-radius: 0.357rem;
+    }
+
     #input {
         grid-area: input;
         border-top: 1px solid #ebe9f1;
-        padding: 0 1rem;
-        display: flex;
-        align-items: center;
+        padding: 0.75rem;
     }
 
     #input form {
@@ -146,9 +150,22 @@
         flex-grow: 1;
     }
 
-    #input .input-group {
-        flex: 1;
+    svg.error {
+        stroke: #ea5455 !important;
     }
+
+    svg.success {
+        stroke: #28c76f !important;
+    }
+
+    span.error, span.error:focus {
+        border-color: #ea5455 !important;
+    }
+
+    span.success, span.success:focus {
+        border-color: #28c76f !important;
+    }
+
 
     #input .btn span {
         white-space: nowrap;
@@ -158,26 +175,48 @@
     import {PUBLIC_CHAT_URL} from "$env/static/public";
 
     import {onMount} from "svelte";
+    import {get} from "svelte/store";
 
     import {io, type Socket} from "socket.io-client";
+
+    import {createForm} from "felte";
+    import {validator} from "@felte/validator-zod";
+    import {reporter} from "@felte/reporter-svelte";
+
+    import {z} from "zod";
+
+    import {createMessageSchema} from "$lib/schemas/createMessage.ts";
+
+    import {user} from "$lib/stores/user.ts";
 
     import ChevronUp from "$lib/components/icons/ChevronUp.svelte";
     import ChevronDown from "$lib/components/icons/ChevronDown.svelte";
     import TokenService from "$lib/services/token.ts";
 
-    interface ConnectedUser {
+
+    interface User {
         id: string;
         username: string;
         avatar_url?: string;
     }
 
+    interface Message {
+        id: string;
+        text: string;
+        image_url?: string;
+        user: User;
+    }
+
     let containerElement: HTMLDivElement;
+    let chatElement: HTMLDivElement;
 
     let isAccordionOpen = $state<boolean>(false);
     let isChatContainerSmall = $state<boolean>(false);
 
     let socket = $state<Socket>();
-    let connectedUsers = $state<ConnectedUser[]>([]);
+    let connectedUsers = $state<User[]>([]);
+    let messages = $state<Message[]>([]);
+
 
     onMount(() => {
         socket = io(PUBLIC_CHAT_URL, {
@@ -186,16 +225,27 @@
             autoConnect: false
         });
 
-        socket?.on("list_users", (users: ConnectedUser[]) => {
+        socket?.on("list_users", (users: User[]) => {
             connectedUsers = users;
         });
 
-        socket?.on("join_chat", (user: ConnectedUser) => {
+        socket?.on("join_chat", (user: User) => {
             connectedUsers = [...connectedUsers, user];
         });
 
         socket?.on("leave_chat", (data: { user_id: string }) => {
             connectedUsers = connectedUsers.filter(u => u.id !== data.user_id);
+        });
+
+        socket?.on("list_messages", (data: Message[]) => {
+            console.log(data);
+            messages = data;
+            chatElement.scroll({top: chatElement.scrollHeight, behavior: 'smooth'})
+        })
+
+        socket?.on("send_message", (data: Message) => {
+            messages = [...messages, data];
+            chatElement.scroll({top: chatElement.scrollHeight, behavior: 'smooth'})
         });
 
         socket?.connect();
@@ -215,6 +265,43 @@
         ro.observe(containerElement);
 
         return () => ro.disconnect();
+    });
+
+    type FormData = z.infer<typeof createMessageSchema>;
+
+    const toBase64 = (file: File) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+    });
+
+    const {form, reset, errors, touched, isSubmitting, isValid} = createForm<FormData>({
+        onSubmit: async (values) => {
+            const user_id = get(user)?.id;
+
+            if (!user_id) return;
+
+            const message: {
+                user_id: string;
+                text: string;
+                image?: string;
+            } = {
+                "user_id": user_id,
+                "text": values.text
+            };
+
+            if (values.image) {
+                message["image"] = (await toBase64(values.image)) as string;
+            }
+
+            socket?.emit("create_message", message);
+            reset();
+        },
+        extend: [
+            validator({schema: createMessageSchema}),
+            reporter()
+        ]
     });
 </script>
 <div class="card">
@@ -301,51 +388,66 @@
                 </div>
             </div>
             <div id="chat">
-                <div id="messages">
-                    <!--Someone-->
-                    <div class="message message_left">
-                        <div class="message__avatar">
+                <div id="messages" bind:this={chatElement}>
+                    {#each messages as message (message.id)}
+                        <div
+                                class="message"
+                                class:message_left={$user?.id !== message.user.id}
+                        >
+                            <a href={`profiles/${message.user.id}`}>
+                                <div class="message__avatar">
                                                 <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-7.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
+                                                    {#if message.user.avatar_url}
+                                                        <img
+                                                                src={message.user.avatar_url}
+                                                                alt="avatar"
+                                                                height="36"
+                                                                width="36"
+                                                        >
+                                                    {:else}
+                                                        <img
+                                                                src="/vuexy/images/portrait/small/avatar-s-11.jpg"
+                                                                alt="avatar"
+                                                                height="36"
+                                                                width="36"
+                                                        >
+                                                    {/if}
                                                 </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>I will purchase it for sure. 👍</p>
+                                </div>
+                            </a>
+                            <div class="message__body">
+                                <div class="message__content">
+                                    <p>{message.text}</p>
+                                    {#if message.image_url}
+                                        <div class="message__image">
+                                            <img src={message.image_url}  alt="image">
+                                        </div>
+                                    {/if}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!--Mine-->
-                    <div class="message">
-                        <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    <img
-                                                            src="/vuexy/images/portrait/small/avatar-s-11.jpg"
-                                                            alt="avatar"
-                                                            height="36"
-                                                            width="36"
-                                                    >
-                                                </span>
-                        </div>
-                        <div class="message__body">
-                            <div class="message__content">
-                                <p>Thanks, from ThemeForest.</p>
-                            </div>
-                        </div>
-                    </div>
+                    {/each}
                 </div>
                 <div id="input">
-                    <form>
-                        <div class="input-group input-group-merge mr-1">
-                            <input name="message" type="text" class="form-control message"
-                                   placeholder="Enter message...">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
+                    <div class="flex-grow-1">
+                        <form use:form>
+                            <div class="input-group input-group-merge mr-1">
+                                <input
+                                        name="text"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter message..."
+                                        class:is-valid={!$errors.text && $touched.text}
+                                        class:is-invalid={$errors.text && $touched.text}
+                                >
+                                <div
+                                        class="input-group-append"
+                                >
+                                <span
+                                        class="input-group-text"
+                                        class:error={$errors.text && $touched.text}
+                                        class:success={!$errors.text && $touched.text}
+                                >
                                     <label for="attach-doc" class="attachment-icon mb-0">
                                         <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -358,38 +460,50 @@
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 class="feather feather-image cursor-pointer lighten-2 text-secondary"
+                                                class:is-valid={!$errors.text && $touched.text}
+                                                class:is-invalid={$errors.text && $touched.text}
                                         >
                                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                             <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                             <polyline points="21 15 16 10 5 21"></polyline>
                                         </svg>
-                                        <input name="image" type="file" id="attach-doc" hidden="">
+                                        <input
+                                                name="image"
+                                                type="file"
+                                                id="attach-doc"
+                                                hidden=""
+                                        >
                                     </label>
                                 </span>
+                                </div>
                             </div>
-                        </div>
-                        <button
-                                type="button"
-                                class="btn btn-primary send waves-effect waves-float waves-light"
-                        >
-                            <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="14"
-                                    height="14"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="feather feather-send d-lg-none"
+                            <button
+                                    type="submit"
+                                    class="btn btn-primary send waves-effect waves-float waves-light"
+                                    disabled={$isSubmitting || !$isValid}
                             >
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                            </svg>
-                            <span class="d-none d-lg-block">Send</span>
-                        </button>
-                    </form>
+                                <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="feather feather-send d-lg-none"
+                                >
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                                <span class="d-none d-lg-block">Send</span>
+                            </button>
+                        </form>
+                        {#if $touched.text && $errors.text}
+                            <div class="invalid-feedback d-block h-auto">{$errors.text[0]}</div>
+                        {/if}
+                    </div>
                 </div>
             </div>
         </div>
