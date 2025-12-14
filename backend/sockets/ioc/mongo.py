@@ -9,7 +9,9 @@ from mongo.repositories import (
     UserCollection,
     MessageCollection,
     UserRepository,
-    MongoUserRepository
+    MongoUserRepository,
+    MessageRepository,
+    MongoMessageRepository
 )
 
 
@@ -36,4 +38,9 @@ class MongoProvider(Provider):
     user_repository = provide(
         source=MongoUserRepository,
         provides=UserRepository
+    )
+
+    message_repository = provide(
+        source=MongoMessageRepository,
+        provides=MessageRepository
     )
