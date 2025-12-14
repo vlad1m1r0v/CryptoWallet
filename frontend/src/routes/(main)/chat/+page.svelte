@@ -238,7 +238,6 @@
         });
 
         socket?.on("list_messages", (data: Message[]) => {
-            console.log(data);
             messages = data;
             chatElement.scroll({top: chatElement.scrollHeight, behavior: 'smooth'})
         })
