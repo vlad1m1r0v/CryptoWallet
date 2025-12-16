@@ -47,7 +47,7 @@ class RabbitMQEventPublisher(EventPublisher):
 
     async def give_chat_access_to_user(self, dto: GiveChatAccessEventDTO) -> None:
         await self._broker.publish(
-            routing_key="rest_api.give_chat_access_to_user",
+            routing_key="rest_api.give_chat_access",
             message=asdict(dto)
         )
 

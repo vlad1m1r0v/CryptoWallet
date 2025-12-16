@@ -113,6 +113,10 @@ class UpdateOrderDict(TypedDict):
     return_transaction_hash: NotRequired[str]
 
 
+class GiveChatAccessDict(TypedDict):
+    user_id: UUID
+
+
 __all__ = [
     "SaveUserDict",
     "UpdateUserDict",
@@ -124,5 +128,6 @@ __all__ = [
     "RequestETHDict",
     "SaveProductDict",
     "PayOrderDict",
-    "UpdateOrderDict"
+    "UpdateOrderDict",
+    "GiveChatAccessDict"
 ]

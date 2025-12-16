@@ -30,7 +30,8 @@ from rabbit.dicts import (
     RequestETHDict,
     SaveProductDict,
     PayOrderDict,
-    UpdateOrderDict
+    UpdateOrderDict,
+    GiveChatAccessDict,
 )
 
 logger = logging.getLogger(__name__)
@@ -223,8 +224,17 @@ async def update_order_handler(
 
     if payment_transaction_hash := data.get("payment_transaction_hash", None):
         payload["payment_transaction_hash"] = payment_transaction_hash
-        
+
     if return_transaction_hash := data.get("return_transaction_hash", None):
         payload["return_transaction_hash"] = return_transaction_hash
 
     await sio.emit("update_order", payload, user_room)
+
+
+@amqp_router.subscriber("rest_api.give_chat_access")
+@inject
+async def give_chat_access_handler(
+        data: GiveChatAccessDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+    await sio.emit("give_chat_access", {}, user_room)

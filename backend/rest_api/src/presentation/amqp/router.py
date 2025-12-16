@@ -8,6 +8,7 @@ from faststream.rabbit import (
 from src.domain.enums import OrderStatusEnum
 
 from src.application.interactors import (
+    IncrementTotalMessagesInteractor,
     SaveCreateWalletInteractor,
     SaveImportWalletInteractor,
     CreatePendingTransactionInteractor,
@@ -20,7 +21,8 @@ from src.presentation.amqp.types import (
     SaveImportWalletRequestDict,
     CreatePendingTransactionRequestDict,
     UpdateTransactionRequestDict,
-    OrderRequestDict
+    OrderRequestDict,
+    IncrementTotalMessagesRequestDict
 )
 
 from src.presentation.amqp.mappers import (
@@ -31,6 +33,16 @@ from src.presentation.amqp.mappers import (
 )
 
 amqp_router = RabbitRouter()
+
+
+@amqp_router.subscriber("sockets.create_message")
+@inject
+async def create_message_handler(
+        data: IncrementTotalMessagesRequestDict,
+        interactor: FromDishka[IncrementTotalMessagesInteractor]
+) -> None:
+    return await interactor(data["user_id"])
+
 
 @amqp_router.subscriber("ethereum.create_eth_wallet")
 @inject

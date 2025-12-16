@@ -1,6 +1,8 @@
 <script lang="ts">
     import {get} from "svelte/store";
 
+    import type {UserResponse} from "$lib/types/api.ts";
+
     import {outsideClick} from "$lib/actions/outsideClick.ts";
 
     import type MenuItemProps from "$lib/components/menu/types.ts";
@@ -17,6 +19,7 @@
     import MenuItem from "$lib/components/menu/MenuItem.svelte";
 
     import {menu, MenuState} from "$lib/stores/menu.ts";
+    import {user} from "$lib/stores/user.ts";
 
     const onMouseEnter = () => {
         const current = get(menu);
@@ -56,32 +59,42 @@
         }
     };
 
-    const menuItems: MenuItemProps[] = [
+    const initialMenuItems: MenuItemProps[] = [
         {
             Icon: Profile,
             checkIsActive: (currentUrl: URL) => currentUrl.pathname.startsWith('/profiles/'),
+            permissionCheck: () => true,
             title: "Profile",
             href: "/profiles/me"
         },
         {
             Icon: Wallets,
             checkIsActive: (currentUrl: URL) => currentUrl.pathname === "/wallets",
+            permissionCheck: () => true,
             title: "Wallets",
             href: "/wallets"
         },
         {
             Icon: Store,
             checkIsActive: (currentUrl: URL) => currentUrl.pathname === "/ibay",
+            permissionCheck: () => true,
             title: "iBay",
             href: "/ibay"
         },
         {
             Icon: Chat,
             checkIsActive: (currentUrl: URL) => currentUrl.pathname === "/chat",
+            permissionCheck: (u: UserResponse | null) => Boolean(u?.permissions.has_chat_access),
             title: "Chat",
             href: "/chat"
         }
     ];
+
+    let menuItems = $state<MenuItemProps[]>(initialMenuItems);
+
+    user.subscribe((u) => {
+        menuItems = initialMenuItems.filter(item => item.permissionCheck(u));
+    });
 </script>
 <div
         class="main-menu menu-fixed menu-light menu-accordion menu-shadow"

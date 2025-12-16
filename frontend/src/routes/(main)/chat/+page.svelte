@@ -174,10 +174,14 @@
 <script lang="ts">
     import {PUBLIC_CHAT_URL} from "$env/static/public";
 
+    import { goto } from "$app/navigation";
+
     import {onMount} from "svelte";
     import {get} from "svelte/store";
 
     import {io, type Socket} from "socket.io-client";
+
+    import {toast} from "svelte-sonner";
 
     import {createForm} from "felte";
     import {validator} from "@felte/validator-zod";
@@ -233,19 +237,21 @@
             connectedUsers = [...connectedUsers, user];
         });
 
-        socket?.on("leave_chat", (data: { user_id: string }) => {
-            connectedUsers = connectedUsers.filter(u => u.id !== data.user_id);
+        socket?.on("leave_chat", (data: { id: string }) => {
+            connectedUsers = connectedUsers.filter(u => u.id !== data.id);
         });
 
         socket?.on("list_messages", (data: Message[]) => {
             messages = data;
-            chatElement.scroll({top: chatElement.scrollHeight, behavior: 'smooth'})
         })
 
         socket?.on("send_message", (data: Message) => {
             messages = [...messages, data];
-            chatElement.scroll({top: chatElement.scrollHeight, behavior: 'smooth'})
         });
+
+        socket?.on("increment_total_messages", async () => {
+            user.update(u => (u ? {...u, total_messages: u.total_messages + 1} : u))
+        })
 
         socket?.connect();
 
@@ -255,15 +261,37 @@
     });
 
     onMount(() => {
-        const ro = new ResizeObserver(entries => {
+        const roContainer = new ResizeObserver(entries => {
             for (const entry of entries) {
                 isChatContainerSmall = entry.contentRect.width < 934;
             }
         });
 
-        ro.observe(containerElement);
+        const roScroll = new ResizeObserver(() => {
+            if (chatElement) {
+                chatElement.scrollTo({
+                    top: chatElement.scrollHeight,
+                    behavior: "smooth",
+                });
+            }
+        });
 
-        return () => ro.disconnect();
+        roContainer.observe(containerElement);
+        roScroll.observe(chatElement);
+
+        return () => {
+            roContainer.disconnect();
+            roScroll.disconnect();
+        };
+    });
+
+    user.subscribe((u) => {
+        if (u) {
+            if (!u.permissions.has_chat_access) {
+                toast.error("You don't have access to chat.");
+                goto("/profiles/me");
+            }
+        }
     });
 
     type FormData = z.infer<typeof createMessageSchema>;
@@ -419,7 +447,7 @@
                                     <p>{message.text}</p>
                                     {#if message.image_url}
                                         <div class="message__image">
-                                            <img src={message.image_url}  alt="image">
+                                            <img src={message.image_url} alt="image">
                                         </div>
                                     {/if}
                                 </div>

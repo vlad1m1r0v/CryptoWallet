@@ -54,7 +54,7 @@
     <link rel="stylesheet" type="text/css" href="/vuexy/css/pages/app-chat-list.css">
     <!--END: Page CSS-->
 </svelte:head>
-<Toaster/>
+<Toaster expand={true}/>
 <Modals>
     {#snippet backdrop({close})}
         <div class="loader__overlay" onclick={() => close()}></div>

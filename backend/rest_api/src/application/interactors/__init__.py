@@ -5,7 +5,8 @@ from src.application.interactors.auth import (
 from src.application.interactors.user import (
     GetUserInteractor,
     UpdateUserInteractor,
-    DeleteAvatarInteractor
+    DeleteAvatarInteractor,
+    IncrementTotalMessagesInteractor
 )
 from src.application.interactors.wallet import (
     PublishCreateWalletInteractor,
@@ -43,6 +44,7 @@ __all__ = [
     'GetUserInteractor',
     'UpdateUserInteractor',
     'DeleteAvatarInteractor',
+    'IncrementTotalMessagesInteractor',
     'PublishCreateWalletInteractor',
     'PublishImportWalletInteractor',
     'SaveCreateWalletInteractor',

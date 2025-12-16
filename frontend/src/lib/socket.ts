@@ -16,7 +16,7 @@ import {products} from "$lib/stores/products.ts";
 import {orders} from "$lib/stores/orders.ts";
 
 import TransactionToast from "$lib/components/toasts/TransactionToast.svelte";
-import PaymentSucceed from "$lib/components/modals/PaymentSucceed.svelte";
+import PaymentSucceedModal from "$lib/components/modals/PaymentSucceedModal.svelte";
 
 import {
     type TransactionResponse,
@@ -112,7 +112,7 @@ export function bindSocketHandlers(socket: Socket) {
     })
 
     socket.on("pay_order", async (data: PayOrderResponse) => {
-        await modals.open(PaymentSucceed, {transactionHash: data.transaction_hash})
+        await modals.open(PaymentSucceedModal, {transactionHash: data.transaction_hash})
     })
 
     socket.on("update_order", async (data: UpdateOrderResponse) => {
@@ -122,5 +122,10 @@ export function bindSocketHandlers(socket: Socket) {
                 ...data
             } : o)
         ) : o)
+    })
+
+    socket.on("give_chat_access", async () => {
+        toast.success("You are given chat access.");
+        user.update(u => u ? {...u, permissions: {...u.permissions, has_chat_access: true}} : u);
     })
 }

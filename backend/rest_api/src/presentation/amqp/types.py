@@ -49,5 +49,10 @@ class UpdateTransactionRequestDict(TypedDict):
     transaction_status: TransactionStatusEnum
     created_at: datetime
 
+
 class OrderRequestDict(TypedDict):
     order_id: UUID
+
+
+class IncrementTotalMessagesRequestDict(TypedDict):
+    user_id: UUID

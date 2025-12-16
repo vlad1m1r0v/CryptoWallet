@@ -31,6 +31,15 @@ class SqlaUserGateway(UserGateway):
 
         await self._session.execute(stmt)
 
+    async def increment_total_messages(self, user_id: UUID) -> None:
+        stmt = (
+            update(UserM)
+            .where(UserM.id == user_id)
+            .values(total_messages=UserM.total_messages + 1)
+        )
+
+        await self._session.execute(stmt)
+
     async def update(
             self,
             user_id: UUID,

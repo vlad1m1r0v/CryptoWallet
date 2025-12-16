@@ -7,6 +7,7 @@ from ioc.mongo import MongoProvider
 from ioc.jwt import JwtProvider
 from ioc.redis_storage import RedisStorageProvider
 from ioc.image_storage import ImageStorageProvider
+from ioc.broker import BrokerProvider
 
 
 def get_providers() -> Iterable[Provider]:
@@ -15,5 +16,6 @@ def get_providers() -> Iterable[Provider]:
         MongoProvider(),
         JwtProvider(),
         RedisStorageProvider(),
-        ImageStorageProvider()
+        ImageStorageProvider(),
+        BrokerProvider(),
     )

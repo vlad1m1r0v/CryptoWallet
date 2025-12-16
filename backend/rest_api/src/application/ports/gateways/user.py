@@ -17,6 +17,10 @@ class UserGateway(Protocol):
         ...
 
     @abstractmethod
+    async def increment_total_messages(self, user_id: UUID) -> None:
+        ...
+
+    @abstractmethod
     async def update(
             self,
             user_id: UUID,

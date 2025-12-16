@@ -5,9 +5,13 @@ import socketio
 
 from dishka import make_async_container, Scope
 
+from faststream.rabbit import RabbitBroker
+
 from utilities.file import base64_to_file
 
-from ws.types import Message
+from ws.types import (
+    Message
+)
 
 from jwt_decoder import JwtDecoder
 
@@ -83,6 +87,7 @@ class ChatNamespace(socketio.AsyncNamespace):
         async with container(scope=Scope.REQUEST) as nested_container:
             file_uploader = await nested_container.get(FileUploader)
             message_repository = await nested_container.get(MessageRepository)
+            broker = await nested_container.get(RabbitBroker)
 
             fields = {}
 
@@ -97,7 +102,14 @@ class ChatNamespace(socketio.AsyncNamespace):
             message = await message_repository.create(CreateMessageDTO(**fields))
             await self.emit("send_message", data=message)
 
+            event_data: dict[str, str] = {"user_id": user_id}
 
+            await self.emit("increment_total_messages", to=sid)
+
+            await broker.publish(
+                queue="sockets.create_message",
+                message=event_data,
+            )
 
     async def on_disconnect(self, sid, reason):
         session = await self.get_session(sid)
@@ -112,6 +124,7 @@ class ChatNamespace(socketio.AsyncNamespace):
             is_last_session = await chat_users_storage.remove_session(user_id, sid)
 
             if is_last_session:
+                logger.info(f"[Chat namespace]: Emit 'leave_chat'.")
                 await self.emit("leave_chat", data={"id": user_id}, skip_sid=sid)
 
             logger.info(
