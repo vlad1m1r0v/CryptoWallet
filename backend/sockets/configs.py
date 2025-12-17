@@ -22,9 +22,13 @@ class MongoConfig(BaseModel):
 
     @property
     def uri(self) -> str:
+        # 1. Змінюємо протокол на mongodb://
+        # 2. Додаємо порт :27017 (стандартний для Mongo)
+        # 3. Додаємо authSource=admin
+        # 4. Видаляємо tls=true (якщо ви не налаштовували SSL всередині Docker спеціально)
         return (
-            f"mongodb+srv://{self.user}:{self.password}@{self.host}/"
-            "?retryWrites=true&w=majority&tls=true"
+            f"mongodb://{self.user}:{self.password}@{self.host}:27017/"
+            f"{self.database}?authSource=admin&retryWrites=true&w=majority"
         )
 
 
