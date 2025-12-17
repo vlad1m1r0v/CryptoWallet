@@ -1,12 +1,9 @@
 import logging
-
-import asyncio
-
-from decimal import Decimal
-
-from datetime import datetime
-
 from uuid import UUID
+from datetime import datetime
+from decimal import Decimal
+import json
+import asyncio
 
 from faststream.rabbit import RabbitBroker
 
@@ -18,6 +15,8 @@ from eth_account import Account
 from eth_typing import HexStr
 
 import httpx
+
+import websockets
 
 from src.consts import (
     GAS,
@@ -40,6 +39,7 @@ from src.schemas import (
 
 from src.configs import (
     EtherscanConfig,
+    InfuraConfig,
     FaucetConfig
 )
 
@@ -166,39 +166,56 @@ class EthereumServiceAdapter(EthereumServicePort):
 
 
 class BlockListenerAdapter(BlockListenerPort):
-    _poll_interval: float = 10.0
-
     def __init__(
             self,
             w3: Web3,
+            infura_config: InfuraConfig,
             broker: RabbitBroker,
             storage: StoragePort
     ):
         self._w3 = w3
+        self._infura_config = infura_config
         self._broker = broker
         self._storage = storage
-        self._last_block = None
-        self._logger = logging.getLogger("ethereum_broker")
+        self._logger = logging.getLogger()
 
     def run(self) -> asyncio.Task:
         return asyncio.create_task(self._loop())
 
     async def _loop(self):
-        self._logger.info("Starting block listener...")
+        self._logger.info("Starting WebSocket block listener...")
+
+        ws_url = f"{self._infura_config.base_ws_url}/{self._infura_config.api_key}"
 
         while True:
-            self._logger.info("Running loop...")
-            latest_block_number = self._w3.eth.block_number
-            if self._last_block is None:
-                self._last_block = latest_block_number
+            try:
+                async with websockets.connect(ws_url) as ws:
+                    await ws.send(
+                        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "eth_subscribe", "params": ["newHeads"]})
+                    )
 
-            for block_num in range(self._last_block + 1, latest_block_number + 1):
-                block = self._w3.eth.get_block(block_num, full_transactions=True)
-                await self._process_block(block)
+                    subscription_response = await ws.recv()
+                    self._logger.info(f"Connected to Websockets successfully: {subscription_response}")
 
-            self._last_block = latest_block_number
+                    async for message in ws:
+                        try:
+                            response = json.loads(message)
 
-            await asyncio.sleep(self._poll_interval)
+                            if "params" in response:
+                                block_hex = response["params"]["result"]["number"]
+                                block_number = int(block_hex, 16)
+
+                                self._logger.info(f"New block received: {block_number}")
+
+                                block = self._w3.eth.get_block(block_number, full_transactions=True)
+                                await self._process_block(block)
+
+                        except Exception as e:
+                            self._logger.error(f"Error processing block message: {e}")
+
+            except Exception as e:
+                self._logger.error(f"Websocket connection lost: {e}. Reconnecting in 5s...")
+                await asyncio.sleep(5)
 
     async def _process_block(self, block: BlockData):
         pending_hashes = await self._storage.get_all_transaction_hashes()

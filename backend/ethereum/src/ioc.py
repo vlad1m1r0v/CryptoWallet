@@ -105,5 +105,5 @@ class BlockListenerProvider(Provider):
 class Web3Provider(Provider):
     @provide(scope=Scope.APP)
     def provide_web3_client(self, config: InfuraConfig) -> Web3:
-        INFURA_URL = f"https://sepolia.infura.io/v3/{config.api_key}"
+        INFURA_URL = f"{config.base_http_url}/{config.api_key}"
         return Web3(Web3.HTTPProvider(INFURA_URL))

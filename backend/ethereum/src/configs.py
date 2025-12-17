@@ -12,6 +12,8 @@ BASE_DIR = pathlib.Path(__file__).parents[1]
 
 class InfuraConfig(BaseModel):
     api_key: str = Field(alias="INFURA_API_KEY")
+    base_http_url: str = Field(alias="INFURA_BASE_HTTP_URL")
+    base_ws_url: str = Field(alias="INFURA_BASE_WS_URL")
 
 
 class EtherscanConfig(BaseModel):
