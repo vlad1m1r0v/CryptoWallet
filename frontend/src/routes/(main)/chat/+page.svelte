@@ -180,7 +180,7 @@
     }
 </style>
 <script lang="ts">
-    import {PUBLIC_CHAT_URL} from "$env/static/public";
+    import {PUBLIC_SOCKET_URL} from "$env/static/public";
 
     import {goto} from "$app/navigation";
 
@@ -234,7 +234,7 @@
 
 
     onMount(() => {
-        socket = io(PUBLIC_CHAT_URL, {
+        socket = io(PUBLIC_SOCKET_URL + "/chat", {
             transports: ["websocket"],
             auth: {token: TokenService.getToken()},
             autoConnect: false

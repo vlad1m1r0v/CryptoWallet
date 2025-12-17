@@ -1,17 +1,12 @@
-# Етап 1: Збірка (Builder)
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Оголошуємо аргументи збірки (Easypanel передасть їх сюди)
 ARG PUBLIC_BACKEND_URL
 ARG PUBLIC_SOCKET_URL
-ARG PUBLIC_CHAT_URL
 
-# Робимо ці аргументи доступними як змінні оточення для процесу збірки
 ENV PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
 ENV PUBLIC_SOCKET_URL=$PUBLIC_SOCKET_URL
-ENV PUBLIC_CHAT_URL=$PUBLIC_CHAT_URL
 
 COPY package*.json ./
 RUN npm install
