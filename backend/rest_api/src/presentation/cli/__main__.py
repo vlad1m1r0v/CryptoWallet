@@ -11,7 +11,10 @@ from src.domain.enums import (
 )
 
 from src.application.dtos.request import CreateAssetRequestDTO
-from src.application.interactors import CreateAssetInteractor
+from src.application.interactors import (
+    CreateAssetInteractor,
+    GetAssetInteractor
+)
 
 from src.ioc import get_providers
 
@@ -31,7 +34,13 @@ async def _create_sepolia_asset():
     container = make_async_container(*get_providers(), context={Config: config})
 
     async with container(scope=Scope.REQUEST) as nested_container:
-        interactor = await nested_container.get(CreateAssetInteractor)
+        get_asset_interactor = await nested_container.get(GetAssetInteractor)
+        create_asset_interactor = await nested_container.get(CreateAssetInteractor)
+
+        asset = await get_asset_interactor()
+
+        if asset:
+            return
 
         dto = CreateAssetRequestDTO(
             name="Sepolia Ethereum",
@@ -41,7 +50,7 @@ async def _create_sepolia_asset():
             asset_type=AssetTypeEnum.NATIVE
         )
 
-        await interactor(dto)
+        await create_asset_interactor(dto)
 
 
 @click.command()

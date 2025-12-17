@@ -42,7 +42,7 @@ from src.application.interactors import (
     CreateOrderInteractor,
     UpdateOrderInteractor,
     GetOrdersInteractor,
-    CreateAssetInteractor
+    CreateAssetInteractor,
 )
 
 from src.infrastructure.adapters.transaction import (
