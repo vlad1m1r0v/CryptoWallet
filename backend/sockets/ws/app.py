@@ -20,7 +20,9 @@ logger = logging.getLogger(__name__)
 sio = socketio.AsyncServer(
     async_mode='aiohttp',
     client_manager=socketio.AsyncRedisManager(config.redis.url),
-    cors_allowed_origins=["*"]
+    cors_allowed_origins=["*"],
+    logger=True,
+    engineio_logger=True,
 )
 
 sio.register_namespace(DefaultNamespace('/'))
