@@ -1,5 +1,6 @@
 <script lang="ts">
     import {type TransactionResponse} from "$lib/types/api.ts";
+    import {formatDate} from "$lib/utils/date.ts";
 
     const {row}: { row: TransactionResponse } = $props();
 </script>
@@ -25,7 +26,7 @@
     <!--Value-->
     <td>{row.value} {row.asset_symbol}</td>
     <!--Created at-->
-    <td>{row.created_at ?? ''}</td>
+    <td>{formatDate(row.created_at)}</td>
     <!--Fee-->
     <td>{row.transaction_fee} {row.asset_symbol}</td>
     <!--Status-->

@@ -137,6 +137,14 @@
         border-radius: 0.357rem;
     }
 
+    .message_left .message__date {
+        text-align: right;
+    }
+
+    .message__date small {
+        font-size: 10px;
+    }
+
     #input {
         grid-area: input;
         border-top: 1px solid #ebe9f1;
@@ -174,7 +182,7 @@
 <script lang="ts">
     import {PUBLIC_CHAT_URL} from "$env/static/public";
 
-    import { goto } from "$app/navigation";
+    import {goto} from "$app/navigation";
 
     import {onMount} from "svelte";
     import {get} from "svelte/store";
@@ -188,6 +196,8 @@
     import {reporter} from "@felte/reporter-svelte";
 
     import {z} from "zod";
+
+    import {formatDate} from "$lib/utils/date.ts";
 
     import {createMessageSchema} from "$lib/schemas/createMessage.ts";
 
@@ -209,6 +219,7 @@
         text: string;
         image_url?: string;
         user: User;
+        created_at: string;
     }
 
     let containerElement: HTMLDivElement;
@@ -276,8 +287,10 @@
             }
         });
 
-        roContainer.observe(containerElement);
-        roScroll.observe(chatElement);
+        setTimeout(() => {
+            roContainer.observe(containerElement);
+            roScroll.observe(chatElement);
+        }, 200)
 
         return () => {
             roContainer.disconnect();
@@ -444,6 +457,9 @@
                             </a>
                             <div class="message__body">
                                 <div class="message__content">
+                                    <div class="message__date">
+                                        <small>{formatDate(message.created_at)}</small>
+                                    </div>
                                     <p>{message.text}</p>
                                     {#if message.image_url}
                                         <div class="message__image">

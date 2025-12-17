@@ -22,6 +22,8 @@
 
     import {modals} from "svelte-modals";
 
+    import {formatDate} from "$lib/utils/date.ts";
+
     import CreateProductModal from "$lib/components/modals/CreateProductModal.svelte";
     import CreateOrderModal from "$lib/components/modals/CreateOrderModal.svelte";
 
@@ -124,7 +126,7 @@
                     <!--Date-->
                     <div class="information__row d-flex align-items-center">
                         <p class="font-weight-bold mb-0 mr-1">Order date:</p>
-                        <p class="font-weight-lighter mb-0 mr-1">{order.created_at}</p>
+                        <p class="font-weight-lighter mb-0 mr-1">{formatDate(order.created_at)}</p>
                     </div>
                     <!--Status-->
                     <div class="information__row d-flex align-items-center">
