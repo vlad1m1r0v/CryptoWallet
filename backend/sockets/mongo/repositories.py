@@ -1,6 +1,6 @@
 from typing import NewType
 from uuid import UUID, uuid4
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timezone
 from abc import ABC, abstractmethod
 
 from pymongo import ASCENDING
@@ -157,7 +157,7 @@ class MongoMessageRepository(MessageRepository):
 
         result = await cursor.next()
 
-        return MessageDTO(**{**result, "created_at": result["created_at"].isoformat().replace("+00:00", "Z")})
+        return MessageDTO(**{**result, "created_at": result["created_at"].replace(tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")})
 
     async def list(self) -> list[MessageDTO]:
         LIMIT = 10
@@ -207,6 +207,6 @@ class MongoMessageRepository(MessageRepository):
         result_list = await cursor.to_list(length=LIMIT)
 
         return [
-            MessageDTO(**{**result, "created_at": result["created_at"].isoformat().replace("+00:00", "Z")})
+            MessageDTO(**{**result, "created_at": result["created_at"].replace(tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")})
             for result in result_list
         ]
