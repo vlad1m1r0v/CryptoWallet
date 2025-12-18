@@ -131,12 +131,12 @@ export interface CreateOrderRequest {
 }
 
 export interface PayOrderResponse {
-    order_id: string;
+    id: string;
     transaction_hash: string;
 }
 
 export interface UpdateOrderResponse {
-    order_id: string;
+    id: string;
     status?: OrderStatusEnum;
     payment_transaction_hash?: string;
     return_transaction_hash?: string;

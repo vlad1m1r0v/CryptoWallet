@@ -96,7 +96,7 @@ export function bindSocketHandlers(socket: Socket) {
                 )
             )
 
-            await TransactionService.getTransactions()
+            await TransactionService.getTransactions();
         }
     };
 
@@ -117,7 +117,7 @@ export function bindSocketHandlers(socket: Socket) {
 
     socket.on("update_order", async (data: UpdateOrderResponse) => {
         orders.update(o => o ? (
-            o.map(o => o.id === data.order_id ? {
+            o.map(o => o.id === data.id ? {
                 ...o,
                 ...data
             } : o)

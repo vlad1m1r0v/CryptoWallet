@@ -184,7 +184,7 @@
 
     import {goto} from "$app/navigation";
 
-    import {onMount} from "svelte";
+    import {onMount, tick} from "svelte";
     import {get} from "svelte/store";
 
     import {io, type Socket} from "socket.io-client";
@@ -252,12 +252,22 @@
             connectedUsers = connectedUsers.filter(u => u.id !== data.id);
         });
 
-        socket?.on("list_messages", (data: Message[]) => {
+        socket?.on("list_messages", async (data: Message[]) => {
             messages = data;
+            // await tick();
+            // chatElement.scrollTo({
+            //     top: chatElement.scrollHeight,
+            //     behavior: "smooth"
+            // });
         })
 
-        socket?.on("send_message", (data: Message) => {
+        socket?.on("send_message", async (data: Message) => {
             messages = [...messages, data];
+            // await tick();
+            // chatElement.scrollTo({
+            //     top: chatElement.scrollHeight,
+            //     behavior: "smooth"
+            // });
         });
 
         socket?.on("increment_total_messages", async () => {
@@ -278,19 +288,19 @@
             }
         });
 
+
         const roScroll = new ResizeObserver(() => {
-            if (chatElement) {
+            setTimeout(() => {
                 chatElement.scrollTo({
                     top: chatElement.scrollHeight,
                     behavior: "smooth",
                 });
-            }
+            }, 300)
         });
 
-        setTimeout(() => {
-            roContainer.observe(containerElement);
-            roScroll.observe(chatElement);
-        }, 200)
+
+        roContainer.observe(containerElement);
+        roScroll.observe(chatElement);
 
         return () => {
             roContainer.disconnect();
