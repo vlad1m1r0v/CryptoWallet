@@ -254,20 +254,20 @@
 
         socket?.on("list_messages", async (data: Message[]) => {
             messages = data;
-            // await tick();
-            // chatElement.scrollTo({
-            //     top: chatElement.scrollHeight,
-            //     behavior: "smooth"
-            // });
+            await tick();
+            chatElement.scrollTo({
+                top: chatElement.scrollHeight,
+                behavior: "smooth"
+            });
         })
 
         socket?.on("send_message", async (data: Message) => {
             messages = [...messages, data];
-            // await tick();
-            // chatElement.scrollTo({
-            //     top: chatElement.scrollHeight,
-            //     behavior: "smooth"
-            // });
+            await tick();
+            chatElement.scrollTo({
+                top: chatElement.scrollHeight,
+                behavior: "smooth"
+            });
         });
 
         socket?.on("increment_total_messages", async () => {

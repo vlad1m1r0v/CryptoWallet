@@ -116,6 +116,8 @@ export function bindSocketHandlers(socket: Socket) {
     })
 
     socket.on("update_order", async (data: UpdateOrderResponse) => {
+        console.log(`Received update order event: ${data}`);
+
         orders.update(o => o ? (
             o.map(o => o.id === data.id ? {
                 ...o,
