@@ -157,9 +157,7 @@ class MongoMessageRepository(MessageRepository):
 
         result = await cursor.next()
 
-
-
-        return MessageDTO(**{**result, "created_at": str(result["created_at"])})
+        return MessageDTO(**{**result, "created_at": result["created_at"].isoformat().replace("+00:00", "Z")})
 
     async def list(self) -> list[MessageDTO]:
         LIMIT = 10
@@ -209,6 +207,6 @@ class MongoMessageRepository(MessageRepository):
         result_list = await cursor.to_list(length=LIMIT)
 
         return [
-            MessageDTO(**{**item, "created_at": str(item["created_at"])})
-            for item in result_list
+            MessageDTO(**{**result, "created_at": result["created_at"].isoformat().replace("+00:00", "Z")})
+            for result in result_list
         ]
