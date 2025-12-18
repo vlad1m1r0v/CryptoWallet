@@ -169,7 +169,7 @@ async def save_product_handler(
         data: SaveProductDict
 ) -> None:
     payload = {
-        "product_id": str(data["product_id"]),
+        "id": str(data["product_id"]),
         "name": data["name"],
         "price": float(data["price"]),
         "photo_url": data["photo_url"],
@@ -195,7 +195,7 @@ async def pay_order_handler(
     user_room = f"user:{data['user_id']}"
 
     payload = {
-        "order_id": str(data["order_id"]),
+        "id": str(data["order_id"]),
         "transaction_hash": data["transaction_hash"]
     }
 
@@ -216,7 +216,7 @@ async def update_order_handler(
     user_room = f"user:{data['user_id']}"
 
     payload = {
-        "order_id": str(data["order_id"])
+        "id": str(data["order_id"])
     }
 
     if status := data.get("status", None):
