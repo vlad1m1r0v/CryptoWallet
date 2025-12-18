@@ -255,19 +255,23 @@
         socket?.on("list_messages", async (data: Message[]) => {
             messages = data;
             await tick();
-            chatElement.scrollTo({
-                top: chatElement.scrollHeight,
-                behavior: "smooth"
-            });
+            setTimeout(() => {
+                chatElement.scrollTo({
+                    top: chatElement.scrollHeight,
+                    behavior: "smooth"
+                });
+            }, 300)
         })
 
         socket?.on("send_message", async (data: Message) => {
             messages = [...messages, data];
             await tick();
-            chatElement.scrollTo({
-                top: chatElement.scrollHeight,
-                behavior: "smooth"
-            });
+            setTimeout(() => {
+                chatElement.scrollTo({
+                    top: chatElement.scrollHeight,
+                    behavior: "smooth"
+                });
+            }, 300)
         });
 
         socket?.on("increment_total_messages", async () => {
