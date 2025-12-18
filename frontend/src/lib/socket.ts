@@ -117,7 +117,7 @@ export function bindSocketHandlers(socket: Socket) {
 
     socket.on("update_order", async (data: UpdateOrderResponse) => {
         orders.update(o => o ? (
-            o.map(o => o.id === o.id ? {
+            o.map(o => o.id === data.order_id ? {
                 ...o,
                 ...data
             } : o)

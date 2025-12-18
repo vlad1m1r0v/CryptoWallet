@@ -79,7 +79,7 @@
                     <div>
                         <button
                                 class="btn btn-primary btn-block"
-                                onclick={() => modals.open(CreateOrderModal, {productName: product.name, productId: product.id})}
+                                onclick={() => modals.open(CreateOrderModal, {product})}
                         >
                             Buy
                         </button>

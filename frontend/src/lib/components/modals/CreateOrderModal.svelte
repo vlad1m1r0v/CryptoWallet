@@ -2,13 +2,11 @@
     const {
         isOpen,
         close,
-        productName,
-        productId
+        product
     }: {
         isOpen: boolean,
         close: () => {},
-        productName: string,
-        productId: string
+        product: ProductResponse
     } = $props();
     import {onMount} from "svelte";
     import {fade, scale} from "svelte/transition";
@@ -18,6 +16,8 @@
     import {reporter} from "@felte/reporter-svelte";
 
     import {z} from "zod";
+
+    import type {ProductResponse} from "$lib/types/api.ts";
 
     import {createOrderSchema} from "$lib/schemas/createOrder.ts";
 
@@ -36,7 +36,7 @@
 
     const {form, setData, errors, touched, isSubmitting, isValid, handleSubmit} = createForm<FormData>({
         onSubmit: async (values) => {
-            await OrderService.createOrder({...values, product_id: productId});
+            await OrderService.createOrder({...values, product_id: product.id});
             close();
         },
         extend: [
@@ -63,7 +63,7 @@
                     on:outsideclick={close}
             >
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel160">Ordering of product {productName}</h5>
+                    <h5 class="modal-title" id="myModalLabel160">Ordering of product {product.name}</h5>
                     <button
                             type="button"
                             class="close"
