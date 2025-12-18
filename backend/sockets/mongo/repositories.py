@@ -163,7 +163,7 @@ class MongoMessageRepository(MessageRepository):
         LIMIT = 10
 
         pipeline = [
-            {"$sort": {"created_at": ASCENDING}},
+            {"$sort": {"created_at": -1}},
             {"$limit": LIMIT},
             {
                 "$lookup": {
@@ -208,5 +208,5 @@ class MongoMessageRepository(MessageRepository):
 
         return [
             MessageDTO(**{**result, "created_at": result["created_at"].replace(tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")})
-            for result in result_list
+            for result in reversed(result_list)
         ]
