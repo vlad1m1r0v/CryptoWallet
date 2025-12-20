@@ -43,7 +43,7 @@
     });
 
     wallets.subscribe((state) => {
-        if (state) setData("wallet_id", state[0].id)
+        if (state && state.length > 0) setData("wallet_id", state[0].id)
     })
 </script>
 {#if isOpen}

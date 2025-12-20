@@ -158,12 +158,21 @@
         flex-grow: 1;
     }
 
-    svg.error {
+    span.error svg {
         stroke: #ea5455 !important;
     }
 
-    svg.success {
+    span.success svg {
         stroke: #28c76f !important;
+    }
+
+
+    span.error > span {
+        color: #ea5455 !important;
+    }
+
+    span.success > span {
+        color: #28c76f !important;
     }
 
     span.error, span.error:focus {
@@ -225,6 +234,8 @@
     let containerElement: HTMLDivElement;
     let chatElement: HTMLDivElement;
 
+    let uploadedFile = $state<File | null>(null);
+
     let isAccordionOpen = $state<boolean>(false);
     let isChatContainerSmall = $state<boolean>(false);
 
@@ -232,6 +243,10 @@
     let connectedUsers = $state<User[]>([]);
     let messages = $state<Message[]>([]);
 
+    const onFileChange = (e: Event) => {
+        const input = e.target as HTMLInputElement;
+        uploadedFile = input.files?.[0] ?? null;
+    }
 
     onMount(() => {
         socket = io(PUBLIC_SOCKET_URL + "/chat", {
@@ -351,6 +366,7 @@
 
             socket?.emit("create_message", message);
             reset();
+            uploadedFile = null;
         },
         extend: [
             validator({schema: createMessageSchema}),
@@ -505,6 +521,9 @@
                                         class:error={$errors.text && $touched.text}
                                         class:success={!$errors.text && $touched.text}
                                 >
+                                    {#if uploadedFile}
+                                        <span class="mr-1">{uploadedFile.name}</span>
+                                    {/if}
                                     <label for="attach-doc" class="attachment-icon mb-0">
                                         <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -517,8 +536,6 @@
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 class="feather feather-image cursor-pointer lighten-2 text-secondary"
-                                                class:is-valid={!$errors.text && $touched.text}
-                                                class:is-invalid={$errors.text && $touched.text}
                                         >
                                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                             <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -527,8 +544,10 @@
                                         <input
                                                 name="image"
                                                 type="file"
+                                                accept="image/*"
                                                 id="attach-doc"
                                                 hidden=""
+                                                onchange={onFileChange}
                                         >
                                     </label>
                                 </span>
