@@ -15,7 +15,7 @@ from src.presentation.http.schemas.fields import (
 class CreateProductRequestSchema(BaseModel):
     wallet_id: UUID
     name: ProductNameStr
-    price: Decimal = Field(gt=0.00001)
+    price: Decimal = Field(gt=0.0002)
     photo: UploadFile
 
 class ProductResponseAssetSchema(BaseModel):
@@ -30,7 +30,7 @@ class ProductResponseWalletSchema(BaseModel):
 class ProductResponseSchema(BaseModel):
     id: UUID
     name: ProductNameStr
-    price: Decimal = Field(gt=0.00001)
+    price: Decimal = Field(gt=0.0002)
     photo_url: str
     created_at: datetime
     wallet: ProductResponseWalletSchema = Field(exclude=True)

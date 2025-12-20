@@ -16,7 +16,7 @@ export const createProductSchema = z.object({
                 )
         ),
     price: z.coerce.number()
-        .gt(0.00001, "Price must be greater than 0.00001"),
+        .gt(0.0002, "Price must be greater than 0.0002"),
 
     photo: z.any().refine(
         (file) => file instanceof File,
