@@ -327,13 +327,23 @@
         };
     });
 
-    user.subscribe((u) => {
-        if (u) {
+    onMount(() => {
+        const currentUser = get(user);
+
+        if (currentUser && !currentUser.permissions.has_chat_access) {
+            toast.error("You don't have access to chat.");
+            goto("/profiles/me");
+            return;
+        }
+
+        return user.subscribe((u) => {
+            if (!u) return;
+
             if (!u.permissions.has_chat_access) {
                 toast.error("You don't have access to chat.");
                 goto("/profiles/me");
             }
-        }
+        });
     });
 
     type FormData = z.infer<typeof createMessageSchema>;
