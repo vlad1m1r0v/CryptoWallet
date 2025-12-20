@@ -69,7 +69,7 @@ class CompleteTransactionInteractor:
         transactions = await self._transaction_gateway.read(tx_hash=TransactionHash(data.hash).value)
 
         if len(transactions) > 0:
-            logger.info("Emitting event rest_api.complete_transaction (for payer)...")
+            logger.info("Emitting event rest_api.complete_transaction (for payer / payer)...")
 
             await self._event_publisher.complete_transaction(
                 CompleteTransactionEventDTO(
@@ -90,18 +90,26 @@ class CompleteTransactionInteractor:
             )
 
             if transactions[0]["transaction_status"] == TransactionStatusEnum.SUCCESSFUL:
-                logger.info("Updating payer wallet balance in database...")
+                if transactions[0]["to_address"] == transactions[0]["wallet"]["address"]:
+                    logger.info("Updating receiver wallet balance in database...")
 
-                await self._wallet_gateway.decrement_balance(
-                    wallet_id=transactions[0]["wallet"]["id"],
-                    amount=transactions[0]["transaction_fee"] + transactions[0]["value"]
-                )
+                    await self._wallet_gateway.increment_balance(
+                        wallet_id=transactions[0]["wallet"]["id"],
+                        amount=transactions[0]["value"]
+                    )
+                else:
+                    logger.info("Updating payer wallet balance in database...")
+
+                    await self._wallet_gateway.decrement_balance(
+                        wallet_id=transactions[0]["wallet"]["id"],
+                        amount=transactions[0]["transaction_fee"] + transactions[0]["value"]
+                    )
 
                 await self._flusher.flush()
 
                 wallet = await self._wallet_gateway.read(wallet_id=transactions[0]["wallet"]["id"])
 
-                logger.info("Emitting event rest_api.update_wallet (for payer)...")
+                logger.info("Emitting event rest_api.update_wallet (for receiver / payer)...")
 
                 await self._event_publisher.update_wallet(
                     UpdateWalletEventDTO(
