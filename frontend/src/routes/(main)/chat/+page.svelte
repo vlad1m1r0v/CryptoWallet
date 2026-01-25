@@ -225,7 +225,7 @@
 
     interface Message {
         id: string;
-        text: string;
+        text?: string;
         image_url?: string;
         user: User;
         created_at: string;
@@ -363,12 +363,15 @@
 
             const message: {
                 user_id: string;
-                text: string;
+                text?: string;
                 image?: string;
             } = {
                 "user_id": user_id,
-                "text": values.text
             };
+
+            if (values.text) {
+                message["text"] = values.text;
+            }
 
             if (values.image) {
                 message["image"] = (await toBase64(values.image)) as string;
@@ -383,6 +386,7 @@
             reporter()
         ]
     });
+
 </script>
 <div class="card">
     <div class="card-body p-0">
@@ -476,23 +480,23 @@
                         >
                             <a href={`profiles/${message.user.id}`}>
                                 <div class="message__avatar">
-                                                <span class="avatar box-shadow-1 cursor-pointer">
-                                                    {#if message.user.avatar_url}
-                                                        <img
-                                                                src={message.user.avatar_url}
-                                                                alt="avatar"
-                                                                height="36"
-                                                                width="36"
-                                                        >
-                                                    {:else}
-                                                        <img
-                                                                src="/vuexy/images/portrait/small/avatar-s-11.jpg"
-                                                                alt="avatar"
-                                                                height="36"
-                                                                width="36"
-                                                        >
-                                                    {/if}
-                                                </span>
+                                    <span class="avatar box-shadow-1 cursor-pointer">
+                                        {#if message.user.avatar_url}
+                                            <img
+                                                    src={message.user.avatar_url}
+                                                    alt="avatar"
+                                                    height="36"
+                                                    width="36"
+                                            >
+                                        {:else}
+                                            <img
+                                                    src="/vuexy/images/portrait/small/avatar-s-11.jpg"
+                                                    alt="avatar"
+                                                    height="36"
+                                                    width="36"
+                                            >
+                                        {/if}
+                                    </span>
                                 </div>
                             </a>
                             <div class="message__body">
@@ -500,7 +504,9 @@
                                     <div class="message__date">
                                         <small>{formatDate(message.created_at)}</small>
                                     </div>
-                                    <p>{message.text}</p>
+                                    {#if message.text}
+                                        <p>{message.text}</p>
+                                    {/if}
                                     {#if message.image_url}
                                         <div class="message__image">
                                             <img src={message.image_url} alt="image">
@@ -520,16 +526,16 @@
                                         type="text"
                                         class="form-control"
                                         placeholder="Enter message..."
-                                        class:is-valid={!$errors.text && $touched.text}
-                                        class:is-invalid={$errors.text && $touched.text}
+                                        class:is-valid={$isValid && ($touched.image || $touched.text)}
+                                        class:is-invalid={!$isValid && ($touched.image || $touched.text)}
                                 >
                                 <div
                                         class="input-group-append"
                                 >
                                 <span
                                         class="input-group-text"
-                                        class:error={$errors.text && $touched.text}
-                                        class:success={!$errors.text && $touched.text}
+                                        class:success={$isValid && ($touched.image || $touched.text)}
+                                        class:error={!$isValid && ($touched.image || $touched.text)}
                                 >
                                     {#if uploadedFile}
                                         <span class="mr-1">{uploadedFile.name}</span>
@@ -586,8 +592,10 @@
                                 <span class="d-none d-lg-block">Send</span>
                             </button>
                         </form>
-                        {#if $touched.text && $errors.text}
-                            <div class="invalid-feedback d-block h-auto">{$errors.text[0]}</div>
+                        {#if !$isValid && ($touched.image || $touched.text)}
+                            <div class="invalid-feedback d-block h-auto">
+                                {($errors.text && $errors.text[0]) || ($errors.image && $errors.image[0])}
+                            </div>
                         {/if}
                     </div>
                 </div>

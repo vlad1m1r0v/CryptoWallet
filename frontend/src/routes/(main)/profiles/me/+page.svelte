@@ -204,9 +204,12 @@
                     <div class="row mb-2">
                         <div class="d-inline-block text-truncate">
                             <img width="50" src="/custom/images/ethereum.png" alt="ethereum logo">
-                            <span class="text-center font-weight-lighter">
+                            <a
+                                    href={`https://sepolia.etherscan.io/address/${wallet.address}`}
+                                    class="text-center font-weight-lighter"
+                            >
                                 {wallet.address}
-                             </span>
+                             </a>
                         </div>
                     </div>
                 {/each}

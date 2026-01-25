@@ -119,7 +119,7 @@
                             Watch transactions
                         </button>
                         <button
-                                onclick={() => modals.open(SendTransactionModal, {fromAddress: wallet.address})}
+                                onclick={() => modals.open(SendTransactionModal, {balance: wallet.balance, fromAddress: wallet.address})}
                                 type="button"
                                 class="btn btn-sm btn-primary"
                         >

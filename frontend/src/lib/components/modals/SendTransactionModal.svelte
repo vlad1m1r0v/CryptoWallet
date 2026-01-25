@@ -2,11 +2,13 @@
     const {
         isOpen,
         close,
-        fromAddress
+        fromAddress,
+        balance
     }: {
         isOpen: boolean,
         close: () => {},
-        fromAddress: string
+        fromAddress: string,
+        balance: number
     } = $props();
 
     import {fade, scale} from "svelte/transition";
@@ -21,9 +23,11 @@
 
     import {outsideClick} from "$lib/actions/outsideClick.ts";
 
-    import {sendTransactionSchema} from "$lib/schemas/sendTransaction.ts";
+    import {createSendTransactionSchema} from "$lib/schemas/sendTransaction.ts";
 
-    type FormData = z.infer<typeof sendTransactionSchema>;
+    const sendTransactionSchema = createSendTransactionSchema(balance);
+
+    type FormData = z.infer<sendTransactionSchema>;
 
     const {form, errors, touched, isSubmitting, isValid, handleSubmit} = createForm<FormData>({
         onSubmit: async (amounts) => {

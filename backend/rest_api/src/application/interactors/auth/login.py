@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 from src.domain.exceptions import (
     EmailNotFoundException,
@@ -59,5 +60,10 @@ class LoginInteractor:
 
         logging.info("Generating access token...")
 
-        access_token = self._jwt_provider.encode({"user_id": str(user["id"])})
+        expires_delta: timedelta | None = timedelta(seconds=15) if not data.remember_me else None
+        access_token = self._jwt_provider.encode(
+            payload={"user_id": str(user["id"])},
+            expires_delta=expires_delta
+        )
+
         return LoginUserResponseDTO(access_token=access_token)

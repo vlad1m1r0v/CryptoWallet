@@ -27,7 +27,7 @@
 <form use:form class="mt-2" novalidate>
     <a href=" " class="brand-logo d-flex align-items-center mb-3">
         <Vuexy/>
-        <h2 class="brand-text text-primary ml-1 mb-0">CryptoWallet</h2>
+        <h2 class="brand-text text-primary ml-1 mb-0">Login</h2>
     </a>
 
     <!-- Email -->

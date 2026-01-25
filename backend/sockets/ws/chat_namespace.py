@@ -92,7 +92,7 @@ class ChatNamespace(socketio.AsyncNamespace):
             fields = {}
 
             fields.setdefault("user_id", data["user_id"])
-            fields.setdefault("text", data["text"])
+            fields.setdefault("text", data.get("text", None))
 
             if image_base64 := data.get("image", None):
                 image_file = base64_to_file(image_base64)

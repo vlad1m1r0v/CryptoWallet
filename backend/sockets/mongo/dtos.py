@@ -26,13 +26,13 @@ class UserDTO(TypedDict):
 @dataclass(frozen=True, slots=True, kw_only=True)
 class CreateMessageDTO:
     user_id: UUID
-    text: str
+    text: Optional[str] = None
     image: Optional[str] = None
 
 
 class MessageDTO(TypedDict):
     id: str
-    text: str
+    text: str | None
     image_url: str | None
     user: UserDTO
     created_at: str

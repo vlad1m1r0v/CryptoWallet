@@ -50,11 +50,26 @@ export default class HttpService {
         loader.set({isLoading: false});
 
         if (!response.ok) {
-            toast.error(json?.description ?? 'Unexpected error');
-            if (response.status === 401) {
+            // Pydantic validation error
+            if (response.status === 422) {
+                Object.entries(json).forEach(([field, errors]) => {
+                    if (Array.isArray(errors)) {
+                        errors.forEach((msg) => toast.error(
+                                field === "__model__" ? msg : `${field}: ${msg}`
+                            )
+                        )
+                    }
+                });
+
+            // Access token not provided or is invalid
+            } else if (response.status === 401) {
+                toast.error(json?.description || 'Session expired');
                 TokenService.clearToken();
                 user.set(null);
                 await goto('/login');
+
+            } else {
+                toast.error(json?.description ?? 'Unexpected error');
             }
             return;
         }

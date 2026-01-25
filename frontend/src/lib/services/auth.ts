@@ -21,7 +21,7 @@ export default class AuthService {
         );
 
         if (response) {
-            TokenService.saveToken(response["access_token"], true);
+            TokenService.saveToken(response["access_token"]);
             toast.success("User registered successfully.");
             await goto("/profiles/me");
         }
@@ -34,7 +34,7 @@ export default class AuthService {
         );
 
         if (response) {
-            TokenService.saveToken(response["access_token"], Boolean(data.remember_me));
+            TokenService.saveToken(response["access_token"]);
             await goto("/profiles/me");
 
             toast.success("User logged in successfully.");

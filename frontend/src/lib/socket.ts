@@ -50,6 +50,8 @@ export function bindSocketHandlers(socket: Socket) {
     });
 
     socket.on("save_wallet", (data: WalletResponse) => {
+        console.log("[socket.io]: 'save_wallet' event received.")
+
         toast.success("Wallet successfully added.");
 
         user.update(u => u ? {

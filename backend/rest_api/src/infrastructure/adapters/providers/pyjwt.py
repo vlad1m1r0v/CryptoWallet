@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta, datetime, timezone
 from typing import Any, Mapping
 
@@ -9,6 +10,8 @@ from src.application.ports.providers import JwtProvider
 
 from src.infrastructure.exceptions import InvalidAccessTokenException
 
+logger = logging.getLogger(__name__)
+
 class PyJwtProvider(JwtProvider):
     def __init__(self, config: SecurityConfig):
         self._public_key = config.public_key_path.read_text()
@@ -18,9 +21,14 @@ class PyJwtProvider(JwtProvider):
     def encode(self, payload: Mapping[str, Any], expires_delta: timedelta | None = None) -> str:
         to_encode = dict(payload)
 
+        now = datetime.now(timezone.utc)
+        to_encode["iat"] = int(now.timestamp())
+
         if expires_delta is not None:
-            expire = datetime.now(timezone.utc) + expires_delta
-            to_encode["exp"] = expire
+            expire = now + expires_delta
+            to_encode["exp"] = int(expire.timestamp())
+
+        logging.info(f"Creating JWT token with encoded data: {to_encode}")
 
         return jwt.encode(to_encode, self._private_key, algorithm=self._algorithm)
 

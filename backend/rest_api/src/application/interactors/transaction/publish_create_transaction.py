@@ -15,6 +15,7 @@ from src.domain.value_objects import (
     Balance
 )
 
+from src.application.constants import TRANSACTION_FEE
 from src.application.ports.gateways import (
     WalletGateway,
     AssetGateway
@@ -58,7 +59,9 @@ class PublishCreateTransactionInteractor:
 
         logger.info("Checking if wallet has enough money for transaction...")
 
-        if wallet["balance"] < amount.value:
+        balance = wallet["balance"] / 10 ** wallet["asset"]["decimals"]
+
+        if balance < amount.value + Decimal(TRANSACTION_FEE):
             raise NotEnoughBalanceOnWalletException()
 
         logger.info("Decrypting wallet private key...")

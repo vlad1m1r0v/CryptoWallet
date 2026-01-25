@@ -13,6 +13,7 @@ class LoginUserMapper:
         return LoginUserRequestDTO(
             email=str(schema.email),
             password=schema.password,
+            remember_me=schema.remember_me
         )
 
     @staticmethod

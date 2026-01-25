@@ -55,16 +55,15 @@ def validate_transaction_hash_logic(value: str) -> str:
 
 
 def validate_product_name_logic(value: str) -> str:
-    PATTERN = re.compile(r"^[A-Z][a-zA-Z]*(\s[A-Z][a-zA-Z]*)*(\s[0-9]+)?$")
+    PATTERN = re.compile(r"^[a-zA-Zа-яА-ЯіІїЇєЄ0-9]([a-zA-Zа-яА-ЯіІїЇєЄ0-9\s]*[a-zA-Zа-яА-ЯіІїЇєЄ0-9])?$")
 
-    if not re.search(PATTERN, value):
+    if not PATTERN.fullmatch(value.strip()):
         raise ValueError(
-            "Product name must consist of one or more words separated by spaces. " +
-            "Each word must start with a capital letter and may optionally end with " +
-            "a space followed by digits (e.g., 'iPhone 15', 'New Product')."
+            "Product name must consist of letters (English or Cyrillic), digits, and spaces. "
+            "It cannot start or end with a space."
         )
 
-    return value
+    return value.strip()
 
 UsernameStr = Annotated[UsernameBase, BeforeValidator(validate_username_logic)]
 PasswordStr = Annotated[PasswordBase, BeforeValidator(validate_password_logic)]
