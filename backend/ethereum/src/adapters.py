@@ -11,6 +11,7 @@ from redis.asyncio import Redis
 
 from web3 import Web3
 from web3.types import BlockData
+from web3.exceptions import TransactionNotFound
 from eth_account import Account
 from eth_typing import HexStr
 
@@ -45,20 +46,26 @@ from src.configs import (
 
 
 class RedisStorageAdapter(StoragePort):
-    storage_key: str = "PENDING_TRANSACTIONS_HASH"
+    storage_key: str = "PENDING_TRANSACTIONS_ZSET"
 
     def __init__(self, redis: Redis):
         self._redis = redis
 
     async def add_transaction_hash(self, tx_hash: str) -> None:
-        await self._redis.sadd(self.storage_key, tx_hash)
+        now = datetime.now().timestamp()
+        await self._redis.zadd(self.storage_key, {tx_hash: now})
 
     async def get_all_transaction_hashes(self) -> list[str]:
-        hashes = await self._redis.smembers(self.storage_key)
+        hashes = await self._redis.zrange(self.storage_key, 0, -1)
+        return [tx_hash.decode("utf-8") for tx_hash in hashes]
+
+    async def get_stuck_transaction_hashes(self, ttl_seconds: int = 120) -> list[str]:
+        max_score = datetime.now().timestamp() - ttl_seconds
+        hashes = await self._redis.zrangebyscore(self.storage_key, min=0, max=max_score)
         return [tx_hash.decode("utf-8") for tx_hash in hashes]
 
     async def remove_transaction_hash(self, tx_hash: str) -> None:
-        await self._redis.srem(self.storage_key, tx_hash)
+        await self._redis.zrem(self.storage_key, tx_hash)
 
 
 class EthereumServiceAdapter(EthereumServicePort):
@@ -179,8 +186,11 @@ class BlockListenerAdapter(BlockListenerPort):
         self._storage = storage
         self._logger = logging.getLogger()
 
-    def run(self) -> asyncio.Task:
-        return asyncio.create_task(self._loop())
+    def run(self) -> list[asyncio.Task]:
+        return [
+            asyncio.create_task(self._loop()),
+            asyncio.create_task(self._reconciliation_loop())
+        ]
 
     async def _loop(self):
         self._logger.info("Starting WebSocket block listener...")
@@ -217,6 +227,26 @@ class BlockListenerAdapter(BlockListenerPort):
                 self._logger.error(f"Websocket connection lost: {e}. Reconnecting in 5s...")
                 await asyncio.sleep(5)
 
+    async def _reconciliation_loop(self):
+        STUCK_TTL_SECONDS = 120
+        CHECK_INTERVAL = 60
+
+        self._logger.info("Starting background reconciliation task...")
+
+        while True:
+            try:
+                stuck_hashes = await self._storage.get_stuck_transaction_hashes(ttl_seconds=STUCK_TTL_SECONDS)
+
+                if stuck_hashes:
+                    self._logger.info(f"Reconciliation: checking {len(stuck_hashes)} stuck transactions")
+                    for tx_hash in stuck_hashes:
+                        await self._process_hash(tx_hash)
+
+            except Exception as e:
+                self._logger.error(f"Error in reconciliation loop: {e}")
+
+            await asyncio.sleep(CHECK_INTERVAL)
+
     async def _process_block(self, block: BlockData):
         pending_hashes = await self._storage.get_all_transaction_hashes()
 
@@ -226,22 +256,34 @@ class BlockListenerAdapter(BlockListenerPort):
             tx_hash_hex = self._w3.to_hex(tx["hash"])
 
             if tx_hash_hex in pending_hashes:
-                receipt = self._w3.eth.get_transaction_receipt(HexStr(tx_hash_hex))
-                status = TransactionStatusEnum.SUCCESSFUL if receipt["status"] else TransactionStatusEnum.FAILED
+                await self._process_hash(tx_hash_hex)
 
-                created_at = datetime.fromtimestamp(block["timestamp"])
+    async def _process_hash(self, tx_hash: str) -> None:
+        try:
+            receipt = self._w3.eth.get_transaction_receipt(HexStr(tx_hash))
 
-                event_data = CompleteTransactionSchema(
-                    hash=tx_hash_hex,
-                    transaction_status=status,
-                    created_at=created_at
-                )
+            block = self._w3.eth.get_block(receipt["blockNumber"])
 
-                self._logger.info(f"Completed pending transaction: {event_data.model_dump()}")
+            status = TransactionStatusEnum.SUCCESSFUL if receipt["status"] else TransactionStatusEnum.FAILED
+            created_at = datetime.fromtimestamp(block["timestamp"])
 
-                await self._broker.publish(
-                    queue="ethereum.complete_transaction",
-                    message=event_data.model_dump()
-                )
+            event_data = CompleteTransactionSchema(
+                hash=tx_hash,
+                transaction_status=status,
+                created_at=created_at
+            )
 
-                await self._storage.remove_transaction_hash(tx_hash_hex)
+            self._logger.info(f"Completed pending transaction: {event_data.model_dump()}")
+
+            await self._broker.publish(
+                queue="ethereum.complete_transaction",
+                message=event_data.model_dump()
+            )
+
+            await self._storage.remove_transaction_hash(tx_hash)
+
+        except TransactionNotFound:
+            self._logger.debug(f"Transaction {tx_hash} is still pending...")
+            return
+        except Exception as e:
+            self._logger.error(f"Error while processing hash {tx_hash}: {e}")

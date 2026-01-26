@@ -50,11 +50,13 @@ app = FastStream(broker)
 @app.on_startup
 async def setup_block_listener_on_start(context: ContextRepo):
     block_listener: BlockListenerPort = await container.get(BlockListenerPort)
-    task = block_listener.run()
-    context.set_global("task", task)
+    tasks = block_listener.run()
+    context.set_global("tasks", tasks)
 
 
 @app.on_shutdown
 async def shutdown_block_listener_on_shutdown(context: ContextRepo):
-    task: asyncio.Task = context.get("task")
-    task.cancel()
+    tasks: list[asyncio.Task] = context.get("tasks")
+    if tasks:
+        for task in tasks:
+            task.cancel()

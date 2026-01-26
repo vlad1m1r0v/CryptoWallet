@@ -20,6 +20,10 @@ class StoragePort(ABC):
         pass
 
     @abstractmethod
+    async def get_stuck_transaction_hashes(self, ttl_seconds: int) -> list[str]:
+        pass
+
+    @abstractmethod
     async def remove_transaction_hash(self, tx_hash: str) -> None:
         pass
 
@@ -53,5 +57,5 @@ class EthereumServicePort(ABC):
 
 class BlockListenerPort(ABC):
     @abstractmethod
-    def run(self) -> asyncio.Task:
+    def run(self) -> list[asyncio.Task]:
         ...
