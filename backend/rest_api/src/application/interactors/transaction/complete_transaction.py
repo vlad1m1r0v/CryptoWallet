@@ -90,19 +90,19 @@ class CompleteTransactionInteractor:
             )
 
             if transactions[0]["transaction_status"] == TransactionStatusEnum.SUCCESSFUL:
-                if transactions[0]["to_address"] == transactions[0]["wallet"]["address"]:
-                    logger.info("Updating receiver wallet balance in database...")
-
-                    await self._wallet_gateway.increment_balance(
-                        wallet_id=transactions[0]["wallet"]["id"],
-                        amount=transactions[0]["value"]
-                    )
-                else:
+                if transactions[0]["from_address"] == transactions[0]["wallet"]["address"]:
                     logger.info("Updating payer wallet balance in database...")
 
                     await self._wallet_gateway.decrement_balance(
                         wallet_id=transactions[0]["wallet"]["id"],
                         amount=transactions[0]["transaction_fee"] + transactions[0]["value"]
+                    )
+                else:
+                    logger.info("Updating receiver wallet balance in database...")
+
+                    await self._wallet_gateway.increment_balance(
+                        wallet_id=transactions[0]["wallet"]["id"],
+                        amount=transactions[0]["value"]
                     )
 
                 await self._flusher.flush()
