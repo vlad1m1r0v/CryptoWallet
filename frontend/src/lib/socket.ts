@@ -25,6 +25,7 @@ import {
     type ProductResponse,
     type PayOrderResponse,
     type UpdateOrderResponse,
+    type ErrorMessageResponse
 } from "$lib/types/api.ts";
 import {datagrid} from "$lib/stores/datagrid.ts";
 
@@ -131,5 +132,9 @@ export function bindSocketHandlers(socket: Socket) {
     socket.on("give_chat_access", async () => {
         toast.success("You are given chat access.");
         user.update(u => u ? {...u, permissions: {...u.permissions, has_chat_access: true}} : u);
+    })
+
+    socket.on("fail_import_wallet", async (response: ErrorMessageResponse) => {
+        toast.error(response.message);
     })
 }

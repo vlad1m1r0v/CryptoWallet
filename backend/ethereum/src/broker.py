@@ -62,7 +62,7 @@ async def import_wallet_handler(
     logger.info(f"Received message on rest_api.import_eth_service: {data}")
     user_id = UUID(data["user_id"])
     private_key = data["private_key"]
-    wallet = ethereum_service.import_wallet(user_id=user_id, private_key=private_key)
+    wallet = await ethereum_service.import_wallet(user_id=user_id, private_key=private_key)
     logger.info(f"Publishing message to ethereum.import_eth_service: {wallet.model_dump()}")
     return wallet.model_dump()
 

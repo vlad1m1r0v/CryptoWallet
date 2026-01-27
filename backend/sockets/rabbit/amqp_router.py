@@ -32,6 +32,7 @@ from rabbit.dicts import (
     PayOrderDict,
     UpdateOrderDict,
     GiveChatAccessDict,
+    FailImportWalletDict
 )
 
 logger = logging.getLogger(__name__)
@@ -238,3 +239,13 @@ async def give_chat_access_handler(
 ) -> None:
     user_room = f"user:{data['user_id']}"
     await sio.emit("give_chat_access", {}, user_room)
+
+
+@amqp_router.subscriber("ethereum.fail_import_wallet")
+@inject
+async def fail_import_wallet_handler(
+        data: FailImportWalletDict,
+) -> None:
+    user_room = f"user:{data['user_id']}"
+    await sio.emit("fail_import_wallet", {"message": data["message"]}, user_room)
+

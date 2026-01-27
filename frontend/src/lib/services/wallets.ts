@@ -1,3 +1,5 @@
+import {toast} from "svelte-sonner";
+
 import HttpService from "$lib/services/http.ts";
 
 import {wallets} from "$lib/stores/wallets.ts";
@@ -19,6 +21,8 @@ export default class WalletService {
             {method: 'POST', body: JSON.stringify(data)},
             true
         );
+
+        toast.success("You have sent a request for wallet import.")
     }
 
     static async getWallets(): Promise<void> {

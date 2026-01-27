@@ -141,3 +141,7 @@ export interface UpdateOrderResponse {
     payment_transaction_hash?: string;
     return_transaction_hash?: string;
 }
+
+export interface ErrorMessageResponse {
+    message: string;
+}

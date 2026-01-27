@@ -112,9 +112,12 @@ class UpdateOrderDict(TypedDict):
     payment_transaction_hash: NotRequired[str]
     return_transaction_hash: NotRequired[str]
 
-
 class GiveChatAccessDict(TypedDict):
     user_id: UUID
+
+class FailImportWalletDict(TypedDict):
+    user_id: UUID
+    message: str
 
 
 __all__ = [
@@ -129,5 +132,6 @@ __all__ = [
     "SaveProductDict",
     "PayOrderDict",
     "UpdateOrderDict",
-    "GiveChatAccessDict"
+    "GiveChatAccessDict",
+    "FailImportWalletDict"
 ]

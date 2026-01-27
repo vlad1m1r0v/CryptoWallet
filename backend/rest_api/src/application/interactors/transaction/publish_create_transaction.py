@@ -61,7 +61,9 @@ class PublishCreateTransactionInteractor:
 
         balance = wallet["balance"] / 10 ** wallet["asset"]["decimals"]
 
-        if balance < amount.value + Decimal(TRANSACTION_FEE):
+        if balance < amount.value + TRANSACTION_FEE:
+            logger.info(f"BALANCE: {balance}\nAMOUNT:{amount.value + TRANSACTION_FEE}")
+
             raise NotEnoughBalanceOnWalletException()
 
         logger.info("Decrypting wallet private key...")

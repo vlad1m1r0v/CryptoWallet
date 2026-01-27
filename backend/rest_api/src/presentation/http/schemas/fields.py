@@ -55,7 +55,7 @@ def validate_transaction_hash_logic(value: str) -> str:
 
 
 def validate_product_name_logic(value: str) -> str:
-    PATTERN = re.compile(r"^[a-zA-Zа-яА-ЯіІїЇєЄ0-9]([a-zA-Zа-яА-ЯіІїЇєЄ0-9\s]*[a-zA-Zа-яА-ЯіІїЇєЄ0-9])?$")
+    PATTERN = re.compile(r"^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\-\'\u2019]+(?:\s[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\-\'\u2019]+)*$")
 
     if not PATTERN.fullmatch(value.strip()):
         raise ValueError(

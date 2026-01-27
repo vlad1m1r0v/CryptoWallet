@@ -15,7 +15,7 @@ class ProductName(ValueObject):
     MIN_LEN: ClassVar[int] = 3
 
     PATTERN: ClassVar[re.Pattern[str]] = re.compile(
-        r"^[a-zA-Zа-яА-ЯіІїЇєЄ0-9]([a-zA-Zа-яА-ЯіІїЇєЄ0-9\s]*[a-zA-Zа-яА-ЯіІїЇєЄ0-9])?$"
+        r"^[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\-\'\u2019]+(?:\s[a-zA-Zа-яА-ЯёЁіІїЇєЄґҐ0-9\-\'\u2019]+)*$"
     )
 
     value: str

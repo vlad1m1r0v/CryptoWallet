@@ -75,11 +75,13 @@ class EthereumServiceAdapter(EthereumServicePort):
             etherscan_config: EtherscanConfig,
             faucet_config: FaucetConfig,
             storage: StoragePort,
+            broker: RabbitBroker,
     ):
         self._w3 = w3
         self._etherscan_config = etherscan_config
         self._faucet_config = faucet_config
         self._storage = storage
+        self._broker = broker
 
     def create_wallet(self, user_id: UUID) -> ETHWalletSchema:
         account = self._w3.eth.account.create()
@@ -91,9 +93,20 @@ class EthereumServiceAdapter(EthereumServicePort):
             created_at=datetime.now()
         )
 
-    def import_wallet(self, user_id: UUID, private_key: str) -> ETHWalletSchema:
-        account = self._w3.eth.account.from_key(private_key=private_key)
-        address = account.address
+    async def import_wallet(self, user_id: UUID, private_key: str) -> ETHWalletSchema:
+        try:
+            account = self._w3.eth.account.from_key(private_key=private_key)
+            address = account.address
+        except Exception as e:
+            await self._broker.publish(
+                queue="ethereum.fail_import_wallet",
+                message={
+                    "user_id": user_id,
+                    "message": "Couldn't import wallet because provided private key is invalid."
+                },
+            )
+
+            raise e
 
         balance_wei = self._w3.eth.get_balance(address)
 

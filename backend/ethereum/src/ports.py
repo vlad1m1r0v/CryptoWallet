@@ -34,7 +34,7 @@ class EthereumServicePort(ABC):
         ...
 
     @abstractmethod
-    def import_wallet(self, user_id: UUID, private_key: str) -> ETHWalletSchema:
+    async def import_wallet(self, user_id: UUID, private_key: str) -> ETHWalletSchema:
         ...
 
     @abstractmethod
