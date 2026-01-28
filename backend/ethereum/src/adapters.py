@@ -99,7 +99,7 @@ class EthereumServiceAdapter(EthereumServicePort):
             address = account.address
         except Exception as e:
             await self._broker.publish(
-                queue="ethereum.fail_import_wallet",
+                queue="ethereum.error_message",
                 message={
                     "user_id": user_id,
                     "message": "Couldn't import wallet because provided private key is invalid."

@@ -30,10 +30,11 @@ from src.application.ports.transaction import (
 )
 from src.application.ports.events import EventPublisher
 from src.application.dtos.request import (
-    SaveImportWalletRequestDTO
+    SaveImportWalletRequestDTO,
 )
 from src.application.dtos.events import (
-    SaveWalletEventDTO
+    SaveWalletEventDTO,
+    ErrorMessageEventDTO
 )
 
 logger = logging.getLogger(__name__)
@@ -68,6 +69,13 @@ class SaveImportWalletInteractor:
         logger.info("Checking if wallet with given address already exists...")
 
         if await self._wallet_gateway.read(address=address.value):
+            await self._event_publisher.send_error_message(
+                ErrorMessageEventDTO(
+                    user_id=data.user_id,
+                    message="Wallet with given private key has been already imported."
+                )
+            )
+
             raise WalletAlreadyExistsException(address=address)
 
         logger.info("Getting sepolia asset record from database...")

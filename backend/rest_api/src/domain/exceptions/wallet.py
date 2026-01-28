@@ -9,11 +9,7 @@ from src.domain.value_objects import (
 
 
 class WalletAlreadyExistsException(DomainException):
-    message = Template("Wallet with address '$address' has been already imported.")
-    example_args = {"address": "0xf04555b42b45E5283F28737D6BA65AE16878D84B"}
-
-    def __init__(self, address: Address):
-        super().__init__(address=address.value)
+    message = "Wallet with given private key has been already imported."
 
 
 class UserIsNotOwnerOfWalletException(DomainException):

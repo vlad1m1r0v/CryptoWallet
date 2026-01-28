@@ -164,3 +164,9 @@ class UpdateOrderEventDTO:
     status: Optional[OrderStatusEnum] = None
     payment_transaction_hash: Optional[str] = None
     return_transaction_hash: Optional[str] = None
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ErrorMessageEventDTO:
+    user_id: UUID
+    message: str

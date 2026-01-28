@@ -1,11 +1,12 @@
+import logging
+from typing import Any
+from dataclasses import asdict
+
 from faststream.rabbit import (
     RabbitBroker,
     RabbitExchange,
     ExchangeType
 )
-
-from typing import Any
-from dataclasses import asdict
 
 from src.application.ports.events import EventPublisher
 from src.application.dtos.events import (
@@ -24,9 +25,11 @@ from src.application.dtos.events import (
     SaveProductEventDTO,
     CreateOrderEventDTO,
     PayOrderEventDTO,
-    UpdateOrderEventDTO
+    UpdateOrderEventDTO,
+    ErrorMessageEventDTO
 )
 
+logger = logging.getLogger(__name__)
 
 def exclude_none_factory(data: list[tuple[str, Any]]) -> dict:
     return {k: v for k, v in data if v is not None}
@@ -135,5 +138,11 @@ class RabbitMQEventPublisher(EventPublisher):
         await self._broker.publish(
             routing_key="rest_api.update_order",
             exchange=exchange,
+            message=asdict(dto, dict_factory=exclude_none_factory)
+        )
+
+    async def send_error_message(self, dto: ErrorMessageEventDTO) -> None:
+        await self._broker.publish(
+            routing_key="rest_api.error_message",
             message=asdict(dto, dict_factory=exclude_none_factory)
         )

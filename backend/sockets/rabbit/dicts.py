@@ -115,7 +115,7 @@ class UpdateOrderDict(TypedDict):
 class GiveChatAccessDict(TypedDict):
     user_id: UUID
 
-class FailImportWalletDict(TypedDict):
+class ErrorMessageDict(TypedDict):
     user_id: UUID
     message: str
 
@@ -133,5 +133,5 @@ __all__ = [
     "PayOrderDict",
     "UpdateOrderDict",
     "GiveChatAccessDict",
-    "FailImportWalletDict"
+    "ErrorMessageDict"
 ]

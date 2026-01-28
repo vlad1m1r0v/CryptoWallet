@@ -7,7 +7,7 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 
 from src.domain.exceptions import (
-    WalletAlreadyExistsException,
+    NotEnoughBalanceOnWalletException,
     WalletNotFoundException,
     UserIsNotOwnerOfWalletException
 )
@@ -43,7 +43,7 @@ router = APIRouter(prefix="/transactions", tags=["Transactions"])
     status_code=status.HTTP_204_NO_CONTENT,
     responses=generate_examples(
         UserIsNotOwnerOfWalletException,
-        WalletAlreadyExistsException,
+        NotEnoughBalanceOnWalletException,
         WalletNotFoundException,
         is_auth=True
     ),

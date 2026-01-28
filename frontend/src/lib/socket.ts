@@ -134,7 +134,7 @@ export function bindSocketHandlers(socket: Socket) {
         user.update(u => u ? {...u, permissions: {...u.permissions, has_chat_access: true}} : u);
     })
 
-    socket.on("fail_import_wallet", async (response: ErrorMessageResponse) => {
+    socket.on("error_message", async (response: ErrorMessageResponse) => {
         toast.error(response.message);
     })
 }

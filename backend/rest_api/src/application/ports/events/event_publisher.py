@@ -17,7 +17,8 @@ from src.application.dtos.events import (
     SaveProductEventDTO,
     CreateOrderEventDTO,
     PayOrderEventDTO,
-    UpdateOrderEventDTO
+    UpdateOrderEventDTO,
+    ErrorMessageEventDTO
 )
 
 
@@ -85,3 +86,10 @@ class EventPublisher(Protocol):
     @abstractmethod
     async def update_order(self, dto: UpdateOrderEventDTO) -> None:
         ...
+
+    @abstractmethod
+    async def send_error_message(self, dto: ErrorMessageEventDTO) -> None:
+        ...
+
+
+
