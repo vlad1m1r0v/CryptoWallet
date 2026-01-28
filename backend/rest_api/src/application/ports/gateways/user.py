@@ -1,10 +1,13 @@
 from abc import abstractmethod
-from typing import Protocol, Optional, Union
+from typing import Protocol, Optional
 from uuid import UUID
 
 from src.domain.entities import User
 
-from src.application.dtos.response import UserResponseDTO
+from src.application.dtos.response import (
+    UserResponseDTO,
+    OtherProfileResponseDTO
+)
 
 
 class UserGateway(Protocol):
@@ -37,4 +40,11 @@ class UserGateway(Protocol):
             user_id: Optional[UUID] = None,
             email: Optional[str] = None
     ) -> UserResponseDTO | None:
+        ...
+
+    @abstractmethod
+    async def read_other_profile(
+            self,
+            user_id: UUID
+    ) -> OtherProfileResponseDTO | None:
         ...

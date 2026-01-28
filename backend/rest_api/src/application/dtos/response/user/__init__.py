@@ -4,10 +4,12 @@ from src.application.dtos.response.user.user import (
     UserResponsePermissionsDTO,
     UserResponseDTO
 )
+from src.application.dtos.response.user.other_profile import OtherProfileResponseDTO
 
 __all__ = [
     "UserResponseWalletDTO",
     "UserResponsePermissionsDTO",
     "UserResponseDTO",
-    "JwtPayloadDTO"
+    "JwtPayloadDTO",
+    "OtherProfileResponseDTO"
 ]

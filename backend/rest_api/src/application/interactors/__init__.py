@@ -4,6 +4,7 @@ from src.application.interactors.auth import (
 )
 from src.application.interactors.user import (
     GetUserInteractor,
+    GetOtherProfileInteractor,
     UpdateUserInteractor,
     DeleteAvatarInteractor,
     IncrementTotalMessagesInteractor
@@ -43,6 +44,7 @@ __all__ = [
     'RegisterInteractor',
     'LoginInteractor',
     'GetUserInteractor',
+    'GetOtherProfileInteractor',
     'UpdateUserInteractor',
     'DeleteAvatarInteractor',
     'IncrementTotalMessagesInteractor',

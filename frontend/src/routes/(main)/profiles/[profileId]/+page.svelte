@@ -52,7 +52,7 @@
                         </a>
                     </div>
                     <div class="row mt-1">
-                        <div class="col-12 col-sm-6">
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input
@@ -64,42 +64,6 @@
                                         value="{$profile?.username}"
                                 >
                             </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group">
-                                <label for="email">E-mail</label>
-                                <input
-                                        disabled
-                                        type="email"
-                                        class="form-control"
-                                        name="email"
-                                        placeholder="Email"
-                                        value="{$profile?.email}">
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <label for="password">Password</label>
-                            <input
-                                    disabled
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    class="form-control"
-                                    placeholder="············"
-                                    aria-describedby="password"
-                            />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <label for="repeat_password">Repeat password</label>
-                            <input
-                                    disabled
-                                    id="repeat_password"
-                                    name="repeat_password"
-                                    type="password"
-                                    class="form-control"
-                                    placeholder="············"
-                                    aria-describedby="repeat_password"
-                            />
                         </div>
                     </div>
                 </form>
@@ -122,39 +86,6 @@
                     <span class="font-weight-bolder">Messages in chat:</span>
                     <span class="font-weight-light">{$profile?.total_messages}</span>
                 </h4>
-                <h4>
-                    <span class="font-weight-bolder">Wallets:</span>
-                    <span class="font-weight-light">{$profile?.total_wallets}</span>
-                </h4>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Wallets Management Header-->
-<div class="content-header row">
-    <div class="content-header-left col-md-9 col-12 mb-2">
-        <h2 class="float-left mb-0">Wallets Management</h2>
-    </div>
-</div>
-<!--Wallets Management Card-->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <div id="wallets__container">
-                    {#each $profile?.wallets as wallet (wallet.id)}
-                        <!--Wallet-->
-                        <div class="d-inline-block text-truncate">
-                            <img width="50" src="/custom/images/ethereum.png" alt="ethereum logo">
-                            <a
-                                    href={`https://sepolia.etherscan.io/address/${wallet.address}`}
-                                    class="text-center font-weight-lighter"
-                            >
-                                {wallet.address}
-                             </a>
-                        </div>
-                    {/each}
-                </div>
             </div>
         </div>
     </div>

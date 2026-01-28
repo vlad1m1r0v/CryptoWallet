@@ -9,6 +9,7 @@ from src.presentation.http.schemas.user import (
     GetUserResponseSchema,
     GetUserResponseWalletSchema,
     GetUserResponsePermissionsSchema,
+    GetOtherProfileResponseSchema,
     UpdateUserRequestSchema
 )
 from src.presentation.http.schemas.wallet import (
@@ -48,6 +49,7 @@ __all__ = [
     'GetUserResponseSchema',
     'GetUserResponseWalletSchema',
     'GetUserResponsePermissionsSchema',
+    'GetOtherProfileResponseSchema',
     'UpdateUserRequestSchema',
     'ImportWalletRequestSchema',
     'FreeETHRequestSchema',

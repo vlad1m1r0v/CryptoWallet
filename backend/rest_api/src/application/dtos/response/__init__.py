@@ -9,7 +9,8 @@ from src.application.dtos.response.user import (
     JwtPayloadDTO,
     UserResponseDTO,
     UserResponseWalletDTO,
-    UserResponsePermissionsDTO
+    UserResponsePermissionsDTO,
+    OtherProfileResponseDTO
 )
 
 from src.application.dtos.response.asset import (
@@ -52,6 +53,7 @@ __all__ = [
     "UserResponseWalletDTO",
     "UserResponsePermissionsDTO",
     "UserResponseDTO",
+    "OtherProfileResponseDTO",
     "AssetResponseDTO",
     "WalletResponseAssetDTO",
     "WalletResponseDTO",

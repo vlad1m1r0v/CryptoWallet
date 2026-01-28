@@ -1,4 +1,5 @@
 from src.infrastructure.persistence.database.mappers.user import UserMapper
+from src.infrastructure.persistence.database.mappers.other_profile import OtherProfileMapper
 from src.infrastructure.persistence.database.mappers.asset import AssetMapper
 from src.infrastructure.persistence.database.mappers.wallet import WalletMapper
 from src.infrastructure.persistence.database.mappers.transaction import TransactionMapper
@@ -8,6 +9,7 @@ from src.infrastructure.persistence.database.mappers.permissions import Permissi
 
 __all__ = [
     'UserMapper',
+    'OtherProfileMapper',
     'AssetMapper',
     'WalletMapper',
     'TransactionMapper',

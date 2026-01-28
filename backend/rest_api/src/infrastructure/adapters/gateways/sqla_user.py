@@ -8,13 +8,14 @@ from sqlalchemy.orm import joinedload, selectinload
 from src.domain.entities import User
 
 from src.application.ports.gateways import UserGateway
-from src.application.dtos.response import UserResponseDTO
+from src.application.dtos.response import UserResponseDTO, OtherProfileResponseDTO
 
 from src.infrastructure.persistence.database.models import User as UserM
-from src.infrastructure.persistence.database.mappers import UserMapper
+from src.infrastructure.persistence.database.mappers import UserMapper, OtherProfileMapper
 
 
 class SqlaUserGateway(UserGateway):
+
     def __init__(self, session: AsyncSession):
         self._session = session
 
@@ -96,3 +97,14 @@ class SqlaUserGateway(UserGateway):
             return None
 
         return UserMapper.to_dto(model)
+
+    async def read_other_profile(self, user_id: UUID) -> OtherProfileResponseDTO | None:
+        stmt: Select = select(UserM).where(UserM.id == user_id)
+
+        result = await self._session.execute(stmt)
+        model: UserM | None = result.scalar_one_or_none()
+
+        if not model:
+            return None
+
+        return OtherProfileMapper.to_dto(model)

@@ -12,6 +12,7 @@ from src.domain.exceptions import UserNotFoundException
 from src.application.dtos.response import JwtPayloadDTO
 from src.application.interactors import (
     GetUserInteractor,
+    GetOtherProfileInteractor,
     UpdateUserInteractor,
     DeleteAvatarInteractor,
 )
@@ -19,12 +20,14 @@ from src.application.interactors import (
 from src.presentation.http.dependencies import jwt_payload
 from src.presentation.http.mappers import (
     UpdateUserMapper,
-    GetUserMapper
+    GetUserMapper,
+    GetOtherProfileMapper
 )
 
 from src.presentation.http.schemas import (
     UpdateUserRequestSchema,
-    GetUserResponseSchema
+    GetUserResponseSchema,
+    GetOtherProfileResponseSchema
 )
 
 from src.presentation.http.openapi import generate_examples
@@ -50,19 +53,19 @@ async def get_my_profile(
 
 @router.get(
     path="/{user_id}",
-    response_model=GetUserResponseSchema,
+    response_model=GetOtherProfileResponseSchema,
     status_code=status.HTTP_200_OK,
     responses=generate_examples(UserNotFoundException, is_auth=True),
     response_model_exclude_none=True,
 )
 @inject
-async def get_user_profile(
-        interactor: FromDishka[GetUserInteractor],
+async def get_other_profile(
+        interactor: FromDishka[GetOtherProfileInteractor],
         user_id: UUID,
         _: JwtPayloadDTO = Depends(jwt_payload),
-) -> GetUserResponseSchema:
+) -> GetOtherProfileResponseSchema:
     dto = await interactor(user_id)
-    return GetUserMapper.to_response_schema(dto)
+    return GetOtherProfileMapper.to_response_schema(dto)
 
 
 @router.patch(
