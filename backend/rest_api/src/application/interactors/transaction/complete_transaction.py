@@ -141,12 +141,21 @@ class CompleteTransactionInteractor:
             )
 
             if transactions[1]["transaction_status"] == TransactionStatusEnum.SUCCESSFUL:
-                logger.info("Updating receiver wallet balance in database...")
 
-                await self._wallet_gateway.increment_balance(
-                    wallet_id=transactions[1]["wallet"]["id"],
-                    amount=transactions[1]["value"]
-                )
+                if transactions[1]["to_address"] == transactions[1]["wallet"]["address"]:
+                    logger.info("Updating receiver wallet balance in database...")
+
+                    await self._wallet_gateway.increment_balance(
+                        wallet_id=transactions[1]["wallet"]["id"],
+                        amount=transactions[1]["value"]
+                    )
+                else:
+                    logger.info("Updating payer wallet balance in database...")
+
+                    await self._wallet_gateway.decrement_balance(
+                        wallet_id=transactions[1]["wallet"]["id"],
+                        amount=transactions[1]["value"]
+                    )
 
                 await self._flusher.flush()
 

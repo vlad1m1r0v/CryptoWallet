@@ -6,6 +6,7 @@ from dishka.integrations.fastapi import inject
 
 from src.domain.exceptions import (
     WalletNotFoundException,
+    NotEnoughBalanceOnWalletException,
     UserIsNotOwnerOfWalletException,
     ProductNotFoundException
 )
@@ -35,6 +36,7 @@ router = APIRouter(prefix="/orders", tags=["Orders"])
         WalletNotFoundException,
         UserIsNotOwnerOfWalletException,
         ProductNotFoundException,
+        NotEnoughBalanceOnWalletException,
         is_auth=True
     ),
     response_model=OrderResponseSchema

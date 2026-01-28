@@ -40,18 +40,18 @@ class SqlaOrderGateway(OrderGateway):
             .options(
                 # Order -> Product -> Wallet -> Asset
                 joinedload(OrderM.product)
-                .joinedload(ProductM.wallet.of_type(wallet_alias))
-                .joinedload(wallet_alias.asset),
+                .joinedload(ProductM.wallet)
+                .joinedload(WalletM.asset),
                 # Order -> Product -> Wallet -> User
                 joinedload(OrderM.product)
-                .joinedload(ProductM.wallet.of_type(wallet_alias))
-                .joinedload(wallet_alias.user),
+                .joinedload(ProductM.wallet)
+                .joinedload(WalletM.user),
                 # Order -> Payment Transaction
                 joinedload(OrderM.payment_transaction.of_type(payment_transaction_alias)),
                 # Order -> Return Transaction
                 joinedload(OrderM.return_transaction.of_type(return_transaction_alias)),
                 # Order -> Wallet
-                joinedload(OrderM.wallet)
+                joinedload(OrderM.wallet.of_type(wallet_alias))
             )
         )
 

@@ -35,6 +35,13 @@ export interface UserResponse {
     total_wallets: number;
 }
 
+export interface OtherProfileResponse {
+    id: string;
+    username: string;
+    avatar_url?: string | null;
+    total_messages: number;
+}
+
 export interface WalletResponse {
     id: string;
     address: string;

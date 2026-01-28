@@ -9,6 +9,7 @@
         product: ProductResponse
     } = $props();
     import {onMount} from "svelte";
+    import {derived} from "svelte/store";
     import {fade, scale} from "svelte/transition";
 
     import {createForm} from "felte";
@@ -16,6 +17,8 @@
     import {reporter} from "@felte/reporter-svelte";
 
     import {z} from "zod";
+
+    import {TRANSACTION_FEE} from "$lib/contstants.ts";
 
     import type {ProductResponse} from "$lib/types/api.ts";
 
@@ -45,7 +48,17 @@
         ]
     });
 
-    wallets.subscribe((state) => {
+    let availableWallets = derived(wallets, (ws) => ws ? ws.filter(
+            w => {
+                const price = Number(product.price);
+                const fee = Number(TRANSACTION_FEE);
+                const balance = Number(w.balance);
+                return w.address !== (product.wallet_address) && (balance >= price + fee);
+            }
+        ) : []
+    )
+
+    availableWallets.subscribe((state) => {
         if (state && state.length > 0) setData("wallet_id", state[0].id)
     })
 </script>
@@ -83,7 +96,7 @@
                                     class="form-control"
                                     name="wallet_id"
                             >
-                                {#each $wallets as wallet (wallet.id)}
+                                {#each $availableWallets as wallet (wallet.id)}
                                     <option value={wallet.id}>
                                         {wallet.address} ({wallet.balance} {wallet.asset_symbol})
                                     </option>

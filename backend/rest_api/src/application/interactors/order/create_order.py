@@ -4,6 +4,7 @@ import logging
 from src.domain.exceptions import (
     UserIsNotOwnerOfWalletException,
     WalletNotFoundException,
+    NotEnoughBalanceOnWalletException,
     ProductNotFoundException
 )
 from src.domain.value_objects import (
@@ -13,6 +14,7 @@ from src.domain.value_objects import (
 from src.domain.services import OrderService
 from src.domain.ports import SecretEncryptor
 
+from src.application.constants import TRANSACTION_FEE
 from src.application.ports.gateways import (
     WalletGateway,
     ProductGateway,
@@ -72,6 +74,14 @@ class CreateOrderInteractor:
 
         if wallet["user_id"] != user_id.value:
             raise UserIsNotOwnerOfWalletException(user_id, Address(wallet["address"]))
+
+        logger.info("Checking if there is enough money on wallet balance...")
+
+        balance = wallet["balance"] / 10 ** wallet["asset"]["decimals"]
+        price = product["price"] / 10 ** product["wallet"]["asset"]["decimals"]
+
+        if balance < price + TRANSACTION_FEE:
+            raise NotEnoughBalanceOnWalletException()
 
         logger.info("Inserting new order record into database...")
 

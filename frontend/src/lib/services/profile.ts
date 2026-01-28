@@ -6,7 +6,8 @@ import {user} from "$lib/stores/user.ts";
 import {profile} from "$lib/stores/profile.ts";
 
 import {
-    type UserResponse
+    type UserResponse,
+    type OtherProfileResponse
 } from "$lib/types/api.ts";
 
 export default class ProfileService {
@@ -21,7 +22,7 @@ export default class ProfileService {
     }
 
     static async getProfile(userId: string): Promise<void> {
-        const response = await HttpService.request<UserResponse>(
+        const response = await HttpService.request<OtherProfileResponse>(
             `/profiles/${userId}`, {method: 'GET'}, true
         );
 

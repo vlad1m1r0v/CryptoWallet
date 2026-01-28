@@ -1,5 +1,5 @@
 import {writable} from "svelte/store";
 
-import type {UserResponse} from "$lib/types/api.ts";
+import type {OtherProfileResponse} from "$lib/types/api.ts";
 
-export const profile = writable<UserResponse | null>(null);
+export const profile = writable<OtherProfileResponse | null>(null);
